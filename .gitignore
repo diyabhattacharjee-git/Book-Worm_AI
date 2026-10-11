@@ -25,3 +25,4 @@ frontend/coverage/
 .idea/
 .DS_Store
 Thumbs.db
+.neon
