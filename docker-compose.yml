@@ -1,0 +1,40 @@
+# Optional convenience only; the project runs without Docker (see README).
+# docker compose up  ->  backend http://localhost:8000, frontend http://localhost:5173
+services:
+  backend:
+    image: python:3.11-slim
+    working_dir: /app/backend
+    volumes:
+      - ./backend:/app/backend
+      - backend-venv:/app/backend/.docker-venv
+    environment:
+      DATABASE_URL: sqlite:////app/backend/book_platform.db
+      FRONTEND_ORIGIN: http://localhost:5173
+    env_file:
+      - path: ./backend/.env
+        required: false
+    command: >
+      sh -c "python -m venv .docker-venv &&
+             .docker-venv/bin/pip install -q -r requirements.txt &&
+             .docker-venv/bin/python -m app.cli seed &&
+             .docker-venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    ports:
+      - "8000:8000"
+
+  frontend:
+    image: node:22-alpine
+    working_dir: /app/frontend
+    volumes:
+      - ./frontend:/app/frontend
+      - frontend-modules:/app/frontend/node_modules
+    environment:
+      VITE_BACKEND_URL: http://backend:8000
+    command: sh -c "npm install && npx vite --host 0.0.0.0 --port 5173"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  backend-venv:
+  frontend-modules:

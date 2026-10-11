@@ -1,0 +1,3 @@
+# OPTIONAL: local semantic embeddings. Downloads PyTorch (~200MB+) and a ~90MB model
+# on first use. Enable with EMBEDDINGS_BACKEND=sentence-transformers.
+sentence-transformers>=3.0

@@ -1,0 +1,16 @@
+# Never uploaded to Vercel: secrets, local data, environments, tests and docs.
+.env
+**/.env
+backend/.venv
+backend/*.db
+backend/*.db-*
+backend/uploads
+backend/tests
+backend/requirements-dev.txt
+**/__pycache__
+**/node_modules
+frontend/dist
+frontend/src/test
+docs
+scripts
+docker-compose.yml

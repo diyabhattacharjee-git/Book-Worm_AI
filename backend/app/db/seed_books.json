@@ -1,0 +1,2714 @@
+{
+ "generated_at": "2026-10-11T06:19:27.377445+00:00",
+ "note": "Real book metadata fetched from Open Library and Google Books (descriptions, page counts, publishers, subjects, covers, Open Library ratings). Genres are curated tags.",
+ "books": [
+  {
+   "isbn13": "9780735211292",
+   "title": "Atomic Habits",
+   "authors": [
+    "James Clear"
+   ],
+   "genres": [
+    "Self-Help",
+    "Productivity",
+    "Psychology"
+   ],
+   "description": "No matter your goals, Atomic Habits offers a proven framework for improving every day. James Clear, one of the world's leading experts on habit formation, reveals practical strategies that will teach you exactly how to form good habits, break bad ones, and master the tiny behaviors that lead to remarkable results.",
+   "description_source": "open_library",
+   "page_count": 320,
+   "page_count_source": "open_library",
+   "first_published_year": 2016,
+   "edition_year": 2018,
+   "publisher": "Avery, an Imprint of Penguin Random House LLC",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "Habit",
+    "Habit breaking",
+    "Behavior modification",
+    "Self-actualization (psychology)",
+    "Business",
+    "psychology",
+    "Personal Growth",
+    "New York Times bestseller"
+   ],
+   "openlibrary_work_key": "/works/OL17930368W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg",
+   "external_rating_avg": 3.97,
+   "external_rating_count": 1450,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780132350884",
+   "title": "Clean Code",
+   "authors": [
+    "Robert C. Martin"
+   ],
+   "genres": [
+    "Programming",
+    "Software Engineering"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": 431,
+   "page_count_source": "open_library",
+   "first_published_year": 2008,
+   "edition_year": 2008,
+   "publisher": "Prentice Hall",
+   "language": "en",
+   "format": "taschenbuch",
+   "subjects": [
+    "Agile software development",
+    "Reliability",
+    "Computer software",
+    "Computer software, development",
+    "Coding theory"
+   ],
+   "openlibrary_work_key": "/works/OL17618370W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780132350884-L.jpg",
+   "external_rating_avg": 4.44,
+   "external_rating_count": 43,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780062315007",
+   "title": "The Alchemist",
+   "authors": [
+    "Paulo Coelho"
+   ],
+   "genres": [
+    "Fiction",
+    "Philosophy",
+    "Inspirational"
+   ],
+   "description": "The Alchemist details the journey of a young Andalusian shepherd boy named Santiago. Santiago, believing a recurring dream to be prophetic, decides to travel to the pyramids of Egypt to find treasure. On the way, he encounters love, danger, opportunity and disaster. One of the significant characters that he meets is an old king named Melchizedek who tells him that \"When you want something, all the universe conspires in helping you to achieve it.\" This is the core philosophy and motif of the book.",
+   "description_source": "open_library",
+   "page_count": 208,
+   "page_count_source": "open_library",
+   "first_published_year": 1988,
+   "edition_year": 2014,
+   "publisher": "HarperCollins Publishers",
+   "language": null,
+   "format": null,
+   "subjects": [
+    "Translations into Indonesian",
+    "Voyages and travels",
+    "Fiction",
+    "Portuguese Fiction",
+    "Self-realization",
+    "Alchemists",
+    "Young men",
+    "Shepherds"
+   ],
+   "openlibrary_work_key": "/works/OL796465W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780062315007-L.jpg",
+   "external_rating_avg": 3.8,
+   "external_rating_count": 471,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780062316097",
+   "title": "Sapiens",
+   "authors": [
+    "Yuval Noah Harari"
+   ],
+   "genres": [
+    "History",
+    "Non-Fiction",
+    "Anthropology"
+   ],
+   "description": "From a renowned historian comes a groundbreaking narrative of humanity’s creation and evolution—a #1 international bestseller—that explores the ways in which biology and history have defined us and enhanced our understanding of what it means to be “human.”\r\n\r\nOne hundred thousand years ago, at least six different species of humans inhabited Earth. Yet today there is only one—homo sapiens. What happened to the others? And what may happen to us?\r\n\r\nMost books about the history of humanity pursue either a historical or a biological approach, but Dr. Yuval Noah Harari breaks the mold with this highly original book that begins about 70,000 years ago with the appearance of modern cognition. From examining the role evolving humans have played in the global ecosystem to charting the rise of empires, Sapiens integrates history and science to reconsider accepted narratives, connect past developments with contemporary concerns, and examine specific events within the context of larger ideas.\r\n\r\nDr. Harari also compels us to look ahead, because over the last few decades humans have begun to bend laws of natural selection that have governed life for the past four billion years. We are acquiring the ability to design not only the world around us, but also ourselves. Where is this leading us, and what do we want to become?\r\n\r\nFeaturing 27 photographs, 6 maps, and 25 illustrations/diagrams, this provocative and insightful work is sure to spark debate and is essential reading for aficionados of Jared Diamond, James Gleick, Matt Ridley, Robert Wright, and Sharon Moalem.",
+   "description_source": "open_library",
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": 2011,
+   "edition_year": 2015,
+   "publisher": "Harper",
+   "language": null,
+   "format": null,
+   "subjects": [
+    "Technology and civilization",
+    "Human beings",
+    "Historical Chronology",
+    "Historia universal",
+    "Historia",
+    "Civilization",
+    "Hombre",
+    "World history"
+   ],
+   "openlibrary_work_key": "/works/OL17075811W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780062316097-L.jpg",
+   "external_rating_avg": 4.19,
+   "external_rating_count": 212,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780374533557",
+   "title": "Thinking, Fast and Slow",
+   "authors": [
+    "Daniel Kahneman"
+   ],
+   "genres": [
+    "Psychology",
+    "Economics",
+    "Non-Fiction"
+   ],
+   "description": "In his mega bestseller, Thinking, Fast and Slow, Daniel Kahneman, world-famous psychologist and winner of the Nobel Prize in Economics, takes us on a groundbreaking tour of the mind and explains the two systems that drive the way we think.\r\n\r\nSystem 1 is fast, intuitive, and emotional; System 2 is slower, more deliberative, and more logical. The impact of overconfidence on corporate strategies, the difficulties of predicting what will make us happy in the future, the profound effect of cognitive biases on everything from playing the stock market to planning our next vacation―each of these can be understood only by knowing how the two systems shape our judgments and decisions.\r\n\r\nEngaging the reader in a lively conversation about how we think, Kahneman reveals where we can and cannot trust our intuitions and how we can tap into the benefits of slow thinking. He offers practical and enlightening insights into how choices are made in both our business and our personal lives―and how we can use different techniques to guard against the mental glitches that often get us into trouble. Topping bestseller lists for almost ten years, Thinking, Fast and Slow is a contemporary classic, an essential book that has changed the lives of millions of readers.",
+   "description_source": "open_library",
+   "page_count": 499,
+   "page_count_source": "open_library",
+   "first_published_year": 2011,
+   "edition_year": 2013,
+   "publisher": "Farrar, Straus and Giroux",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Intuition",
+    "Thought and thinking",
+    "Reasoning",
+    "Decision making",
+    "New York Times bestseller",
+    "Long Now Manual for Civilization",
+    "Thinking",
+    "Kognition"
+   ],
+   "openlibrary_work_key": "/works/OL15992072W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780374533557-L.jpg",
+   "external_rating_avg": 4.08,
+   "external_rating_count": 240,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780135957059",
+   "title": "The Pragmatic Programmer",
+   "authors": [
+    "David Thomas"
+   ],
+   "genres": [
+    "Programming",
+    "Software Engineering"
+   ],
+   "description": "The Pragmatic Programmer is one of those rare tech audiobooks you’ll listen, re-listen, and listen to again over the years. Whether you’re new to the field or an experienced practitioner, you’ll come away with fresh insights each and every time. \r\n\r\nDave Thomas and Andy Hunt wrote the first edition of this influential book in 1999 to help their clients create better software and rediscover the joy of coding. These lessons have helped a generation of programmers examine the very essence of software development, independent of any particular language, framework, or methodology, and the Pragmatic philosophy has spawned hundreds of books, screencasts, and audio books, as well as thousands of careers and success stories. \r\n\r\nNow, 20 years later, this new edition re-examines what it means to be a modern programmer. Topics range from personal responsibility and career development to architectural techniques for keeping your code flexible and easy to adapt and reuse. All the old favorite topics are there, updated for this new world. And there's a bunch of new content, reflecting what we've learned in the intervening years. \r\n\r\nWhether you’re a new coder, an experienced programmer, or a manager responsible for software projects, use these lessons daily, and you’ll quickly see improvements in personal productivity, accuracy, and job satisfaction. You’ll learn skills and develop habits and attitudes that form the foundation for long-term success in your career. You’ll become a pragmatic programmer. \r\n\r\nThis audiobook is organized as a series of sections, each containing a series of topics. It is read by Anna Katarina; Dave and Andy (and a few other folks) jump in every now and then to give their take on things.",
+   "description_source": "open_library",
+   "page_count": 352,
+   "page_count_source": "open_library",
+   "first_published_year": 1999,
+   "edition_year": 2019,
+   "publisher": "Pragmatic Programmer",
+   "language": null,
+   "format": "hardcover",
+   "subjects": [
+    "Computer programming",
+    "Vocational education",
+    "Projectmanagement",
+    "Métodos ágeis",
+    "Programmeren (computers)",
+    "Beroepskwalificaties",
+    "Engenharia de programas",
+    "Qa76.6 .h857 1999"
+   ],
+   "openlibrary_work_key": "/works/OL5748544W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780135957059-L.jpg",
+   "external_rating_avg": 4.34,
+   "external_rating_count": 53,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781455586691",
+   "title": "Deep Work",
+   "authors": [
+    "Cal Newport"
+   ],
+   "genres": [
+    "Productivity",
+    "Self-Help"
+   ],
+   "description": "One of the most valuable skills in our economy is becoming increasingly rare. If you master this skill, you'll achieve extraordinary results.\r\n\r\nDeep work is the ability to focus without distraction on a cognitively demanding task. It's a skill that allows you to quickly master complicated information and produce better results in less time. Deep work will make you better at what you do and provide the sense of true fulfillment that comes from craftsmanship. In short, deep work is like a super power in our increasingly competitive twenty-first century economy. And yet, most people have lost the ability to go deep-spending their days instead in a frantic blur of e-mail and social media, not even realizing there's a better way.\r\n\r\nIn DEEP WORK, author and professor Cal Newport flips the narrative on impact in a connected age. Instead of arguing distraction is bad, he instead celebrates the power of its opposite. Dividing this book into two parts, he first makes the case that in almost any profession, cultivating a deep work ethic will produce massive benefits. He then presents a rigorous training regimen, presented as a series of four \"rules,\" for transforming your mind and habits to support this skill.\r\n\r\nA mix of cultural criticism and actionable advice, DEEP WORK takes the reader on a journey through memorable stories -- from Carl Jung building a stone tower in the woods to focus his mind, to a social media pioneer buying a round-trip business class ticket to Tokyo to write a book free from distraction in the air -- and no-nonsense advice, such as the claim that most serious professionals should quit social media and that you should practice being bored. DEEP WORK is an indispensable guide to anyone seeking focused success in a distracted world.",
+   "description_source": "open_library",
+   "page_count": 295,
+   "page_count_source": "open_library",
+   "first_published_year": 2016,
+   "edition_year": 2016,
+   "publisher": "Grand Central Publishing",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Mental work",
+    "Distraction",
+    "Success",
+    "Cognition",
+    "Mental fatigue",
+    "BUSINESS & ECONOMICS / Time Management",
+    "Labor productivity",
+    "Employee motivation"
+   ],
+   "openlibrary_work_key": "/works/OL17713267W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781455586691-L.jpg",
+   "external_rating_avg": 3.84,
+   "external_rating_count": 191,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780857197689",
+   "title": "The Psychology of Money",
+   "authors": [
+    "Morgan Housel"
+   ],
+   "genres": [
+    "Personal Finance",
+    "Psychology"
+   ],
+   "description": "Timeless lessons on wealth, greed, and happiness doing well with money isn’t necessarily about what you know. It’s about how you behave. And behavior is hard to teach, even to really smart people. How to manage money, invest it, and make business decisions are typically considered to involve a lot of mathematical calculations, where data and formulae tell us exactly what to do. But in the real world, people don’t make financial decisions on a spreadsheet. They make them at the dinner table, or in a meeting room, where personal history, your unique view of the world, ego, pride, marketing, and odd incentives are scrambled together. In the psychology of money, the author shares 19 short stories exploring the strange ways people think about money and teaches you how to make better sense of one of life’s most important matters.",
+   "description_source": "open_library",
+   "page_count": 250,
+   "page_count_source": "open_library",
+   "first_published_year": 2020,
+   "edition_year": 2020,
+   "publisher": "Harriman House",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Money",
+    "Consumption (Economics)",
+    "Quality of life",
+    "Attitude change",
+    "Accounting",
+    "Ethics",
+    "Self-help techniques",
+    "Psychology"
+   ],
+   "openlibrary_work_key": "/works/OL21640039W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780857197689-L.jpg",
+   "external_rating_avg": 3.99,
+   "external_rating_count": 424,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781612680194",
+   "title": "Rich Dad Poor Dad",
+   "authors": [
+    "Robert T. Kiyosaki"
+   ],
+   "genres": [
+    "Personal Finance",
+    "Self-Help"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": 301,
+   "page_count_source": "open_library",
+   "first_published_year": 1990,
+   "edition_year": 1997,
+   "publisher": "Plata Publishing",
+   "language": "en",
+   "format": null,
+   "subjects": [],
+   "openlibrary_work_key": "/works/OL44807085W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781612680194-L.jpg",
+   "external_rating_avg": 4.01,
+   "external_rating_count": 1201,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780307588371",
+   "title": "Gone Girl",
+   "authors": [
+    "Gillian Flynn"
+   ],
+   "genres": [
+    "Thriller",
+    "Mystery",
+    "Psychological Thriller"
+   ],
+   "description": "Gone Girl is a 2012 crime thriller novel by American writer Gillian Flynn. It was published by Crown Publishing Group in June 2012. The novel became popular and made the New York Times Best Seller list. The sense of suspense in the novel comes from whether or not Nick Dunne is involved in the disappearance of his wife Amy.\r\n\r\n\r\n----------\r\nAlso contained in:\r\n[Les apparences suvi de la novella Nous allons mourir ce soir](https://openlibrary.org/works/OL24801746W)",
+   "description_source": "open_library",
+   "page_count": 422,
+   "page_count_source": "open_library",
+   "first_published_year": 2011,
+   "edition_year": 2014,
+   "publisher": "Broadway Books",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "FICTION / Mystery & Detective / General",
+    "Married people",
+    "Crimes against",
+    "Wives",
+    "Husbands",
+    "FICTION / Thrillers",
+    "FICTION / Suspense",
+    "Fiction"
+   ],
+   "openlibrary_work_key": "/works/OL16239762W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780307588371-L.jpg",
+   "external_rating_avg": 3.78,
+   "external_rating_count": 76,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781250301697",
+   "title": "The Silent Patient",
+   "authors": [
+    "Alex Michaelides"
+   ],
+   "genres": [
+    "Thriller",
+    "Psychological Thriller",
+    "Mystery"
+   ],
+   "description": "Alicia Berenson’s life is seemingly perfect. One evening her husband Gabriel returns home late from a fashion shoot, and Alicia shoots him five times in the face, and then never speaks another word. Alicia’s refusal to talk, or give any kind of explanation, turns a domestic tragedy into something far grander, a mystery that captures the public imagination and casts Alicia into notoriety. The price of her art skyrockets, and she, the silent patient, is hidden away from the tabloids and spotlight at the Grove, a secure forensic unit in North London. Theo Faber is a criminal psychotherapist who has waited a long time for the opportunity to work with Alicia. His determination to get her to talk and unravel the mystery of why she shot her husband takes him down a twisting path into his own motivations–a search for the truth that threatens to consume him.",
+   "description_source": "open_library",
+   "page_count": 336,
+   "page_count_source": "open_library",
+   "first_published_year": 2018,
+   "edition_year": 2019,
+   "publisher": "Celadon Books",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "Fiction, psychological",
+    "Fiction, thrillers",
+    "London (england), fiction",
+    "Artists, fiction",
+    "Marriage, fiction",
+    "New York Times bestseller",
+    "Fiction, thrillers, general",
+    "Family violence"
+   ],
+   "openlibrary_work_key": "/works/OL19096402W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781250301697-L.jpg",
+   "external_rating_avg": 4.05,
+   "external_rating_count": 209,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780451524935",
+   "title": "1984",
+   "authors": [
+    "George Orwell"
+   ],
+   "genres": [
+    "Fiction",
+    "Classics",
+    "Dystopian"
+   ],
+   "description": "Nineteen Eighty-Four: A Novel, often referred to as 1984, is a dystopian social science fiction novel by the English novelist George Orwell (the pen name of Eric Arthur Blair). It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime. Thematically, Nineteen Eighty-Four centres on the consequences of totalitarianism, mass surveillance, and repressive regimentation of persons and behaviours within society. Orwell, himself a democratic socialist, modelled the authoritarian government in the novel after Stalinist Russia. More broadly, the novel examines the role of truth and facts within politics and the ways in which they are manipulated.\r\n\r\n----------\t\t\r\nAlso contained in:\t\t\r\n[Novels (Animal Farm / Burmese Days / Clergyman's Daughter / Coming Up for Air / Keep the Aspidistra Flying / Nineteen Eighty-Four)](https://openlibrary.org/works/OL1168045W)\t\t\r\n[Novels (Animal Farm / Nineteen Eighty-Four)](https://openlibrary.org/works/OL1167981W)\r\n[Orwell's Nineteen Eighty-Four: Text, Sources, Criticism](https://openlibrary.org/works/OL1168095W)",
+   "description_source": "open_library",
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": 1949,
+   "edition_year": 1984,
+   "publisher": "Signet Classic",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "futurology",
+    "censorship",
+    "surveillance",
+    "rebels",
+    "sting operations",
+    "historical negationism",
+    "memory holes",
+    "thoughtcrime"
+   ],
+   "openlibrary_work_key": "/works/OL1168083W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780451524935-L.jpg",
+   "external_rating_avg": 4.28,
+   "external_rating_count": 436,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780061120084",
+   "title": "To Kill a Mockingbird",
+   "authors": [
+    "Harper Lee"
+   ],
+   "genres": [
+    "Fiction",
+    "Classics"
+   ],
+   "description": "One of the best-loved stories of all time, To Kill a Mockingbird has been translated into more than 40 languages, sold more than 30 million copies worldwide, served as the basis for an enormously popular motion picture, and voted one of the best novels of the 20th century by librarians across the United States. A gripping, heart-wrenching, and wholly remarkable tale of coming-of-age in a South poisoned by virulent prejudice, it views a world of great beauty and savage inequities through the eyes of a young girl, as her father -- a crusading local lawyer -- risks everything to defend a black man unjustly accused of a terrible crime.\r\n\r\nLawyer Atticus Finch defends Tom Robinson -- a black man charged with the rape of a white girl. Writing through the young eyes of Finch's children Scout and Jem, Harper Lee explores with rich humor and unswerving honesty the irrationality of adult attitudes toward race and class in small-town Alabama during the mid-1930s Depression years. The conscience of a town steeped in prejudice, violence, and hypocrisy is pricked by the stamina and quiet heroism of one man's struggle for justice. But the weight of history will only tolerate so much.\r\n\r\n\r\n----------\r\nAlso contained in:\r\n\r\n - [Best Sellers from Reader's Digest Condensed Books](https://openlibrary.org/works/OL16035425W)",
+   "description_source": "open_library",
+   "page_count": 323,
+   "page_count_source": "open_library",
+   "first_published_year": 1960,
+   "edition_year": 2006,
+   "publisher": "Harper Perennial Modern Classics",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "fiction",
+    "fiction classics",
+    "contemporary fiction",
+    "racial segregation",
+    "mob mentality",
+    "Southern Gothic",
+    "southern life",
+    "racial injustice"
+   ],
+   "openlibrary_work_key": "/works/OL3140822W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780061120084-L.jpg",
+   "external_rating_avg": 4.13,
+   "external_rating_count": 273,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780141439518",
+   "title": "Pride and Prejudice",
+   "authors": [
+    "Jane Austen"
+   ],
+   "genres": [
+    "Fiction",
+    "Classics",
+    "Romance"
+   ],
+   "description": "Pride and Prejudice is an 1813 novel of manners written by Jane Austen. The novel follows the character development of Elizabeth Bennet, the dynamic protagonist of the book who learns about the repercussions of hasty judgments and comes to appreciate the difference between superficial goodness and actual goodness.\r\n\r\nMr. Bennet, owner of the Longbourn estate in Hertfordshire, has five daughters, but his property is entailed and can only be passed to a male heir. His wife also lacks an inheritance, so his family faces becoming very poor upon his death. Thus, it is imperative that at least one of the girls marry well to support the others, which is a motivation that drives the plot.",
+   "description_source": "open_library",
+   "page_count": 435,
+   "page_count_source": "open_library",
+   "first_published_year": 1813,
+   "edition_year": 2003,
+   "publisher": "Penguin Books",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Fiction, Romance, Historical, Regency",
+    "British and Irish fiction (fictional works by one author)",
+    "Brothers and sisters",
+    "Courtship",
+    "Drama",
+    "English fiction",
+    "English literature",
+    "Families"
+   ],
+   "openlibrary_work_key": "/works/OL66554W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780141439518-L.jpg",
+   "external_rating_avg": 4.21,
+   "external_rating_count": 409,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780547928227",
+   "title": "The Hobbit",
+   "authors": [
+    "J.R.R. Tolkien"
+   ],
+   "genres": [
+    "Fantasy",
+    "Fiction",
+    "Classics"
+   ],
+   "description": "The Hobbit is a tale of high adventure, undertaken by a company of dwarves in search of dragon-guarded gold. A reluctant partner in this perilous quest is Bilbo Baggins, a comfort-loving unambitious hobbit, who surprises even himself by his resourcefulness and skill as a burglar.\r\n\r\nEncounters with trolls, goblins, dwarves, elves, and giant spiders, conversations with the dragon, Smaug, and a rather unwilling presence at the Battle of Five Armies are just some of the adventures that befall Bilbo.\r\n\r\nBilbo Baggins has taken his place among the ranks of the immortals of children’s fiction. Written by Professor Tolkien for his children, The Hobbit met with instant critical acclaim when published.",
+   "description_source": "open_library",
+   "page_count": 300,
+   "page_count_source": "open_library",
+   "first_published_year": 1937,
+   "edition_year": 2012,
+   "publisher": "Mariner Books",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Fantasy",
+    "Arkenstone",
+    "Battle of Five Armies",
+    "invisibility",
+    "thrushes",
+    "eagles",
+    "hobbits",
+    "wizards"
+   ],
+   "openlibrary_work_key": "/works/OL27482W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780547928227-L.jpg",
+   "external_rating_avg": 4.29,
+   "external_rating_count": 500,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780590353427",
+   "title": "Harry Potter and the Sorcerer's Stone",
+   "authors": [
+    "J.K. Rowling"
+   ],
+   "genres": [
+    "Fantasy",
+    "Fiction",
+    "Young Adult"
+   ],
+   "description": "Turning the envelope over, his hand trembling, Harry saw a purple wax seal bearing a coat of arms; a lion, an eagle, a badger and a snake surrounding a large letter 'H'.\r\n\r\nHARRY POTTER has never even heard of Hogwarts when the LETTERS start dropping on the doormat at number four, Privet Drive. Addressed in GREEN INK on yellowish parchment with a PURPLE SEAL, they are swiftly confiscated by his GRISLY aunt and uncle. Then, on Harry's eleventh birthday, a great beetle-eyed giant of a man called RUBEUS HAGRID bursts in with some ASTONISHING news: Harry Potter is a wizard, and he has a place at Hogwarts School of Witchcraft and Wizardry. An incredible adventure is about to begin!",
+   "description_source": "open_library",
+   "page_count": 309,
+   "page_count_source": "open_library",
+   "first_published_year": 1997,
+   "edition_year": 1999,
+   "publisher": "Scholastic Inc.",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "series:Harry_Potter",
+    "Ghosts",
+    "Monsters",
+    "Vampires",
+    "Witches",
+    "Challenges and Overcoming Obstacles",
+    "Magic and Supernatural",
+    "Cleverness"
+   ],
+   "openlibrary_work_key": "/works/OL82563W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780590353427-L.jpg",
+   "external_rating_avg": 4.22,
+   "external_rating_count": 1047,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780399590504",
+   "title": "Educated",
+   "authors": [
+    "Tara Westover"
+   ],
+   "genres": [
+    "Memoir",
+    "Non-Fiction"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": 2018,
+   "edition_year": 2019,
+   "publisher": "Blurb",
+   "language": "en",
+   "format": null,
+   "subjects": [],
+   "openlibrary_work_key": "/works/OL38242804W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780399590504-L.jpg",
+   "external_rating_avg": 4.45,
+   "external_rating_count": 22,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780441172719",
+   "title": "Dune",
+   "authors": [
+    "Frank Herbert"
+   ],
+   "genres": [
+    "Science Fiction",
+    "Fiction",
+    "Classics"
+   ],
+   "description": "Set on the desert planet Arrakis, Dune is the story of the boy Paul Atreides, heir to a noble family tasked with ruling an inhospitable world where the only thing of value is the \"spice\" melange, a drug capable of extending life and enhancing consciousness. Coveted across the known universe, melange is a prize worth killing for...\r\n\r\nWhen House Atreides is betrayed, the destruction of Paul's family will set the boy on a journey toward a destiny greater than he could ever have imagined. And as he evolves into the mysterious man known as Muad'Dib, he will bring to fruition humankind's most ancient and unattainable dream.\r\n\r\nA stunning blend of adventure and mysticism, environmentalism and politics, Dune won the first Nebula Award, shared the Hugo Award, and formed the basis of what is undoubtedly the grandest epic in science fiction.",
+   "description_source": "open_library",
+   "page_count": 535,
+   "page_count_source": "open_library",
+   "first_published_year": 1965,
+   "edition_year": 1987,
+   "publisher": "Ace Books",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Dune (Imaginary place)",
+    "Fiction",
+    "Fiction, science fiction, general",
+    "Dune (imaginary place), fiction",
+    "New York Times reviewed",
+    "Science fiction",
+    "Science-fiction",
+    "American literature"
+   ],
+   "openlibrary_work_key": "/works/OL893414W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780441172719-L.jpg",
+   "external_rating_avg": 4.3,
+   "external_rating_count": 448,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780553418026",
+   "title": "The Martian",
+   "authors": [
+    "Andy Weir"
+   ],
+   "genres": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "description": "The Martian is a 2011 science fiction novel written by Andy Weir. It was his debut novel under his own name. It was originally self-published in 2011; Crown Publishing purchased the rights and re-released it in 2014. The story follows an American astronaut, Mark Watney, as he becomes stranded alone on Mars in 2035 and must improvise in order to survive.",
+   "description_source": "open_library",
+   "page_count": 388,
+   "page_count_source": "open_library",
+   "first_published_year": 2011,
+   "edition_year": 2014,
+   "publisher": "Broadway Books",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Science-Fiction",
+    "Science Fiction & Fantasy",
+    "Suspense & Thriller",
+    "Science fiction",
+    "Amerikanisches Englisch",
+    "Astronauts",
+    "Survival",
+    "Fiction"
+   ],
+   "openlibrary_work_key": "/works/OL17091839W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780553418026-L.jpg",
+   "external_rating_avg": 4.4,
+   "external_rating_count": 337,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780593135204",
+   "title": "Project Hail Mary",
+   "authors": [
+    "Andy Weir"
+   ],
+   "genres": [
+    "Science Fiction",
+    "Fiction"
+   ],
+   "description": "Ryland Grace is the sole survivor on a desperate, last-chance mission–and if he fails, humanity and the earth itself will perish. Except that right now, he doesn’t know that. He can’t even remember his own name, let alone the nature of his assignment or how to complete it. All he knows is that he’s been asleep for a very, very long time. And he’s just been awakened to find himself millions of miles from home, with nothing but two corpses for company.\r\n\r\nHis crewmates dead, his memories fuzzily returning, he realizes that an impossible task now confronts him. Alone on this tiny ship that’s been cobbled together by every government and space agency on the planet and hurled into the depths of space, it’s up to him to conquer an extinction-level threat to our species.\r\n\r\nAnd thanks to an unexpected ally, he just might have a chance.\r\n\r\nPart scientific mystery, part dazzling interstellar journey, *Project Hail Mary* is a tale of discovery, speculation, and survival to rival *The Martian*–while taking us to places it never dreamed of going.",
+   "description_source": "open_library",
+   "page_count": 496,
+   "page_count_source": "open_library",
+   "first_published_year": 2021,
+   "edition_year": 2021,
+   "publisher": "Ballantine Books",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "hard science-fiction",
+    "science-fiction",
+    "sci-fi",
+    "hard sci-fi",
+    "nyt:hardcover-fiction=2021-05-23",
+    "New York Times bestseller",
+    "New York Times reviewed",
+    "Fiction, science fiction, action & adventure"
+   ],
+   "openlibrary_work_key": "/works/OL21745884W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780593135204-L.jpg",
+   "external_rating_avg": 4.52,
+   "external_rating_count": 184,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781492032649",
+   "title": "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow",
+   "authors": [
+    "Aurelien Geron"
+   ],
+   "genres": [
+    "Machine Learning",
+    "Programming",
+    "Data Science"
+   ],
+   "description": "Through a series of recent breakthroughs, deep learning has boosted the entire field of machine learning. Now, even programmers who know close to nothing about this technology can use simple, efficient tools to implement programs capable of learning from data.\r\n\r\nThe updated edition of this best-selling book uses concrete examples, minimal theory, and two production-ready Python frameworks--Scikit-Learn and TensorFlow 2--to help you gain an intuitive understanding of the concepts and tools for building intelligent systems. Practitioners will learn a range of techniques that they can quickly put to use on the job. Part 1 employs Scikit-Learn to introduce fundamental machine learning tasks, such as simple linear regression. Part 2, which has been significantly updated, employs Keras and TensorFlow 2 to guide the reader through more advanced machine learning methods using deep neural networks. With exercises in each chapter to help you apply what you've learned, all you need is programming experience to get started.\r\n\r\nNEW FOR THE SECOND EDITION: Updated all code to TensorFlow 2Introduced the high-level Keras APINew and expanded coverage including TensorFlow's Data API, Eager Execution, Estimators API, deploying on Google Cloud ML, handling time series, embeddings and more.",
+   "description_source": "open_library",
+   "page_count": 856,
+   "page_count_source": "open_library",
+   "first_published_year": 2019,
+   "edition_year": 2019,
+   "publisher": "O'Reilly Media",
+   "language": null,
+   "format": "paperback",
+   "subjects": [
+    "machine learning",
+    "Mathematics"
+   ],
+   "openlibrary_work_key": "/works/OL20709638W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781492032649-L.jpg",
+   "external_rating_avg": 3.56,
+   "external_rating_count": 9,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781593279288",
+   "title": "Python Crash Course",
+   "authors": [
+    "Eric Matthes"
+   ],
+   "genres": [
+    "Programming",
+    "Python"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": 544,
+   "page_count_source": "open_library",
+   "first_published_year": 2019,
+   "edition_year": 2019,
+   "publisher": "No Starch Press",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Python (computer program language)",
+    "Criticism and interpretationmurasaki shikibu , 978?-",
+    "Murasaki shikibu , 978?-",
+    "Pl788.4.z5 m87 2011",
+    "Criticism and interpretation紫式部 , b. 978?",
+    "紫式部 , b. 978?"
+   ],
+   "openlibrary_work_key": "/works/OL20155144W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781593279288-L.jpg",
+   "external_rating_avg": 3.56,
+   "external_rating_count": 9,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781449373320",
+   "title": "Designing Data-Intensive Applications",
+   "authors": [
+    "Martin Kleppmann"
+   ],
+   "genres": [
+    "Software Engineering",
+    "Databases",
+    "Programming"
+   ],
+   "description": "Data is at the center of many challenges in system design today. Difficult issues need to be figured out, such as scalability, consistency, reliability, efficiency, and maintainability. In addition, we have an overwhelming variety of tools, including relational databases, NoSQL datastores, stream or batch processors, and message brokers. What are the right choices for your application? How do you make sense of all these buzzwords?\r\n\r\nIn this practical and comprehensive guide, author Martin Kleppmann helps you navigate this diverse landscape by examining the pros and cons of various technologies for processing and storing data. Software keeps changing, but the fundamental principles remain the same. With this book, software engineers and architects will learn how to apply those ideas in practice, and how to make full use of data in modern applications.\r\n\r\nPeer under the hood of the systems you already use, and learn how to use and operate them more effectively. Make informed decisions by identifying the strengths and weaknesses of different tools. Navigate the trade-offs around consistency, scalability, fault tolerance, and complexity. Understand the distributed systems research upon which modern databases are built. Peek behind the scenes of major online services, and learn from their architectures",
+   "description_source": "open_library",
+   "page_count": 624,
+   "page_count_source": "open_library",
+   "first_published_year": 2017,
+   "edition_year": 2017,
+   "publisher": "O'Reilly Media",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Development",
+    "Web site development",
+    "Application software",
+    "Database management",
+    "Databases",
+    "COMPUTERS",
+    "Desktop Applications",
+    "Project Management software"
+   ],
+   "openlibrary_work_key": "/works/OL19293745W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781449373320-L.jpg",
+   "external_rating_avg": 5.0,
+   "external_rating_count": 3,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780262033848",
+   "title": "Introduction to Algorithms",
+   "authors": [
+    "Thomas H. Cormen"
+   ],
+   "genres": [
+    "Computer Science",
+    "Programming"
+   ],
+   "description": "This book provides a comprehensive introduction to the modern study of computer algorithms. It presents many algorithms and covers them in considerable depth, yet makes their design and analysis accessible to all levels of readers. We have tried to keep explanations elementary without sacrificing depth of coverage or mathematical rigor. Each chapter presents an algorithm, a design technique, an application area, or a related topic. Algorithms are described in English and in a \"pseudocode\" designed to be readable by anyone who has done a little programming. The book contains over 260 figrues illustrating how the algorithms work. Since we emphasize efficiency as a design criterion, we include careful analyses of the running times of all our algorithms. The text is intended primarily for use in undergraduate or graduate courses in algorithms or data structures. Because it discusses engineering issues in algorithm design, as well as mathematical aspects, it is equally well suited for self-study by technical professionals. --",
+   "description_source": "open_library",
+   "page_count": 1292,
+   "page_count_source": "open_library",
+   "first_published_year": 1990,
+   "edition_year": 2009,
+   "publisher": "The MIT Press",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Algorithms",
+    "Computer algorithms",
+    "Computer programming",
+    "open_syllabus_project",
+    "Programming",
+    "Algorithmes",
+    "Programmation (Informatique)",
+    "54.10 theoretical informatics"
+   ],
+   "openlibrary_work_key": "/works/OL4781294W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780262033848-L.jpg",
+   "external_rating_avg": 4.17,
+   "external_rating_count": 24,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780743273565",
+   "title": "The Great Gatsby",
+   "authors": [
+    "F. Scott Fitzgerald"
+   ],
+   "genres": [
+    "Fiction",
+    "Classics"
+   ],
+   "description": "Here is a novel, glamorous, ironical, compassionate – a marvelous fusion into unity of the curious incongruities of the life of the period – which reveals a hero like no other – one who could live at no other time and in no other place. But he will live as a character, we surmise, as long as the memory of any reader lasts.\r\n\r\n\"There was something gorgeous about him, some heightened sensitivity to the promises of life.... It was an extraordinary gift for hope, a romantic readiness such as I have never found in any other person and which it is not likely I shall ever find again.\"\r\n\r\nIt is the story of this Jay Gatsby who came so mysteriously to West Egg, of his sumptuous entertainments, and of his love for Daisy Buchanan – a story that ranges from pure lyrical beauty to sheer brutal realism, and is infused with a sense of the strangeness of human circumstance in a heedless universe.\r\n\r\nIt is a magical, living book, blended of irony, romance, and mysticism.\r\n\r\n\\--first edition jacket\r\n\r\n---\r\n\r\nAlso contained in:\r\n\r\n- [The Fitzgerald Reader](https://openlibrary.org/works/OL468551W/The_Fitzgerald_Reader)\r\n- [Three Novels of F. Scott Fitzgerald](https://openlibrary.org/works/OL468557W)",
+   "description_source": "open_library",
+   "page_count": 180,
+   "page_count_source": "open_library",
+   "first_published_year": 1920,
+   "edition_year": 2004,
+   "publisher": "Scribner",
+   "language": "en",
+   "format": "trade paperback",
+   "subjects": [
+    "Married people, fiction",
+    "American fiction (fictional works by one author)",
+    "Fiction, psychological",
+    "Long island (n.y.), fiction",
+    "Fiction",
+    "Rich people",
+    "Mistresses",
+    "Married women"
+   ],
+   "openlibrary_work_key": "/works/OL468431W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780743273565-L.jpg",
+   "external_rating_avg": 3.99,
+   "external_rating_count": 252,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780062457714",
+   "title": "The Subtle Art of Not Giving a F*ck",
+   "authors": [
+    "Mark Manson"
+   ],
+   "genres": [
+    "Self-Help",
+    "Psychology"
+   ],
+   "description": "In this book, blogger and former internet entrepreneur Mark Manson explains in simple, no expletives barred terms how to achieve happiness by caring more about fewer things and not caring at all about more.\r\n     He explains how the metrics we use to define ourselves may be the very things holding us back. By redefining our metrics, questioning ourselves and doubting everything, we may be able to find that we're better off than we think, and thereby become happier people.",
+   "description_source": "open_library",
+   "page_count": 224,
+   "page_count_source": "open_library",
+   "first_published_year": 2016,
+   "edition_year": 2016,
+   "publisher": "HarperOne",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "Self-realization",
+    "Conduct of life",
+    "Conducta de vida",
+    "nyt:advice-how-to-and-miscellaneous=2016-10-02",
+    "New York Times bestseller",
+    "Long Now Manual for Civilization"
+   ],
+   "openlibrary_work_key": "/works/OL17590212W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780062457714-L.jpg",
+   "external_rating_avg": 4.05,
+   "external_rating_count": 724,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780143130727",
+   "title": "Ikigai",
+   "authors": [
+    "Hector Garcia"
+   ],
+   "genres": [
+    "Self-Help",
+    "Philosophy",
+    "Inspirational"
+   ],
+   "description": "\"Bring meaning and joy to all your days with this internationally bestselling guide to the Japanese concept of ikigai -- the happiness of always being busy -- as revealed by the daily habits of the world's longest-living people.\"",
+   "description_source": "open_library",
+   "page_count": 194,
+   "page_count_source": "open_library",
+   "first_published_year": 2016,
+   "edition_year": 2017,
+   "publisher": "Penguin Life",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Ikigai",
+    "Longevity",
+    "Happiness",
+    "Quality of life",
+    "Japan, social conditions",
+    "Self-actualization (psychology)",
+    "Japan, social life and customs",
+    "Large type books"
+   ],
+   "openlibrary_work_key": "/works/OL19714233W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780143130727-L.jpg",
+   "external_rating_avg": 3.95,
+   "external_rating_count": 116,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780812981605",
+   "title": "The Power of Habit",
+   "authors": [
+    "Charles Duhigg"
+   ],
+   "genres": [
+    "Self-Help",
+    "Psychology",
+    "Productivity"
+   ],
+   "description": "A young woman walks into a laboratory. Over the past two years, she has transformed almost every aspect of her life. She has quit smoking, run a marathon, and been promoted at work. The patterns inside her brain, neurologists discover, have fundamentally changed. Marketers at Procter & Gamble study videos of people making their beds. They are desperately trying to figure out how to sell a new product called Febreze, on track to be one of the biggest flops in company history. Suddenly, one of them detects a nearly imperceptible pattern -- and with a slight shift in advertising, Febreze goes on to earn a billion dollars a year. An untested CEO takes over one of the largest companies in America. His first order of business is attacking a single pattern among his employees -- how they approach worker safety -- and soon the firm, Alcoa, becomes the top performer in the Dow Jones. What do all these people have in common? They achieved success by focusing on the patterns that shape every aspect of our lives. They succeeded by transforming habits. In The Power of Habit, award-winning New York Times business reporter Charles Duhigg takes us to the thrilling edge of scientific discoveries that explain why habits exist and how they can be changed. With penetrating intelligence and an ability to distill vast amounts of information into engrossing narratives, Duhigg brings to life a whole new understanding of human nature and its potential for transformation. Along the way we learn why some people and companies struggle to change, despite years of trying, while others seem to remake themselves overnight. We visit laboratories where neuroscientists explore how habits work and where, exactly, they reside in our brains. We discover how the right habits were crucial to the success of Olympic swimmer Michael Phelps, Starbucks CEO Howard Schultz, and civil-rights hero Martin Luther King, Jr. We go inside Procter & Gamble, Target superstores, Rick Warrens Saddleback Church, NFL locker rooms, and the nations largest hospitals and see how implementing so-called keystone habits can earn billions and mean the difference between failure and success, life and death. At its core, The Power of Habit contains an exhilarating argument: The key to exercising regularly, losing weight, raising exceptional children, becoming more productive, building revolutionary companies and social movements, and achieving success is understanding how habits work. Habits arent destiny. As Charles Duhigg shows, by harnessing this new science, we can transform our businesses, our communities, and our lives. - Publisher.",
+   "description_source": "open_library",
+   "page_count": 371,
+   "page_count_source": "open_library",
+   "first_published_year": 2012,
+   "edition_year": 2012,
+   "publisher": "Random House",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Social aspects",
+    "Habit",
+    "Change (Psychology)",
+    "New York Times bestseller",
+    "nyt:combined_print_nonfiction=2012-03-03",
+    "Popular Works",
+    "Habits",
+    "Psychological Adaptation"
+   ],
+   "openlibrary_work_key": "/works/OL16015154W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780812981605-L.jpg",
+   "external_rating_avg": 4.03,
+   "external_rating_count": 148,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780807014271",
+   "title": "Man's Search for Meaning",
+   "authors": [
+    "Viktor E. Frankl"
+   ],
+   "genres": [
+    "Psychology",
+    "Philosophy",
+    "Memoir"
+   ],
+   "description": "Psychiatrist Viktor Frankl's memoir has riveted generations of readers with its descriptions of life in Nazi death camps and its lessons for spiritual survival. Based on his own experience and the stories of his patients, Frankl argues that we cannot avoid suffering but we can choose how to cope with it, find meaning in it, and move forward with renewed purpose. At the heart of his theory, known as logotherapy, is a conviction that the primary human drive is not pleasure but the pursuit of what we find meaningful. Man's Search for Meaning has become one of the most influential books in America; it continues to inspire us all to find significance in the very act of living.",
+   "description_source": "open_library",
+   "page_count": 165,
+   "page_count_source": "open_library",
+   "first_published_year": 1946,
+   "edition_year": 2006,
+   "publisher": "Beacon Press",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Nazi concentration camps",
+    "psychotherapy",
+    "meaning of life",
+    "freedom of choice",
+    "kapo",
+    "Konzentrationslager",
+    "Erlebnisbericht",
+    "spirituality"
+   ],
+   "openlibrary_work_key": "/works/OL1268413W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780807014271-L.jpg",
+   "external_rating_avg": 4.3,
+   "external_rating_count": 230,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780156012195",
+   "title": "The Little Prince",
+   "authors": [
+    "Antoine de Saint-Exupery"
+   ],
+   "genres": [
+    "Fiction",
+    "Classics",
+    "Inspirational"
+   ],
+   "description": "*Le Petit Prince* est une œuvre de langue française, la plus connue d'Antoine de Saint-Exupéry. Publié en 1943 à New York simultanément à sa traduction anglaise, c'est une œuvre poétique et philosophique sous l'apparence d'un conte pour enfants.\r\n\r\nTraduit en quatre cent cinquante-sept langues et dialectes, *Le Petit Prince* est le deuxième ouvrage le plus traduit au monde après la Bible.\r\n\r\nLe langage, simple et dépouillé, parce qu'il est destiné à être compris par des enfants, est en réalité pour le narrateur le véhicule privilégié d'une conception symbolique de la vie. Chaque chapitre relate une rencontre du petit prince qui laisse celui-ci perplexe, par rapport aux comportements absurdes des « grandes personnes ». Ces différentes rencontres peuvent être lues comme une allégorie.\r\n\r\nLes aquarelles font partie du texte et participent à cette pureté du langage : dépouillement et profondeur sont les qualités maîtresses de l'œuvre.\r\n\r\nOn peut y lire une invitation de l'auteur à retrouver l'enfant en soi, car « toutes les grandes personnes ont d'abord été des enfants. (Mais peu d'entre elles s'en souviennent.) ». L'ouvrage est dédié à Léon Werth, mais « quand il était petit garçon ».\r\n\r\n(Wikipedia)",
+   "description_source": "open_library",
+   "page_count": 96,
+   "page_count_source": "open_library",
+   "first_published_year": 1943,
+   "edition_year": 2000,
+   "publisher": "Harcourt",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "adventure",
+    "fantasy",
+    "friendship",
+    "love",
+    "childhood",
+    "loss",
+    "loneliness",
+    "Children's fiction"
+   ],
+   "openlibrary_work_key": "/works/OL10263W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780156012195-L.jpg",
+   "external_rating_avg": 4.37,
+   "external_rating_count": 253,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781594631931",
+   "title": "The Kite Runner",
+   "authors": [
+    "Khaled Hosseini"
+   ],
+   "genres": [
+    "Fiction",
+    "Literary Fiction"
+   ],
+   "description": "The unforgettable, heartbreaking story of the unlikely friendship between a wealthy boy and the son of his father’s servant, The Kite Runner is a beautifully crafted novel set in a country that is in the process of being destroyed. It is about the power of reading, the price of betrayal, and the possibility of redemption; and an exploration of the power of fathers over sons—their love, their sacrifices, their lies.\r\n\r\nA sweeping story of family, love, and friendship told against the devastating backdrop of the history of Afghanistan over the last thirty years, The Kite Runner is an unusual and powerful novel that has become a beloved, one-of-a-kind classic.\r\n([source][1])\r\n\r\n\r\n  [1]: https://khaledhosseini.com/books/the-kite-runner/",
+   "description_source": "open_library",
+   "page_count": 400,
+   "page_count_source": "open_library",
+   "first_published_year": 2003,
+   "edition_year": 2013,
+   "publisher": "Riverhead Books",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "New York Times bestseller",
+    "nyt:trade_fiction_paperback=2008-10-26",
+    "Male friendship",
+    "Betrayal",
+    "Fiction",
+    "Social classes",
+    "Boys",
+    "nyt:trade_fiction_paperback=2009-09-26"
+   ],
+   "openlibrary_work_key": "/works/OL5781992W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781594631931-L.jpg",
+   "external_rating_avg": 4.11,
+   "external_rating_count": 148,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780812979657",
+   "title": "The God of Small Things",
+   "authors": [
+    "Arundhati Roy"
+   ],
+   "genres": [
+    "Fiction",
+    "Literary Fiction",
+    "Indian Literature"
+   ],
+   "description": "The God of Small Things is the debut novel of Indian writer Arundhati Roy. It is a story about the childhood experiences of fraternal twins whose lives are destroyed by the \"Love Laws\" that lay down \"who should be loved, and how. And how much.\" The book explores how the small things affect people's behavior and their lives. The book also reflects its irony against casteism, which is a major discrimination that prevails in India. It won the Booker Prize in 1997.",
+   "description_source": "open_library",
+   "page_count": 333,
+   "page_count_source": "open_library",
+   "first_published_year": 1997,
+   "edition_year": 2008,
+   "publisher": "Random House Trade Paperbacks",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Literary Fiction",
+    "Women's Fiction",
+    "dalit",
+    "Catholicism",
+    "fraternal twins",
+    "Psychological fiction",
+    "Domestic fiction",
+    "award:man_booker_prize=1997"
+   ],
+   "openlibrary_work_key": "/works/OL1052133W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780812979657-L.jpg",
+   "external_rating_avg": 3.81,
+   "external_rating_count": 78,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780812976533",
+   "title": "Midnight's Children",
+   "authors": [
+    "Salman Rushdie"
+   ],
+   "genres": [
+    "Fiction",
+    "Literary Fiction",
+    "Indian Literature"
+   ],
+   "description": "Midnight's Children is a 1981 novel by author Salman Rushdie. It portrays India's transition from British colonial rule to independence and the partition of India. It is considered an example of postcolonial, postmodern, and magical realist literature. The story is told by its chief protagonist, Saleem Sinai, and is set in the context of actual historical events. The style of preserving history with fictional accounts is self-reflexive.\r\n\r\nMidnight's Children won both the Booker Prize and the James Tait Black Memorial Prize in 1981. It was awarded the \"Booker of Bookers\" Prize and the best all-time prize winners in 1993 and 2008 to celebrate the Booker Prize 25th and 40th anniversary.In 2003, the novel was listed on the BBC's The Big Read poll of the UK's \"best-loved novels\". It was also added to the list of Great Books of the 20th Century, published by Penguin Books.\r\n\r\n\r\n----------\r\nContains:\r\n[Midnight's Children (2/2)](https://openlibrary.org/works/OL24710315W)",
+   "description_source": "open_library",
+   "page_count": 533,
+   "page_count_source": "open_library",
+   "first_published_year": 1981,
+   "edition_year": 2006,
+   "publisher": "Random House Trade Paperbacks",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "literary fiction",
+    "telepathy",
+    "epic literature",
+    "epic fiction",
+    "Novel",
+    "Rushdie, Salman - Prose & Criticism",
+    "Fiction",
+    "Spanish: Adult Fiction"
+   ],
+   "openlibrary_work_key": "/works/OL457179W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780812976533-L.jpg",
+   "external_rating_avg": 3.89,
+   "external_rating_count": 38,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781416562603",
+   "title": "The White Tiger",
+   "authors": [
+    "Aravind Adiga"
+   ],
+   "genres": [
+    "Fiction",
+    "Literary Fiction",
+    "Indian Literature"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": null,
+   "edition_year": null,
+   "publisher": null,
+   "language": null,
+   "format": "paperback",
+   "subjects": [
+    "nyt:trade-fiction-paperback=2008-11-02",
+    "New York Times bestseller",
+    "New York Times reviewed",
+    "Fiction, mystery & detective, general",
+    "India, fiction"
+   ],
+   "openlibrary_work_key": "/works/OL17775035W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781416562603-L.jpg",
+   "external_rating_avg": 3.0,
+   "external_rating_count": 2,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9788173711466",
+   "title": "Wings of Fire",
+   "authors": [
+    "A.P.J. Abdul Kalam"
+   ],
+   "genres": [
+    "Memoir",
+    "Inspirational",
+    "Non-Fiction"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": 222,
+   "page_count_source": "open_library",
+   "first_published_year": 1999,
+   "edition_year": 2002,
+   "publisher": "Universities Press",
+   "language": "en",
+   "format": null,
+   "subjects": [],
+   "openlibrary_work_key": "/works/OL42986923W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9788173711466-L.jpg",
+   "external_rating_avg": 4.26,
+   "external_rating_count": 104,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780307454546",
+   "title": "The Girl with the Dragon Tattoo",
+   "authors": [
+    "Stieg Larsson"
+   ],
+   "genres": [
+    "Thriller",
+    "Mystery",
+    "Crime"
+   ],
+   "description": "Mikael Blomkvist, ekonomireporter, döms till fängelse för förtal av finansmannen Wennerström, och beslutar sig för att ta time out från sitt jobb på tidskriften Millennium.\r\nI samma veva får han ett ovanligt uppdrag. Henrik Vanger, tidigare en av landets främsta industriledare, vill att Blomkvist ska skriva släkten Vangers historia. Men det visar sig snart bara vara en täckmantel för Blomkvists verkliga uppgift: att ta reda på vad som hänt Vangers unga släkting Harriet, som varit spårlöst försvunnen i snart fyrtio år. Henrik Vanger får årligen på sin födelsedag en påminnelse per post som gör att han inte kan släppa tanken på att hon fortfarande finns i livet. \r\n\r\nUppdraget ser till en början hopplöst ut och han behöver hjälp med research. Han får tips om Lisbeth Salander, en ung strulig tjej, tatuerad och piercad, men också professionell hacker och med unika egenskaper som gör henne till en oslagbar researcher. \r\nTillsammans är Blomkvist och Salander ett omaka par men utgör ett oslagbart team, och de kommer allt närmare lösningen på gåtan Harriet. Spänningen stiger när de börjar misstänka att en person i Henrik Vangers närmaste krets är inblandad i en rad sadistiska brott. \r\nStieg Larssons kriminaldebut är av ett enastående slag. Han skriver med en stark känsla för samtiden och det är effektivt, träffsäkert och drivet. Dessutom uppvisar han en mycket stor bredd förenad med djup i sina faktakunskaper. Han besitter en fantastisk förmåga att skapa komplicerade intriger som han knyter ihop med briljans.\r\n\r\nDet här är första boken av tre böcker om Mikael Blomkvist och Lisbeth Salander.",
+   "description_source": "open_library",
+   "page_count": 672,
+   "page_count_source": "open_library",
+   "first_published_year": 2005,
+   "edition_year": 2009,
+   "publisher": "Vintage Crime/Black Lizard",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Fiction: Literature",
+    "Novels",
+    "Misogyny",
+    "rape",
+    "Book of Leviticus",
+    "child sexual abuse",
+    "finance",
+    "secrecy"
+   ],
+   "openlibrary_work_key": "/works/OL5784622W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780307454546-L.jpg",
+   "external_rating_avg": 4.11,
+   "external_rating_count": 107,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780307474278",
+   "title": "The Da Vinci Code",
+   "authors": [
+    "Dan Brown"
+   ],
+   "genres": [
+    "Thriller",
+    "Mystery"
+   ],
+   "description": "The Da Vinci Code is a 2003 mystery thriller novel by Dan Brown. It is Brown's second novel to include the character Robert Langdon: the first was his 2000 novel Angels & Demons. The Da Vinci Code follows \"symbologist\" Robert Langdon and cryptologist Sophie Neveu after a murder in the Louvre Museum in Paris causes them to become involved in a battle between the Priory of Sion and Opus Dei over the possibility of Jesus Christ and Mary Magdalene having had a child together.\r\n\r\n\r\n----------\r\nSee also:\r\n[The Da Vinci Code [1/2]](https://openlibrary.org/works/OL24164822W)\r\n[The Da Vinci Code [2/2]](https://openlibrary.org/works/OL24210437W)\r\n\r\n\t\t\r\nContained in:\r\n[Angels & Demons / The Da Vinci Code](https://openlibrary.org/works/OL15290520W)",
+   "description_source": "open_library",
+   "page_count": 608,
+   "page_count_source": "open_library",
+   "first_published_year": 2003,
+   "edition_year": 2009,
+   "publisher": "Anchor",
+   "language": null,
+   "format": "mass market paperback",
+   "subjects": [
+    "Suspense & Thriller",
+    "Spiritual Fiction",
+    "hieros gamos",
+    "Priory of Sion",
+    "Holy Grail",
+    "Vitruvian Man",
+    "Fibonacci sequence",
+    "safe deposit boxes"
+   ],
+   "openlibrary_work_key": "/works/OL76837W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780307474278-L.jpg",
+   "external_rating_avg": 3.92,
+   "external_rating_count": 194,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780062073488",
+   "title": "And Then There Were None",
+   "authors": [
+    "Agatha Christie"
+   ],
+   "genres": [
+    "Mystery",
+    "Classics",
+    "Crime"
+   ],
+   "description": "And Then There Were None is a mystery novel by the English writer Agatha Christie, described by her as the most difficult of her books to write. It was first published in the United Kingdom by the Collins Crime Club on 6 November 1939, as Ten Little Niggers, after the children's counting rhyme and minstrel song, which serves as a major element of the plot. A US edition was released in January 1940 with the title And Then There Were None, which is taken from the last five words of the song. All successive American reprints and adaptations use that title, except for the Pocket Books paperbacks published between 1964 and 1986, which appeared under the title Ten Little Indians. UK editions continued to use the original title until the current definitive title appeared with a reprint of the 1963 Fontana Paperback in 1985.\r\n\r\nIn 1990 Crime Writers' Association ranked And Then There Were None 19th in their The Top 100 Crime Novels of All Time list. In 1995 in a similar list Mystery Writers of America ranked the novel 10th. In September 2015, to mark her 125th birthday, And Then There Were None was named the \"World's Favourite Christie\" in a vote sponsored by the author's estate. In the \"Binge!\" article of Entertainment Weekly Issue #1343-44 (26 December 2014–3 January 2015), the writers picked And Then There Were None as an \"EW favorite\" on the list of the \"Nine Great Christie Novels\".\r\n\r\n---\r\n\r\nAlso contained in:\r\n\r\n- [Five Complete Novels of Murder and Detection](https://openlibrary.org/works/OL471812W)\r\n- [Masterpieces of Murder](https://openlibrary.org/works/OL471974W)\r\n- [Novels](https://openlibrary.org/works/OL24261345W)\r\n- [Oeuvres complètes d'Agatha Christie: Volume VII](https://openlibrary.org/works/OL24710553W)\r\n- [Works](https://openlibrary.org/works/OL17306242W)",
+   "description_source": "open_library",
+   "page_count": 300,
+   "page_count_source": "open_library",
+   "first_published_year": 1939,
+   "edition_year": 2011,
+   "publisher": "Harper",
+   "language": "en",
+   "format": "mass market paperback",
+   "subjects": [
+    "Roman policier",
+    "French language materials",
+    "Français (langue)",
+    "Lectures et morceaux choisis",
+    "cyanide poisoning",
+    "chloral hydrate",
+    "potassium cyanide",
+    "Scotland Yard"
+   ],
+   "openlibrary_work_key": "/works/OL471565W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780062073488-L.jpg",
+   "external_rating_avg": 4.28,
+   "external_rating_count": 181,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780262035613",
+   "title": "Deep Learning",
+   "authors": [
+    "Ian Goodfellow"
+   ],
+   "genres": [
+    "Machine Learning",
+    "Computer Science"
+   ],
+   "description": "\"Deep learning is a form of machine learning that enables computers to learn from experience and understand the world in terms of a hierarchy of concepts. Because the computer gathers knowledge from experience, there is no need for a human computer operator to formally specify all the knowledge that the computer needs. The hierarchy of concepts allows the computer to learn complicated concepts by building them out of simpler ones; a graph of these hierarchies would be many layers deep. This book introduces a broad range of topics in deep learning. The text offers mathematical and conceptual background, covering relevant concepts in linear algebra, probability theory and information theory, numerical computation, and machine learning. It describes deep learning techniques used by practitioners in industry, including deep feedforward networks, regularization, optimization algorithms, convolutional networks, sequence modeling, and practical methodology; and it surveys such applications as natural language processing, speech recognition, computer vision, online recommendation systems, bioinformatics, and videogames. Finally, the book offers research perspectives, covering such theoretical topics as linear factor models, autoencoders, representation learning, structured probabilistic models, Monte Carlo methods, the partition function, approximate inference, and deep generative models. Deep Learning can be used by undergraduate or graduate students planning careers in either industry or research, and by software engineers who want to begin using deep learning in their products or platforms. A website offers supplementary material for both readers and instructors\"--",
+   "description_source": "open_library",
+   "page_count": 800,
+   "page_count_source": "open_library",
+   "first_published_year": 2016,
+   "edition_year": 2017,
+   "publisher": "MIT Press",
+   "language": null,
+   "format": "hardcover",
+   "subjects": [
+    "Machine learning",
+    "Apprentissage automatique",
+    "Computers and IT",
+    "Maschinelles Lernen",
+    "Deep learning (Machine learning)",
+    "Electronic books",
+    "COMPUTERS / Artificial Intelligence / General",
+    "Kunstmatige intelligentie"
+   ],
+   "openlibrary_work_key": "/works/OL17801809W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780262035613-L.jpg",
+   "external_rating_avg": 4.0,
+   "external_rating_count": 7,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781593279929",
+   "title": "Automate the Boring Stuff with Python",
+   "authors": [
+    "Al Sweigart"
+   ],
+   "genres": [
+    "Programming",
+    "Python"
+   ],
+   "description": "If you've ever spent hours renaming files or updating hundreds of spreadsheet cells, you know how tedious tasks like these can be. But what if you could have your computer do them for you?\r\nIn Automate the Boring Stuff with Python, you'll learn how to use Python to write programs that do in minutes what would take you hours to do by hand—no prior programming experience required. Once you've mastered the basics of programming, you'll create Python programs that effortlessly perform useful and impressive feats of automation to:\r\n\r\n- Search for text in a file or across multiple files\r\n- Create, update, move, and rename files and folders\r\n- Search the Web and download online content\r\n- Update and format data in Excel spreadsheets of any size\r\n- Split, merge, watermark, and encrypt PDFs\r\n- Send reminder emails and text notifications\r\n- Fill out online forms\r\n\r\nStep-by-step instructions walk you through each program, and practice projects at the end of each chapter challenge you to improve those programs and use your newfound skills to automate similar tasks.\r\nDon't spend your time doing work a well-trained monkey could do. Even if you've never written a line of code, you can make your computer do the grunt work. Learn how in Automate the Boring Stuff with Python.[  (Source)][1]\r\n\r\n\r\n  [1]: http://www.amazon.com/Automate-Boring-Stuff-Python-Programming/dp/1593275994",
+   "description_source": "open_library",
+   "page_count": 552,
+   "page_count_source": "open_library",
+   "first_published_year": 2015,
+   "edition_year": 2020,
+   "publisher": "No Starch Press",
+   "language": null,
+   "format": "paperback",
+   "subjects": [
+    "Python (Computer program language)",
+    "Computer programming",
+    "Programming Languages",
+    "COMPUTERS",
+    "General",
+    "Python (computer program language)",
+    "Mathematics",
+    "Python"
+   ],
+   "openlibrary_work_key": "/works/OL17192141W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781593279929-L.jpg",
+   "external_rating_avg": 4.4,
+   "external_rating_count": 15,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780307887894",
+   "title": "The Lean Startup",
+   "authors": [
+    "Eric Ries"
+   ],
+   "genres": [
+    "Business",
+    "Entrepreneurship"
+   ],
+   "description": "\"Most startups are built to fail. But those failures, according to entrepreneur Eric Ries, are preventable. Startups don't fail because of bad execution, or missed deadlines, or blown budgets. They fail because they are building something nobody wants. Whether they arise from someone's garage or are created within a mature Fortune 500 organization, new ventures, by definition, are designed to create new products or services under conditions of extreme uncertainly. Their primary mission is to find out what customers ultimately will buy. One of the central premises of The Lean Startup movement is what Ries calls \"validated learning\" about the customer. It is a way of getting continuous feedback from customers so that the company can shift directions or alter its plans inch by inch, minute by minute. Rather than creating an elaborate business plan and a product-centric approach, Lean Startup prizes testing your vision continuously with your customers and making constant adjustments\"--",
+   "description_source": "open_library",
+   "page_count": 336,
+   "page_count_source": "open_library",
+   "first_published_year": 2011,
+   "edition_year": 2011,
+   "publisher": "Crown Business",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "New York Times bestseller",
+    "New business enterprises",
+    "Organizational effectiveness",
+    "Consumers' preferences",
+    "nyt:hardcover_business_books=2012-02-25",
+    "Consumer behavior",
+    "Entrepreneurship",
+    "Long Now Manual for Civilization"
+   ],
+   "openlibrary_work_key": "/works/OL16086010W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780307887894-L.jpg",
+   "external_rating_avg": 3.91,
+   "external_rating_count": 76,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780804139298",
+   "title": "Zero to One",
+   "authors": [
+    "Peter Thiel"
+   ],
+   "genres": [
+    "Business",
+    "Entrepreneurship"
+   ],
+   "description": "If you want to build a better future, you must believe in secrets.\r\n\r\nThe great secret of our time is that there are still uncharted frontiers to explore and new inventions to create. In Zero to One , legendary entrepreneur and investor Peter Thiel shows how we can find singular ways to create those new things. \r\n\r\nThiel begins with the contrarian premise that we live in an age of technological stagnation, even if we’re too distracted by shiny mobile devices to notice. Information technology has improved rapidly, but there is no reason why progress should be limited to computers or Silicon Valley. Progress can be achieved in any industry or area of business. It comes from the most important skill that every leader must master: learning to think for yourself.\r\n\r\nDoing what someone else already knows how to do takes the world from 1 to n, adding more of something familiar. But when you do something new, you go from 0 to 1. The next Bill Gates will not build an operating system. The next Larry Page or Sergey Brin won’t make a search engine. Tomorrow’s champions will not win by competing ruthlessly in today’s marketplace. They will escape competition altogether, because their businesses will be unique. \r\n\r\nZero to One presents at once an optimistic view of the future of progress in America and a new way of thinking about innovation: it starts by learning to ask the questions that lead you to find value in unexpected places.",
+   "description_source": "open_library",
+   "page_count": 195,
+   "page_count_source": "open_library",
+   "first_published_year": 2001,
+   "edition_year": 2014,
+   "publisher": "Crown Business",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "Diffusion of innovations",
+    "New business enterprises",
+    "New products",
+    "Entrepreneurship",
+    "BUSINESS & ECONOMICS / Entrepreneurship",
+    "BUSINESS & ECONOMICS / Small Business",
+    "POLITICAL SCIENCE / Public Policy / Economic Policy",
+    "BUSINESS & ECONOMICS"
+   ],
+   "openlibrary_work_key": "/works/OL17078706W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780804139298-L.jpg",
+   "external_rating_avg": 4.08,
+   "external_rating_count": 103,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780060555665",
+   "title": "The Intelligent Investor",
+   "authors": [
+    "Benjamin Graham"
+   ],
+   "genres": [
+    "Personal Finance",
+    "Investing",
+    "Economics"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": 1949,
+   "edition_year": 1949,
+   "publisher": "Harper & Brothers",
+   "language": null,
+   "format": null,
+   "subjects": [],
+   "openlibrary_work_key": "/works/OL27731104W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780060555665-L.jpg",
+   "external_rating_avg": 4.12,
+   "external_rating_count": 143,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780553380163",
+   "title": "A Brief History of Time",
+   "authors": [
+    "Stephen Hawking"
+   ],
+   "genres": [
+    "Science",
+    "Physics",
+    "Non-Fiction"
+   ],
+   "description": "Stephen Hawking's ‘A Brief History of Time* has become an international publishing phenomenon. Translated into thirty languages, it has sold over ten million copies worldwide and lives on as a science book that continues to captivate and inspire new readers each year. When it was first published in 1988 the ideas discussed in it were at the cutting edge of what was then known about the universe. In the intervening twenty years there have been extraordinary advances in the technology of observing both the micro- and macro-cosmic world. Indeed, during that time cosmology and the theoretical sciences have entered a new golden age . Professor Hawking is one of the major scientists and thinkers to have contributed to this renaissance.",
+   "description_source": "open_library",
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": 1988,
+   "edition_year": 1998,
+   "publisher": "andom House Publishing Group",
+   "language": null,
+   "format": null,
+   "subjects": [
+    "Cosmologie",
+    "Temps (durée)",
+    "Espace-temps",
+    "Vulgarisation scientifique",
+    "Univers",
+    "Espace extraterrestre",
+    "Expansion",
+    "Cosmology"
+   ],
+   "openlibrary_work_key": "/works/OL1892617W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780553380163-L.jpg",
+   "external_rating_avg": 4.14,
+   "external_rating_count": 237,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780345539434",
+   "title": "Cosmos",
+   "authors": [
+    "Carl Sagan"
+   ],
+   "genres": [
+    "Science",
+    "Astronomy",
+    "Non-Fiction"
+   ],
+   "description": "This book is about science in its broadest human context, how science and civilization grew up together. It is the story of our long journey of discovery and the forces and individuals who helped to shape modern science, including Democritus, Hypatia, Kepler, Newton, Huygens, Champollion, Lowell and Humason. The book also explores spacecraft missions of discovery of the nearby planets, the research in the Library of ancient Alexandria, the human brain, Egyptian hieroglyphics, the origin of life, the death of the Sun, the evolution of galaxies and the origins of matter, suns and worlds. The author retraces the fifteen billion years of cosmic evolution that have transformed matter into life and consciousness, enabling the cosmos to wonder about itself. He considers the latest findings on life elsewhere and how we might communicate with the beings of other worlds. ~ WorldCat.org",
+   "description_source": "open_library",
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": 1980,
+   "edition_year": 2013,
+   "publisher": "Ballantine Books",
+   "language": null,
+   "format": null,
+   "subjects": [
+    "Ouvrages de vulgarisation",
+    "Astronomie",
+    "Astronomy",
+    "Popular works",
+    "History",
+    "Science",
+    "Cosmology",
+    "Planetary science"
+   ],
+   "openlibrary_work_key": "/works/OL15829966W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780345539434-L.jpg",
+   "external_rating_avg": 4.58,
+   "external_rating_count": 24,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780198788607",
+   "title": "The Selfish Gene",
+   "authors": [
+    "Richard Dawkins"
+   ],
+   "genres": [
+    "Science",
+    "Biology",
+    "Non-Fiction"
+   ],
+   "description": "As influential today as when it was first published, The Selfish Gene has become a classic exposition of evolutionary thought. Professor Dawkins articulates a gene's eye view of evolution - a view giving centre stage to these persistent units of information, and in which organisms can be seen as vehicles for their replication. This imaginative, powerful, and stylistically brilliant work not only brought the insights of Neo-Darwinism to a wide audience, but galvanized the biology\r\ncommunity, generating much debate and stimulating whole new areas of research. Forty years later, its insights remain as relevant today as on the day it was published.\r\n\r\nThis 40th anniversary edition includes a new epilogue from the author discussing the continuing relevance of these ideas in evolutionary biology today, as well as the original prefaces and foreword, and extracts from early reviews.\r\n\r\nOxford Landmark Science books are 'must-read' classics of modern science writing which have crystallized big ideas, and shaped the way we think.",
+   "description_source": "open_library",
+   "page_count": 496,
+   "page_count_source": "open_library",
+   "first_published_year": 1976,
+   "edition_year": 2016,
+   "publisher": "Oxford University Press",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Evolution (Biology)",
+    "Genetics",
+    "Sociobiology",
+    "Behavior genetics",
+    "Genetica",
+    "Etologia Animal",
+    "Genetics.\u001e 0",
+    "Long Now Manual for Civilization"
+   ],
+   "openlibrary_work_key": "/works/OL1966488W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780198788607-L.jpg",
+   "external_rating_avg": 4.35,
+   "external_rating_count": 75,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781451648539",
+   "title": "Steve Jobs",
+   "authors": [
+    "Walter Isaacson"
+   ],
+   "genres": [
+    "Biography",
+    "Business",
+    "Technology"
+   ],
+   "description": "Based on more than forty interviews with Jobs conducted over two years -- as well as interviews with more than a hundred family members, friends, adversaries, competitors, and colleagues -- Walter Isaacson has written a riveting story of the roller-coaster life and searingly intense personality of a creative entrepreneur whose passion for perfection and ferocious drive revolutionized six industries: personal computers, animated movies, music, phones, tablet computing, and digital publishing. At a time when America is seeking ways to sustain its innovative edge, and when societies around the world are trying to build digital-age economies, Jobs stands as the ultimate icon of inventiveness and applied imagination. He knew that the best way to create value in the twenty-first century was to connect creativity with technology. He built a company where leaps of the imagination were combined with remarkable feats of engineering. Although Jobs cooperated with this book, he asked for no control over what was written nor even the right to read it before it was published. He put nothing off-limits. He encouraged the people he knew to speak honestly. And Jobs speaks candidly, sometimes brutally so, about the people he worked with and competed against. His friends, foes, and colleagues provide an unvarnished view of the passions, perfectionism, obsessions, artistry, devilry, and compulsion for control that shaped his approach to business and the innovative products that resulted. Driven by demons, Jobs could drive those around him to fury and despair. But his personality and products were interrelated, just as Apple's hardware and software tended to be, as if part of an integrated system. His tale is instructive and cautionary, filled with lessons about innovation, character, leadership, and values. - Publisher.",
+   "description_source": "open_library",
+   "page_count": 630,
+   "page_count_source": "open_library",
+   "first_published_year": 2011,
+   "edition_year": 2011,
+   "publisher": "Simon & Schuster",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "TECHNOLOGY & ENGINEERING / General",
+    "History",
+    "Inc Apple Computer",
+    "BIOGRAPHY & AUTOBIOGRAPHY / Business",
+    "Computer engineers",
+    "Businesspeople",
+    "Biography",
+    "BUSINESS & ECONOMICS / General"
+   ],
+   "openlibrary_work_key": "/works/OL16085155W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781451648539-L.jpg",
+   "external_rating_avg": 4.18,
+   "external_rating_count": 174,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781524763138",
+   "title": "Becoming",
+   "authors": [
+    "Michelle Obama"
+   ],
+   "genres": [
+    "Memoir",
+    "Biography",
+    "Non-Fiction"
+   ],
+   "description": "IN A LIFE filled with meaning and accomplishment, Michelle Obama has emerged as one of the most iconic and compelling women of our era. As First Lady of the United States of America—the first African American to serve in that role—she helped create the most welcoming and inclusive White House in history, while also establishing herself as a powerful advocate for women and girls in the U.S. and around the world, dramatically changing the ways that families pursue healthier and more active lives, and standing with her husband as he led America through some of its most harrowing moments. Along the way, she showed us a few dance moves, crushed Carpool Karaoke, and raised two down-to-earth daughters under an unforgiving media glare.\r\n\r\nIn her memoir, a work of deep reflection and mesmerizing storytelling, Michelle Obama invites readers into her world, chronicling the experiences that have shaped her—from her childhood on the South Side of Chicago to her years as an executive balancing the demands of motherhood and work, to her time spent at the world’s most famous address. With unerring honesty and lively wit, she describes her triumphs and her disappointments, both public and private, telling her full story as she has lived it—in her own words and on her own terms. Warm, wise, and revelatory, Becoming is the deeply personal reckoning of a woman of soul and substance who has steadily defied expectations—and whose story inspires us to do the same.\r\n([source][1])\r\n\r\n\r\n  [1]: https://becomingmichelleobama.com/",
+   "description_source": "open_library",
+   "page_count": 448,
+   "page_count_source": "open_library",
+   "first_published_year": 2018,
+   "edition_year": 2018,
+   "publisher": "Crown Publishing Group",
+   "language": null,
+   "format": null,
+   "subjects": [
+    "Presidentes",
+    "Legislators' spouses",
+    "Abogadas afronorteamericanas",
+    "Presidents' spouses",
+    "Esposas",
+    "African American women lawyers",
+    "Biography",
+    "Biografía"
+   ],
+   "openlibrary_work_key": "/works/OL17930367W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781524763138-L.jpg",
+   "external_rating_avg": 4.38,
+   "external_rating_count": 13,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780375842207",
+   "title": "The Book Thief",
+   "authors": [
+    "Markus Zusak"
+   ],
+   "genres": [
+    "Fiction",
+    "Historical Fiction",
+    "Young Adult"
+   ],
+   "description": "The extraordinary, beloved novel about the ability of books to feed the soul even in the darkest of times.\r\n\r\nWhen Death has a story to tell, you listen.\r\n\r\nIt is 1939. Nazi Germany. The country is holding its breath. Death has never been busier, and will become busier still.\r\n\r\nLiesel Meminger is a foster girl living outside of Munich, who scratches out a meager existence for herself by stealing when she encounters something she can’t resist–books. With the help of her accordion-playing foster father, she learns to read and shares her stolen books with her neighbors during bombing raids as well as with the Jewish man hidden in her basement. \r\n\r\nIn superbly crafted writing that burns with intensity, award-winning author Markus Zusak, author of I Am the Messenger, has given us one of the most enduring stories of our time.\r\n \r\n“The kind of book that can be life-changing.” —The New York Times",
+   "description_source": "open_library",
+   "page_count": 566,
+   "page_count_source": "open_library",
+   "first_published_year": 1998,
+   "edition_year": 2007,
+   "publisher": "Alfred A. Knopf",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "nyt:young-adult-paperback-monthly=2022-09-04",
+    "New York Times bestseller",
+    "New York Times reviewed",
+    "Books and reading",
+    "Fiction",
+    "Jews",
+    "History",
+    "World War, 1939-1945"
+   ],
+   "openlibrary_work_key": "/works/OL5819456W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780375842207-L.jpg",
+   "external_rating_avg": 4.16,
+   "external_rating_count": 145,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780375704024",
+   "title": "Norwegian Wood",
+   "authors": [
+    "Haruki Murakami"
+   ],
+   "genres": [
+    "Fiction",
+    "Literary Fiction",
+    "Romance"
+   ],
+   "description": "As his plane lands at a European airport, thirty-seven-year-old Toru Watanabe casually hears an old Beatles song. Suddenly, the music transports him back to his youth, to the turbulent Tokyo of the late sixties. He then remembers, with melancholy and unease, the unstable and mysterious Naoko, the girlfriend of his best—and only—friend from adolescence, Kizuki, and how Kizuki's suicide distanced them for a year until they reunited at university. There, they began an intimate relationship, which was soon cut short by Naoko’s fragile mental health, leading to her admission to a rest center. Shortly afterward, Watanabe fell in love with Midori, a lively and determined young woman. Indecisive and plagued by fears, Watanabe experienced only bewilderment and disillusionment in the very areas where everything was supposed to make sense: sex, love, and death. The unbearable situation led him to seek a delicate balance between his hopes and the need to find his place in the world.\r\n\r\nMientras su avión aterriza en un aeropuerto europeo, Toru Watanabe, de treinta y siete años, escucha casualmente una vieja canción de los Beatles: de pronto, la música le hace retroceder a su juventud, al turbulento Tokio de finales de los sesenta. Recuerda entonces, con melancolía y desasosiego, a la inestable y misteriosa Naoko, la novia de su mejor -y único- amigo de la adolescencia, Kizuki, y cómo el suicidio de éste les distanció durante un año, hasta que se reencontraron en la universidad. Iniciaron allí una relación íntima, truncada, sin embargo, por la frágil salud mental de Naoko, a quien hubo que internar en un centro de reposo. Al poco, Watanabe se enamoró de Midori, una joven activa y resuelta. Indeciso, acosado por los temores, Watanabe sólo experimentaba el deslumbramiento y el desengaño allá donde todo debía cobrar sentido: el sexo, el amor y la muerte. La insostenible situación le llevó entonces a intentar alcanzar el delicado equilibrio entre sus esperanzas y la necesidad de encontrar su lugar en el mundo.",
+   "description_source": "open_library",
+   "page_count": 298,
+   "page_count_source": "open_library",
+   "first_published_year": 1987,
+   "edition_year": 2000,
+   "publisher": "Vintage",
+   "language": null,
+   "format": "paperback",
+   "subjects": [
+    "Student",
+    "Theaterwissenschaft",
+    "Liebesbeziehung",
+    "Belletristische Darstellung",
+    "Fiction, romance, general",
+    "College students",
+    "Fiction",
+    "Man-woman relationships"
+   ],
+   "openlibrary_work_key": "/works/OL2625457W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780375704024-L.jpg",
+   "external_rating_avg": 3.88,
+   "external_rating_count": 123,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780307743657",
+   "title": "The Shining",
+   "authors": [
+    "Stephen King"
+   ],
+   "genres": [
+    "Horror",
+    "Thriller",
+    "Fiction"
+   ],
+   "description": "The Shining is a 1977 horror novel by American author Stephen King. It is King's third published novel and first hardback bestseller; its success firmly established King as a preeminent author in the horror genre. The setting and characters are influenced by King's personal experiences, including both his visit to The Stanley Hotel in 1974 and his struggle with alcoholism. The book was followed by a sequel, Doctor Sleep, published in 2013.\r\n\r\nThe Shining centers on the life of Jack Torrance, a struggling writer and recovering alcoholic who accepts a position as the off-season caretaker of the historic Overlook Hotel in the Colorado Rockies. His family accompanies him on this job, including his young son Danny Torrance, who possesses \"the shining\", an array of psychic abilities that allow Danny to see the hotel's horrific past. Soon, after a winter storm leaves them snowbound, the supernatural forces inhabiting the hotel influence Jack's sanity, leaving his wife and son in incredible danger.\r\n\r\n---\r\n\r\nAlso contained in:\r\n\r\n- [Carrie / Night Shift / 'Salem's Lot / Shining](https://openlibrary.org/works/OL14917547W)\r\n- [Works (Danse Macabre / Salem's Lot / Shining)](https://openlibrary.org/works/OL24233994W)",
+   "description_source": "open_library",
+   "page_count": 688,
+   "page_count_source": "open_library",
+   "first_published_year": 1977,
+   "edition_year": 2012,
+   "publisher": "Anchor Books",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Fiction",
+    "horror fiction",
+    "demonology",
+    "precognition",
+    "authors",
+    "hotelkeepers",
+    "gothic & horror",
+    "paranormal fiction suspense & thriller"
+   ],
+   "openlibrary_work_key": "/works/OL81633W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780307743657-L.jpg",
+   "external_rating_avg": 4.17,
+   "external_rating_count": 288,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780380730407",
+   "title": "Rebecca",
+   "authors": [
+    "Daphne du Maurier"
+   ],
+   "genres": [
+    "Fiction",
+    "Classics",
+    "Mystery"
+   ],
+   "description": "With these words, the reader is ushered into an isolated gray stone mansion on the windswept Cornish coast, as the second Mrs. Maxim de Winter recalls the chilling events that transpired as she began her new life as the young bride of a husband she barely knew. For in every corner of every room were phantoms of a time dead but not forgotten—a past devotedly preserved by the sinister housekeeper, Mrs. Danvers: a suite immaculate and untouched, clothing laid out and ready to be worn, but not by any of the great house's current occupants. With an eerie presentiment of evil tightening her heart, the second Mrs. de Winter walked in the shadow of her mysterious predecessor, determined to uncover the darkest secrets and shattering truths about Maxim's first wife—the late and hauntingly beautiful Rebecca.",
+   "description_source": "open_library",
+   "page_count": 410,
+   "page_count_source": "open_library",
+   "first_published_year": 1938,
+   "edition_year": 1997,
+   "publisher": "Avon Books",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Married women",
+    "Cornwall (England : County)",
+    "Remarriage",
+    "Remarried people",
+    "Fiction",
+    "Drama",
+    "Suspense fiction",
+    "Open Library Staff Picks"
+   ],
+   "openlibrary_work_key": "/works/OL36633W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780380730407-L.jpg",
+   "external_rating_avg": 4.17,
+   "external_rating_count": 53,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780156027328",
+   "title": "Life of Pi",
+   "authors": [
+    "Yann Martel"
+   ],
+   "genres": [
+    "Fiction",
+    "Adventure",
+    "Literary Fiction"
+   ],
+   "description": "After the tragic sinking of a cargo ship, one solitary lifeboat remains bobbing on the wild, blue Pacific. The only survivors from the wreck are a sixteen-year-old boy named Pi, a hyena, a zebra (with a broken leg), a female orang-utan… and a 450-pound Royal Bengal tiger. The scene is set for one of the most extraordinary works of fiction in recent years.",
+   "description_source": "open_library",
+   "page_count": 326,
+   "page_count_source": "open_library",
+   "first_published_year": 2000,
+   "edition_year": 2003,
+   "publisher": "Harcourt",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Teenage boys",
+    "Zoo animals",
+    "Fiction",
+    "Literature",
+    "Tigers",
+    "Translations into Korean",
+    "Tiger",
+    "award:man_booker_prize=2002"
+   ],
+   "openlibrary_work_key": "/works/OL2827199W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780156027328-L.jpg",
+   "external_rating_avg": 3.95,
+   "external_rating_count": 154,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780307387899",
+   "title": "The Road",
+   "authors": [
+    "Cormac McCarthy"
+   ],
+   "genres": [
+    "Fiction",
+    "Dystopian",
+    "Literary Fiction"
+   ],
+   "description": "Cormac McCarthy's tenth novel, The Road, is his most harrowing yet deeply personal work. Some unnamed catastrophe has scourged the world to a burnt-out cinder, inhabited by the last remnants of mankind and a very few surviving dogs and fungi. The sky is perpetually shrouded by dust and toxic particulates; the seasons are merely varied intensities of cold and dampness. Bands of cannibals roam the roads and inhabit what few dwellings remain intact in the woods.\r\n\r\nThrough this nightmarish residue of America a haggard father and his young son attempt to flee the oncoming Appalachian winter and head towards the southern coast along carefully chosen back roads. Mummified corpses are their only benign companions, sitting in doorways and automobiles, variously impaled or displayed on pikes and tables and in cake bells, or they rise in frozen poses of horror and agony out of congealed asphalt. The boy and his father hope to avoid the marauders, reach a milder climate, and perhaps locate some remnants of civilization still worthy of that name. They possess only what they can scavenge to eat, and the rags they wear and the heat of their own bodies are all the shelter they have. A pistol with only a few bullets is their only defense besides flight. Before them the father pushes a shopping cart filled with blankets, cans of food and a few other assets, like jars of lamp oil or gasoline siphoned from the tanks of abandoned vehicles—the cart is equipped with a bicycle mirror so that they will not be surprised from behind.\r\n\r\nThrough encounters with other survivors brutal, desperate or pathetic, the father and son are both hardened and sustained by their will, their hard-won survivalist savvy, and most of all by their love for each other. They struggle over mountains, navigate perilous roads and forests reduced to ash and cinders, endure killing cold and freezing rainfall. Passing through charred ghost towns and ransacking abandoned markets for meager provisions, the pair battle to remain hopeful. They seek the most rudimentary sort of salvation. However, in The Road, such redemption as might be permitted by their circumstances depends on the boy’s ability to sustain his own instincts for compassion and empathy in opposition to his father’s insistence upon their mutual self-interest and survival at all physical and moral costs.\r\n\r\nThe Road was the winner of the 2006 Pulitzer Prize for Literature.\r\n([source][1])\r\n\r\n\r\n  [1]: https://www.cormacmccarthy.com/works/the-road/",
+   "description_source": "open_library",
+   "page_count": 287,
+   "page_count_source": "open_library",
+   "first_published_year": 2006,
+   "edition_year": 2007,
+   "publisher": "Vintage Books",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Fiction",
+    "Dystopia",
+    "Adventure",
+    "post-apocalyptic fiction",
+    "extinction event",
+    "Open Library Staff Picks",
+    "Fathers and sons",
+    "Survival skills"
+   ],
+   "openlibrary_work_key": "/works/OL40873W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780307387899-L.jpg",
+   "external_rating_avg": 3.89,
+   "external_rating_count": 176,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781501111105",
+   "title": "Grit",
+   "authors": [
+    "Angela Duckworth"
+   ],
+   "genres": [
+    "Psychology",
+    "Self-Help"
+   ],
+   "description": "Pioneering psychologist Angela Duckworth shows anyone striving to succeed—be it parents, students, educators, athletes, or business people—that the secret to outstanding achievement is not talent but a special blend of passion and persistence she calls “grit.”",
+   "description_source": "open_library",
+   "page_count": 333,
+   "page_count_source": "open_library",
+   "first_published_year": 2016,
+   "edition_year": 2016,
+   "publisher": "Scribner",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "leadership",
+    "business",
+    "Personality",
+    "Perseverance (Ethics.)",
+    "Psychology",
+    "Success",
+    "Expectation (Psychology.)",
+    "Erfolg"
+   ],
+   "openlibrary_work_key": "/works/OL17361140W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781501111105-L.jpg",
+   "external_rating_avg": 3.95,
+   "external_rating_count": 43,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780316017930",
+   "title": "Outliers",
+   "authors": [
+    "Malcolm Gladwell"
+   ],
+   "genres": [
+    "Psychology",
+    "Non-Fiction",
+    "Sociology"
+   ],
+   "description": "In this stunning new book, Malcolm Gladwell takes us on an intellectual journey through the world of \"outliers\"--the best and the brightest, the most famous and the most successful. He asks the question: what makes high-achievers different? His answer is that we pay too much attention to what successful people are like, and too little attention to where they are from: that is, their culture, their family, their generation, and the idiosyncratic experiences of their upbringing. Along the way he explains the secrets of software billionaires, what it takes to be a great soccer player, why Asians are good at math, and what made the Beatles the greatest rock band.  Brilliant and entertaining, OUTLIERS is a landmark work that will simultaneously delight and illuminate.",
+   "description_source": "open_library",
+   "page_count": 336,
+   "page_count_source": "open_library",
+   "first_published_year": 2008,
+   "edition_year": 2011,
+   "publisher": "Little, Brown",
+   "language": null,
+   "format": null,
+   "subjects": [
+    "Psychology",
+    "Business",
+    "Successful people",
+    "Success",
+    "Nonfiction",
+    "nyt:paperback_business_books=2012-02-25",
+    "New York Times bestseller",
+    "Interpersonal relations"
+   ],
+   "openlibrary_work_key": "/works/OL5749847W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780316017930-L.jpg",
+   "external_rating_avg": 4.01,
+   "external_rating_count": 117,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780385737951",
+   "title": "The Maze Runner",
+   "authors": [
+    "James Dashner"
+   ],
+   "genres": [
+    "Science Fiction",
+    "Young Adult",
+    "Dystopian"
+   ],
+   "description": "When Thomas wakes up in the lift, the only thing he can remember is his first name.  His memory is blank.  But he's not alone.  When the lift's doors open, Thomas finds himself surrounded by kids who welcome him to the Glade--a large, open expanse surrounded by stone walls.  Just like Thomas, the Gladers don't know why or how they got to the Glade.  All they know is that every morning the stone doors to the maze that surrounds them have opened.  Every night they've closed tight.  And every 30 days a new boy has been delivered in the lift.  Thomas was expected.  But the next day, a girl is sent up--the first girl to ever arrive in the Glade.  And more surprising yet is the message she delivers.  Thomas might be more important than he could ever guess.  If only he could unlock the dark secrets buried within his mind.  From the Hardcover edition.",
+   "description_source": "open_library",
+   "page_count": 384,
+   "page_count_source": "open_library",
+   "first_published_year": 2009,
+   "edition_year": 2010,
+   "publisher": "Delacorte Books for Young Readers",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Fiction",
+    "Science fiction",
+    "Amnesia",
+    "Cooperativeness",
+    "Labyrinths",
+    "Juvenile Fiction",
+    "Children's fiction",
+    "Amnesia, fiction"
+   ],
+   "openlibrary_work_key": "/works/OL6027236W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780385737951-L.jpg",
+   "external_rating_avg": 4.0,
+   "external_rating_count": 160,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780439023528",
+   "title": "The Hunger Games",
+   "authors": [
+    "Suzanne Collins"
+   ],
+   "genres": [
+    "Science Fiction",
+    "Young Adult",
+    "Dystopian"
+   ],
+   "description": "The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins. It is written in the perspective of 16-year-old Katniss Everdeen, who lives in the future, post-apocalyptic nation of Panem in North America. The Capitol, a highly advanced metropolis, exercises political control over the rest of the nation. The Hunger Games is an annual event in which one boy and one girl aged 12–18 from each of the twelve districts surrounding the Capitol are selected by lottery to compete in a televised battle royale to the death.\r\n\r\nThe book received critical acclaim from major reviewers and authors. It was praised for its plot and character development. In writing The Hunger Games, Collins drew upon Greek mythology, Roman gladiatorial games, and contemporary reality television for thematic content. The novel won many awards, including the California Young Reader Medal, and was named one of Publishers Weekly's \"Best Books of the Year\" in 2008.\r\n\r\nThe Hunger Games was first published in hardcover on September 14, 2008, by Scholastic, featuring a cover designed by Tim O'Brien.",
+   "description_source": "open_library",
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": 2008,
+   "edition_year": 2009,
+   "publisher": "Scholastic Inc.",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "severe poverty",
+    "starvation",
+    "oppression",
+    "effects of war",
+    "self-sacrifice",
+    "Science fiction",
+    "Apocalyptic fiction",
+    "Dystopian fiction"
+   ],
+   "openlibrary_work_key": "/works/OL5735363W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780439023528-L.jpg",
+   "external_rating_avg": 4.12,
+   "external_rating_count": 562,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780316769488",
+   "title": "The Catcher in the Rye",
+   "authors": [
+    "J.D. Salinger"
+   ],
+   "genres": [
+    "Fiction",
+    "Classics"
+   ],
+   "description": "Story of Holden Caufield with his idiosyncrasies, penetrating insight, confusion, sensitivity and negativism. Holden, knowing he is to be expelled from school, decides to leave early. He spends three days in New York City and tells the story of what he did and suffered there.",
+   "description_source": "open_library",
+   "page_count": null,
+   "page_count_source": null,
+   "first_published_year": 1945,
+   "edition_year": 1991,
+   "publisher": "Little, Brown and Company",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "fictional works",
+    "Runaway teenagers",
+    "Fiction",
+    "Adolescence",
+    "teenage boys",
+    "Runaway teenagers in literature",
+    "Brothers and sisters",
+    "Emotionally disturbed teenage boys"
+   ],
+   "openlibrary_work_key": "/works/OL3335245W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780316769488-L.jpg",
+   "external_rating_avg": 3.59,
+   "external_rating_count": 402,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781984801258",
+   "title": "The Midnight Library",
+   "authors": [
+    "Matt Haig"
+   ],
+   "genres": [
+    "Fiction",
+    "Fantasy",
+    "Inspirational"
+   ],
+   "description": "In her most revealing and powerful memoir yet, the activist, speaker, bestselling author, and “patron saint of female empowerment” (People) explores the joy and peace we discover when we stop striving to meet others’ expectations and start trusting the voice deep within us.",
+   "description_source": "open_library",
+   "page_count": 333,
+   "page_count_source": "open_library",
+   "first_published_year": 2020,
+   "edition_year": 2020,
+   "publisher": "The Dial Press",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "Women, united states, biography",
+    "Christian women",
+    "Christian life",
+    "Happiness",
+    "nyt:combined-print-and-e-book-nonfiction=2020-03-29",
+    "New York Times bestseller",
+    "LGBTQ biography and memoir"
+   ],
+   "openlibrary_work_key": "/works/OL20652361W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781984801258-L.jpg",
+   "external_rating_avg": 3.92,
+   "external_rating_count": 13,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781501110368",
+   "title": "It Ends with Us",
+   "authors": [
+    "Colleen Hoover"
+   ],
+   "genres": [
+    "Romance",
+    "Fiction"
+   ],
+   "description": "Lily hasn’t always had it easy, but that’s never stopped her from working hard for the life she wants. She’s come a long way from the small town where she grew up—she graduated from college, moved to Boston, and started her own business. And when she feels a spark with a gorgeous neurosurgeon named Ryle Kincaid, everything in Lily’s life seems too good to be true.\r\n\r\nRyle is assertive, stubborn, maybe even a little arrogant. He’s also sensitive, brilliant, and has a total soft spot for Lily. And the way he looks in scrubs certainly doesn’t hurt. Lily can’t get him out of her head. But Ryle’s complete aversion to relationships is disturbing. Even as Lily finds herself becoming the exception to his “no dating” rule, she can’t help but wonder what made him that way in the first place.\r\n\r\nAs questions about her new relationship overwhelm her, so do thoughts of Atlas Corrigan—her first love and a link to the past she left behind. He was her kindred spirit, her protector. When Atlas suddenly reappears, everything Lily has built with Ryle is threatened.\r\n\r\nWith this bold and deeply personal novel, It Ends With Us is a heart-wrenching story and an unforgettable tale of love that comes at the ultimate price.",
+   "description_source": "open_library",
+   "page_count": 384,
+   "page_count_source": "open_library",
+   "first_published_year": 2012,
+   "edition_year": 2016,
+   "publisher": "Simon & Schuster UK Ltd.",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Fiction, Romance, Contemporary, Life change events",
+    "Triangles (Interpersonal relations)",
+    "Man-woman relationships",
+    "Neurosurgeons",
+    "First loves",
+    "Businesswomen",
+    "Fiction",
+    "Contemporary Women"
+   ],
+   "openlibrary_work_key": "/works/OL18020194W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781501110368-L.jpg",
+   "external_rating_avg": 4.19,
+   "external_rating_count": 1057,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780525559474",
+   "title": "Where the Crawdads Sing",
+   "authors": [
+    "Delia Owens"
+   ],
+   "genres": [
+    "Fiction",
+    "Mystery",
+    "Literary Fiction"
+   ],
+   "description": "Between life and death there is a library, and within that library, the shelves go on forever. Every book provides a chance to try another life you could have lived. To see how things would be if you had made other choices . . . Would you have done anything different, if you had the chance to undo your regrets?”\r\n\r\nA dazzling novel about all the choices that go into a life well lived, from the internationally bestselling author of Reasons to Stay Alive and How To Stop Time.\r\n\r\nSomewhere out beyond the edge of the universe there is a library that contains an infinite number of books, each one the story of another reality. One tells the story of your life as it is, along with another book for the other life you could have lived if you had made a different choice at any point in your life. While we all wonder how our lives might have been, what if you had the chance to go to the library and see for yourself? Would any of these other lives truly be better?\r\n\r\nIn The Midnight Library, Matt Haig’s enchanting new novel, Nora Seed finds herself faced with this decision. Faced with the possibility of changing her life for a new one, following a different career, undoing old breakups, realizing her dreams of becoming a glaciologist; she must search within herself as she travels through the Midnight Library to decide what is truly fulfilling in life, and what makes it worth living in the first place.",
+   "description_source": "open_library",
+   "page_count": 288,
+   "page_count_source": "open_library",
+   "first_published_year": 2020,
+   "edition_year": 2020,
+   "publisher": "Viking",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Fiction",
+    "Fantasy",
+    "Contemporary",
+    "Magical Realism",
+    "Science Fiction",
+    "Mental Health",
+    "Adult",
+    "Novels"
+   ],
+   "openlibrary_work_key": "/works/OL20965973W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780525559474-L.jpg",
+   "external_rating_avg": 4.03,
+   "external_rating_count": 86,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781119293491",
+   "title": "Data Science for Business",
+   "authors": [
+    "Foster Provost"
+   ],
+   "genres": [
+    "Data Science",
+    "Business",
+    "Machine Learning"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": 384,
+   "page_count_source": "open_library",
+   "first_published_year": 2016,
+   "edition_year": 2016,
+   "publisher": "Wiley & Sons, Incorporated, John",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Calculus"
+   ],
+   "openlibrary_work_key": "/works/OL21132261W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781119293491-L.jpg",
+   "external_rating_avg": null,
+   "external_rating_count": null,
+   "external_rating_source": null,
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781491957660",
+   "title": "Python for Data Analysis",
+   "authors": [
+    "Wes McKinney"
+   ],
+   "genres": [
+    "Data Science",
+    "Python",
+    "Programming"
+   ],
+   "description": "Serves as an introduction to Python for data-intensive applications.",
+   "description_source": "open_library",
+   "page_count": 550,
+   "page_count_source": "open_library",
+   "first_published_year": 2012,
+   "edition_year": 2017,
+   "publisher": "O'Reilly Media",
+   "language": null,
+   "format": null,
+   "subjects": [
+    "Programming languages (Electronic computers)",
+    "Python (Computer program language)",
+    "Data mining",
+    "Python (Langage de programmation)",
+    "Exploration de données (Informatique)",
+    "COMPUTERS",
+    "Programming Languages",
+    "Python"
+   ],
+   "openlibrary_work_key": "/works/OL17422847W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781491957660-L.jpg",
+   "external_rating_avg": 3.92,
+   "external_rating_count": 12,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780134685991",
+   "title": "Effective Java",
+   "authors": [
+    "Joshua Bloch"
+   ],
+   "genres": [
+    "Programming",
+    "Software Engineering"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": 416,
+   "page_count_source": "open_library",
+   "first_published_year": 2001,
+   "edition_year": 2017,
+   "publisher": "Addison-Wesley Professional",
+   "language": null,
+   "format": "paperback",
+   "subjects": [
+    "Java (Computer program language)",
+    "Object-oriented programming (Computer science)",
+    "Java 2.",
+    "Java yu yan",
+    "Cheng xu she ji",
+    "Qa76.73.j38",
+    "Qa76.73.j38 b57 2001",
+    "005.13/3"
+   ],
+   "openlibrary_work_key": "/works/OL6223299W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780134685991-L.jpg",
+   "external_rating_avg": 4.56,
+   "external_rating_count": 9,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780201633610",
+   "title": "Design Patterns",
+   "authors": [
+    "Erich Gamma"
+   ],
+   "genres": [
+    "Programming",
+    "Software Engineering"
+   ],
+   "description": "Four software designers present a catalog of simple and succinct solutions to commonly occurring design problems, using Smalltalk and C++ in example code. These 23 patterns allow designers to create more flexible, elegant, and ultimately reusable designs without having to rediscover the design solutions themselves. The authors begin by describing what patterns are and how they can help you design object-oriented software. They go on to systematically name, explain, evaluate, and catalog recurring designs in object-oriented systems.",
+   "description_source": "open_library",
+   "page_count": 395,
+   "page_count_source": "open_library",
+   "first_published_year": 1995,
+   "edition_year": 1995,
+   "publisher": "Addison-Wesley Professional",
+   "language": "en",
+   "format": null,
+   "subjects": [
+    "Reusability",
+    "Object-oriented programming (Computer science)",
+    "Computer software",
+    "Software patterns",
+    "Entwurfsmuster",
+    "Object-georiënteerd programmeren",
+    "Computacao (metodologia e tecnicas)",
+    "Objektorientierte Programmierung"
+   ],
+   "openlibrary_work_key": "/works/OL6030812W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780201633610-L.jpg",
+   "external_rating_avg": 3.97,
+   "external_rating_count": 34,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9781523505746",
+   "title": "I Will Teach You to Be Rich",
+   "authors": [
+    "Ramit Sethi"
+   ],
+   "genres": [
+    "Personal Finance",
+    "Self-Help"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": 352,
+   "page_count_source": "open_library",
+   "first_published_year": 2019,
+   "edition_year": 2019,
+   "publisher": "Workman Publishing Company",
+   "language": null,
+   "format": "paperback",
+   "subjects": [
+    "Finance",
+    "nyt:business-books=2019-07-07",
+    "New York Times bestseller",
+    "Finance, personal",
+    "Wealth",
+    "Investments"
+   ],
+   "openlibrary_work_key": "/works/OL20794766W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9781523505746-L.jpg",
+   "external_rating_avg": 2.82,
+   "external_rating_count": 11,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780143442295",
+   "title": "Let's Talk Money",
+   "authors": [
+    "Monika Halan"
+   ],
+   "genres": [
+    "Personal Finance",
+    "Indian Non-Fiction"
+   ],
+   "description": null,
+   "description_source": null,
+   "page_count": 256,
+   "page_count_source": "open_library",
+   "first_published_year": 2018,
+   "edition_year": 2018,
+   "publisher": "Penguin Ananda",
+   "language": "en",
+   "format": "paperback",
+   "subjects": [
+    "Self-realization",
+    "Self-actualization (Psychology)",
+    "Self-culture"
+   ],
+   "openlibrary_work_key": "/works/OL24318590W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780143442295-L.jpg",
+   "external_rating_avg": 3.71,
+   "external_rating_count": 7,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780316556347",
+   "title": "Circe",
+   "authors": [
+    "Madeline Miller"
+   ],
+   "genres": [
+    "Fantasy",
+    "Fiction",
+    "Mythology"
+   ],
+   "description": "In the house of Helios, god of the sun and mightiest of the Titans, a daughter is born. But Circe is a strange child--not powerful, like her father, nor viciously alluring like her mother. Turning to the world of mortals for companionship, she discovers that she does possess power--the power of witchcraft, which can transform rivals into monsters and menace the gods themselves.\r\n\r\nThreatened, Zeus banishes her to a deserted island, where she hones her occult craft, tames wild beasts and crosses paths with many of the most famous figures in all of mythology, including the Minotaur, Daedalus and his doomed son Icarus, the murderous Medea, and, of course, wily Odysseus.\r\n\r\nBut there is danger, too, for a woman who stands alone, and Circe unwittingly draws the wrath of both men and gods, ultimately finding herself pitted against one of the most terrifying and vengeful of the Olympians. To protect what she loves most, Circe must summon all her strength and choose, once and for all, whether she belongs with the gods she is born from, or the mortals she has come to love.\r\n\r\nWith unforgettably vivid characters, mesmerizing language and page-turning suspense, Circe is a triumph of storytelling, an intoxicating epic of family rivalry, palace intrigue, love and loss, as well as a celebration of indomitable female strength in a man's world.\r\n([source][1])\r\n\r\n\r\n  [1]: http://madelinemiller.com/circe/",
+   "description_source": "open_library",
+   "page_count": 393,
+   "page_count_source": "open_library",
+   "first_published_year": 2018,
+   "edition_year": 2018,
+   "publisher": "Little, Brown and Company",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "Fantasy",
+    "Mythology",
+    "Historical Fiction",
+    "Retellings",
+    "Gods",
+    "Fiction",
+    "Paranormal fiction",
+    "Fiction, fantasy, historical"
+   ],
+   "openlibrary_work_key": "/works/OL18012166W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780316556347-L.jpg",
+   "external_rating_avg": 4.16,
+   "external_rating_count": 109,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  },
+  {
+   "isbn13": "9780062060624",
+   "title": "The Song of Achilles",
+   "authors": [
+    "Madeline Miller"
+   ],
+   "genres": [
+    "Fantasy",
+    "Fiction",
+    "Mythology",
+    "Romance"
+   ],
+   "description": "This is the story of the seige of Troy from the perspective of Achilles best-friend Patroclus.  Although Patroclus is outcast from his home for disappointing his father he manages to be the only mortal who can keep up with the half-God Archilles.  Even though many will know the facts behind the story the telling is fresh and engaging.",
+   "description_source": "open_library",
+   "page_count": 408,
+   "page_count_source": "open_library",
+   "first_published_year": 2011,
+   "edition_year": 2024,
+   "publisher": "Ecco",
+   "language": "en",
+   "format": "hardcover",
+   "subjects": [
+    "Trojan War",
+    "Achilles (Greek mythology)",
+    "Male friendship",
+    "Fiction",
+    "Gay love",
+    "Thetis",
+    "Greeks",
+    "History"
+   ],
+   "openlibrary_work_key": "/works/OL16509148W",
+   "google_volume_id": null,
+   "cover_url": "https://covers.openlibrary.org/b/isbn/9780062060624-L.jpg",
+   "external_rating_avg": 4.29,
+   "external_rating_count": 139,
+   "external_rating_source": "open_library",
+   "fetch_errors": [
+    "google_books: rate limited by provider"
+   ]
+  }
+ ]
+}

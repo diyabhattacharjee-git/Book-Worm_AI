@@ -1,0 +1,30 @@
+# Runtime dependencies (all free / open source). Python 3.11+.
+# Development/test tools are in requirements-dev.txt.
+fastapi==0.143.0
+uvicorn[standard]==0.54.0
+starlette==1.7.0
+pydantic==2.14.0
+pydantic-settings==2.15.0
+email-validator==2.3.0
+google-auth==2.61.0
+requests==2.34.2
+python-multipart==0.0.32
+SQLAlchemy==2.1.4
+alembic==1.20.0
+PyJWT==2.15.1
+bcrypt==5.0.0
+httpx==0.28.1
+pillow==12.3.0
+
+# ML / recommendation
+numpy==2.4.6
+scikit-learn==1.9.1
+
+# Agents and optional LLM providers (all optional at runtime)
+langgraph==1.2.14
+langchain-core==1.6.9
+groq==1.7.0
+huggingface_hub==2.2.0
+
+# PostgreSQL driver (used when DATABASE_URL points at Postgres, e.g. Neon)
+psycopg[binary]==3.3.6
