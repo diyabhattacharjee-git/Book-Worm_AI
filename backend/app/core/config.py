@@ -14,7 +14,7 @@ import secrets
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import field_validator
+from pydantic import ValidationInfo, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -136,10 +136,10 @@ class Settings(BaseSettings):
 
     @field_validator("upload_dir", "frontend_dist")
     @classmethod
-    def _resolve_dir(cls, v: str) -> str:
+    def _resolve_dir(cls, v: str, info: ValidationInfo) -> str:
         if not v:
             return v
-        if os.environ.get("VERCEL") and v == str(BACKEND_DIR / "uploads"):
+        if info.field_name == "upload_dir" and os.environ.get("VERCEL") and not v.startswith("/tmp/"):
             return "/tmp/bookworm-uploads"  # Vercel's filesystem is read-only except /tmp
         p = Path(v)
         return str(p if p.is_absolute() else (BACKEND_DIR / p).resolve())

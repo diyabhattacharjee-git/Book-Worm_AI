@@ -186,3 +186,12 @@ def test_auto_image_storage_uses_database_on_vercel(monkeypatch):
     assert s.image_backend == "local"
     monkeypatch.setenv("VERCEL", "1")
     assert s.image_backend == "database"
+
+
+def test_upload_dir_moves_to_tmp_on_vercel(monkeypatch):
+    """Vercel's disk is read-only except /tmp, whatever UPLOAD_DIR says (a crash at import otherwise)."""
+    from app.core.config import Settings
+
+    monkeypatch.setenv("VERCEL", "1")
+    assert Settings(upload_dir="./uploads").upload_dir == "/tmp/bookworm-uploads"
+    assert Settings(upload_dir="/tmp/photos").upload_dir.replace("\\", "/").endswith("/tmp/photos")
