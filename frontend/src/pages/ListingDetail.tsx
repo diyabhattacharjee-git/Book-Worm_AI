@@ -3,7 +3,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { ConditionBadge, PriceEstimateCard, StatusBadge, VerdictBadge } from '../components/marketplace'
 import { ReportDialog } from '../components/ReportDialog'
-import { Badge, ErrorState, Notice, SampleBadge, Skeleton, Spinner } from '../components/ui'
+import { Badge, ErrorState, Notice, Skeleton, Spinner } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import { useApi } from '../hooks/useApi'
@@ -112,7 +112,7 @@ export default function ListingDetail() {
         </div>
 
         <div>
-          <div className="flex flex-wrap gap-2"><ConditionBadge condition={l.condition} /><StatusBadge status={l.status} />{l.is_sample && <SampleBadge what="listing" />}</div>
+          <div className="flex flex-wrap gap-2"><ConditionBadge condition={l.condition} /><StatusBadge status={l.status} /></div>
           <h1 className="mt-3 font-serif text-3xl font-semibold leading-tight">{l.title}</h1>
           <p className="mt-1 text-ink-soft">{l.author}{l.edition_text ? ` · ${l.edition_text}` : ''}{l.published_year ? ` · ${l.published_year}` : ''}</p>
           {l.book_id && <Link to={`/books/${l.book_id}`} className="link mt-1 inline-block text-sm">About this book</Link>}
@@ -214,7 +214,7 @@ function SameBook({ listing }: { listing: Listing }) {
             <tbody className="divide-y divide-line">
               {cmp.data.rows.map((r) => (
                 <tr key={r.listing_id} className={r.listing_id === listing.id ? 'bg-gold-soft/50' : ''}>
-                  <td className="p-3">{r.listing_id === listing.id ? 'This listing' : r.seller}{r.is_sample && <span className="ml-1 text-xs text-gold-dark">(sample)</span>}{cmp.data!.suggestion?.listing_id === r.listing_id && <Badge tone="forest">Suggested</Badge>}</td>
+                  <td className="p-3">{r.listing_id === listing.id ? 'This listing' : r.seller}{cmp.data!.suggestion?.listing_id === r.listing_id && <Badge tone="forest">Suggested</Badge>}</td>
                   <td><ConditionBadge condition={r.condition} /></td>
                   <td>{money(r.price, r.currency)}</td>
                   <td>{money(r.total_known_cost, r.currency)}{!r.total_cost_complete && <span className="text-xs text-gold-dark"> +?</span>}</td>

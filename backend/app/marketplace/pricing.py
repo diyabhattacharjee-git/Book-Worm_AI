@@ -160,7 +160,7 @@ def estimate_price(listings: list[NormalizedListing], currency: str, condition: 
         est.explanation = (f"Only {n_any} comparable listing(s) found, so this is a rule-of-thumb band: "
                            f"{int(lo_r * 100)}-{int(hi_r * 100)}% of the new-copy price you provided "
                            f"({currency} {new_price_reference:g}) for a {condition.replace('_', ' ')} copy.")
-        est.limitations.append("Rule-based heuristic, not derived from market data.")
+        est.limitations.append("A rough guide based on the new-copy price, not on real listings.")
         return est
 
     est.n_comparables = n_any

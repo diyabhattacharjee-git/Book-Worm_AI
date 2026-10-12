@@ -59,7 +59,7 @@ function OverviewTab() {
       <section><h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><Store className="h-5 w-5" aria-hidden />Marketplace</h2>
         <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {Object.entries(d.marketplace.listings_by_status).map(([k, v]) => <Stat key={k} label={`${k} listings`} value={v} />)}
-          <Stat label="Sample listings" value={d.marketplace.sample_listings} /><Stat label="Inquiries" value={d.marketplace.inquiries} /><Stat label="New listings (7d)" value={d.marketplace.new_listings_7d} />
+          <Stat label="Inquiries" value={d.marketplace.inquiries} /><Stat label="New listings (7d)" value={d.marketplace.new_listings_7d} />
         </div>
         <p className="mt-2 text-sm text-muted">Average active asking price (real listings only): {d.marketplace.real_active_avg_price.length ? d.marketplace.real_active_avg_price.map((p) => `${money(p.average, p.currency)} over ${p.count}`).join(', ') : 'no real listings yet'}.</p></section>
       <section className="grid gap-4 sm:grid-cols-4">

@@ -59,12 +59,14 @@ uvicorn app.main:app --port 8000                      # serves the app at http:/
 * **Local embeddings:** `pip install -r requirements-ml.txt` (~1 GB with PyTorch) and `EMBEDDINGS_BACKEND=sentence-transformers`.
 * **Google Books key** avoids the shared anonymous quota. **eBay** keys enable external listings.
 
-## 2. Vercel + Neon + Cloudinary (recommended free deployment)
+## 2. Vercel + Neon (recommended free deployment)
 
 The repository is ready for Vercel: `vercel.json` defines two **Services** (Vercel's monorepo feature, beta, available
 on the free Hobby plan) on one domain: `frontend/` (Vite build) and `backend/` (FastAPI, entry point `app.main:app`).
 Requests to `/api/...` go to FastAPI with the path unchanged; everything else is the React app.
-Vercel's filesystem is temporary, so data lives in **Neon** (Postgres) and photos in **Cloudinary**.
+Vercel's filesystem is temporary, so data lives in **Neon** (Postgres). Listing photos and avatars are stored in
+the same database automatically (`IMAGE_STORAGE=auto` detects Vercel); they are re-encoded to at most 1600 px, so
+the free 0.5 GB comfortably holds a few thousand photos. Cloudinary is optional.
 
 1. **Neon** (neon.com, free): create a project → copy the connection string
    (`postgresql://…?sslmode=require`). Prefer the *pooled* connection string.
@@ -75,7 +77,7 @@ Vercel's filesystem is temporary, so data lives in **Neon** (Postgres) and photo
    $env:DATABASE_URL="<neon connection string>"; .venv\Scripts\python -m app.cli create-admin --email you@example.com --username yourname
    ```
    Run `init-db` the same way after future schema changes.
-3. **Cloudinary** (cloudinary.com, free, no card): Dashboard → copy the *API environment variable*
+3. **Cloudinary** (optional; cloudinary.com, free, no card): Dashboard → copy the *API environment variable*
    (`cloudinary://<key>:<secret>@<cloud_name>`).
 4. **Vercel** (vercel.com, sign in with GitHub, Hobby plan): *Add New → Project* → import the GitHub repository.
    Leave the root directory as the repository root (it reads `vercel.json`). Add these Environment Variables:
@@ -85,7 +87,7 @@ Vercel's filesystem is temporary, so data lives in **Neon** (Postgres) and photo
    | `APP_ENV` | `production` |
    | `APP_SECRET_KEY` | a new random value: `python -c "import secrets; print(secrets.token_urlsafe(48))"` |
    | `DATABASE_URL` | Neon connection string |
-   | `CLOUDINARY_URL` | Cloudinary API environment variable |
+   | `CLOUDINARY_URL` | optional: Cloudinary API environment variable |
    | `FRONTEND_ORIGIN` | your site, e.g. `https://book-worm-ai.vercel.app` |
    | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM` | same as local (Vercel allows ports 587/465) |
    | `GOOGLE_CLIENT_ID` | same as local |
@@ -116,7 +118,7 @@ Things free hosts commonly do (check yours):
 
 * **Sleep after inactivity** — the first request after a pause can take 30–60 s.
 * **Ephemeral disk** — SQLite files and uploaded images are wiped on redeploy/restart. Use a free PostgreSQL
-  instance (paste its `postgresql://...` URL as `DATABASE_URL`) and `CLOUDINARY_URL` for photos.
+  instance (paste its `postgresql://...` URL as `DATABASE_URL`) and `IMAGE_STORAGE=database` (or `CLOUDINARY_URL`) for photos.
 * **Outbound email** — Render's free tier blocks SMTP ports 25/465/587; Vercel allows 465/587.
 * **No background workers** — the app needs none: recommendations refit on demand, caches expire lazily.
 * **Limited RAM** — keep `EMBEDDINGS_BACKEND=tfidf`; don't run Ollama on a free host.
@@ -150,5 +152,5 @@ Docker is not required for anything.
 | Want a clean start | Stop the server, delete `backend/book_platform.db*` and `backend/uploads/*`, run `python -m app.cli seed`. |
 | Assistant never uses Groq | Run `python -m app.cli check-llm`; it prints the provider error (e.g. invalid key or rate limit). |
 | Vercel build fails on the Python service | Check the build log; the API bundle must stay under 500 MB (`pandas` and dev tools are deliberately not in `requirements.txt`). |
-| Photos disappear after deploys | `CLOUDINARY_URL` isn't set on Vercel. |
+| Photos disappear after deploys | Set `IMAGE_STORAGE=database` (automatic on Vercel) or `CLOUDINARY_URL`. |
 | Port already in use | Another server is running; stop it or use `--port 8001` (and `VITE_BACKEND_URL`). |

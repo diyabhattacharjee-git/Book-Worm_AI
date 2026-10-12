@@ -61,6 +61,9 @@ class Settings(BaseSettings):
     # Image storage: "cloudinary://<api_key>:<api_secret>@<cloud_name>" stores uploads in Cloudinary
     # (free plan, needed on hosts without a persistent disk such as Vercel). Empty = local UPLOAD_DIR.
     cloudinary_url: str = ""
+    # Where photos go without Cloudinary: "local" (UPLOAD_DIR), "database" (the app database; fine for a
+    # small site) or "auto" (database on Vercel, whose disk is temporary; local everywhere else).
+    image_storage: str = "auto"
 
     # Uploads
     upload_dir: str = str(BACKEND_DIR / "uploads")
@@ -148,6 +151,23 @@ class Settings(BaseSettings):
         if v not in {"sandbox", "production"}:
             raise ValueError("EBAY_ENVIRONMENT must be 'sandbox' or 'production'")
         return v
+
+    @field_validator("image_storage")
+    @classmethod
+    def _check_image_storage(cls, v: str) -> str:
+        v = v.lower().strip()
+        if v not in {"auto", "local", "database"}:
+            raise ValueError("IMAGE_STORAGE must be 'auto', 'local' or 'database'")
+        return v
+
+    @property
+    def image_backend(self) -> str:
+        """cloudinary | database | local"""
+        if self.cloudinary:
+            return "cloudinary"
+        if self.image_storage == "database" or (self.image_storage == "auto" and os.environ.get("VERCEL")):
+            return "database"
+        return "local"
 
     @property
     def is_production(self) -> bool:

@@ -2,7 +2,7 @@ import { Eye, MessageCircle, Package, Store } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { ConditionBadge, StatusBadge } from '../components/marketplace'
-import { EmptyState, ErrorState, Notice, PageHeader, SampleBadge, Spinner, Tabs } from '../components/ui'
+import { EmptyState, ErrorState, Notice, PageHeader, Spinner, Tabs } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import { useApi } from '../hooks/useApi'
@@ -63,7 +63,7 @@ export default function SellerDashboard() {
                   <div className="min-w-0 flex-1">
                     <Link to={`/marketplace/listings/${l.id}`} className="font-semibold hover:text-forest">{l.title}</Link>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
-                      <ConditionBadge condition={l.condition} /><StatusBadge status={l.status} />{l.is_sample && <SampleBadge what="listing" />}
+                      <ConditionBadge condition={l.condition} /><StatusBadge status={l.status} />
                       <span>{money(l.price_amount, l.currency)}</span><span>· {l.view_count ?? 0} views · {l.inquiry_count ?? 0} messages · saved by {l.favorite_count ?? 0}</span>
                       <span>· listed {relativeTime(l.created_at)}</span>{l.images.length === 0 && <span className="text-gold-dark">· no photos</span>}
                     </div>

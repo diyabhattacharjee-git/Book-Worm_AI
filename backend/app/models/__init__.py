@@ -18,6 +18,7 @@ from app.models.marketplace import (
     MarketplaceListing,
     MarketplaceProvider,
 )
+from app.models.media import StoredImage
 from app.models.reading import (
     BookshelfEntry,
     Conversation,
@@ -43,7 +44,7 @@ from app.models.user import EmailOTP, User, UserProfile
 __all__ = [
     "Author", "Book", "BookEdition", "ExternalCache", "Genre", "book_authors", "book_genres",
     "CachedExternalListing", "ListingFavorite", "ListingImage", "ListingInquiry", "ListingReport",
-    "MarketplaceListing", "MarketplaceProvider",
+    "MarketplaceListing", "MarketplaceProvider", "StoredImage",
     "BookshelfEntry", "Conversation", "ConversationMessage", "ReadingGoal", "ReadingList",
     "ReadingListItem", "ReadingPlan", "ReadingPlanItem",
     "AuditLog", "RecommendationEvaluationRun", "RecommendationEvent", "Review", "ReviewHelpfulVote",

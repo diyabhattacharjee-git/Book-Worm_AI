@@ -167,7 +167,7 @@ def test_graph_end_to_end_without_credentials():
     assert not ebay_status["ok"] and ebay_status["skipped"]
     assert res["deals"] and all(d["listing"]["url"] for d in res["deals"])
     assert res["summary"]["source"] == "deterministic"
-    assert "sample" in res["summary"]["text"].lower()
+    assert "meet all your constraints" in res["summary"]["text"]
     # Prices in the response are exactly the stored asking prices
     assert all(d["listing"]["price"] in (260.0, 210.0, 340.0, 140.0, 230.0, 199.0, 205.0, 210.0, 215.0, 220.0, 225.0, 230.0)
                for d in res["deals"])

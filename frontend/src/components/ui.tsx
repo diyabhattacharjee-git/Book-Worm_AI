@@ -1,4 +1,4 @@
-import { AlertCircle, ChevronLeft, ChevronRight, FlaskConical, Loader2, Star, X } from 'lucide-react'
+import { AlertCircle, ChevronLeft, ChevronRight, Loader2, Star, X } from 'lucide-react'
 import { useEffect, useId, useRef, type ReactNode } from 'react'
 import type { ApiError } from '../services/api'
 
@@ -77,14 +77,6 @@ export function Badge({ children, tone = 'neutral', title }: { children: ReactNo
     sky: 'border-ink-soft/20 bg-sky-soft text-ink-soft',
   }
   return <span title={title} className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium ${styles[tone]}`}>{children}</span>
-}
-
-export function SampleBadge({ what = 'data' }: { what?: string }) {
-  return (
-    <Badge tone="gold" title={`Sample ${what} for development and demos, not a real record`}>
-      <FlaskConical className="h-3 w-3" aria-hidden /> Sample {what}
-    </Badge>
-  )
 }
 
 export function Stars({ value, size = 'sm', label }: { value: number | null; size?: 'sm' | 'md'; label?: string }) {

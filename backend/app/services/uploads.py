@@ -5,9 +5,10 @@
 * Only JPEG / PNG / WEBP are accepted; images are re-encoded, which strips
   EXIF metadata (including GPS location) and any trailing payload.
 * Files get random names. With CLOUDINARY_URL set they are stored in Cloudinary
-  (free plan; required on hosts without a persistent disk such as Vercel) and the
-  stored path is the HTTPS URL; otherwise they go to UPLOAD_DIR and are served
-  with nosniff + a restrictive CSP.
+  and the stored path is the HTTPS URL. Otherwise they go to UPLOAD_DIR, or into
+  the database (IMAGE_STORAGE=database, automatic on Vercel whose disk is temporary)
+  with a stored path of "db:<subdir>/<name>" served from /api/media/. Both are
+  served with nosniff + a restrictive CSP.
 """
 
 from __future__ import annotations
@@ -29,6 +30,8 @@ from app.core.config import get_settings
 logger = logging.getLogger("bookworm.uploads")
 
 ALLOWED = {"JPEG": "jpg", "PNG": "png", "WEBP": "webp"}
+CONTENT_TYPES = {"jpg": "image/jpeg", "png": "image/png", "webp": "image/webp"}
+DB_PREFIX = "db:"
 CLOUDINARY_FOLDER = "bookworm"
 MAX_PIXELS = 40_000_000
 MAX_DIMENSION = 1600
@@ -76,8 +79,11 @@ def save_image(data: bytes, subdir: str) -> str:
     except (UnidentifiedImageError, OSError, Image.DecompressionBombError, SyntaxError, ValueError):
         raise HTTPException(status_code=415, detail="File is not a valid image")
     token = secrets.token_hex(16)
-    if get_settings().cloudinary:
+    backend = get_settings().image_backend
+    if backend == "cloudinary":
         return _cloudinary_upload(out.getvalue(), f"{CLOUDINARY_FOLDER}/{subdir}/{token}")
+    if backend == "database":
+        return _db_save(f"{subdir}/{token}.{ALLOWED[fmt]}", out.getvalue())
     root = Path(get_settings().upload_dir)
     folder = root / subdir
     folder.mkdir(parents=True, exist_ok=True)
@@ -90,7 +96,32 @@ def public_url(path: str | None) -> str | None:
     """Browser URL for a stored upload (Cloudinary URL or local /uploads path)."""
     if not path:
         return None
-    return path if path.startswith("https://") else f"/uploads/{path}"
+    if path.startswith("https://"):
+        return path
+    if path.startswith(DB_PREFIX):
+        return f"/api/media/{path[len(DB_PREFIX):]}"
+    return f"/uploads/{path}"
+
+
+def _db_save(key: str, data: bytes) -> str:
+    from app.db.session import SessionLocal
+    from app.models.media import StoredImage
+
+    with SessionLocal() as db:
+        db.add(StoredImage(key=key, content_type=CONTENT_TYPES[key.rsplit(".", 1)[1]], data=data))
+        db.commit()
+    return DB_PREFIX + key
+
+
+def _db_delete(key: str) -> None:
+    from sqlalchemy import delete
+
+    from app.db.session import SessionLocal
+    from app.models.media import StoredImage
+
+    with SessionLocal() as db:
+        db.execute(delete(StoredImage).where(StoredImage.key == key))
+        db.commit()
 
 
 def _cloudinary_sign(params: dict, secret: str) -> str:
@@ -133,6 +164,9 @@ def delete_upload(rel_path: str | None) -> None:
         return
     if rel_path.startswith("https://"):
         _cloudinary_delete(rel_path)
+        return
+    if rel_path.startswith(DB_PREFIX):
+        _db_delete(rel_path[len(DB_PREFIX):])
         return
     root = Path(get_settings().upload_dir).resolve()
     target = (root / rel_path).resolve()

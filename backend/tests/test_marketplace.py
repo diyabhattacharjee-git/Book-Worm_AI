@@ -156,3 +156,33 @@ def test_cloudinary_storage_when_configured(user_client, monkeypatch):
     img_id = r.json()["images"][0]["id"]
     c.delete(f"/api/marketplace/listings/{lid}/images/{img_id}")
     assert calls[-1][0].endswith("/image/destroy") and calls[-1][1]["public_id"] == form["public_id"]
+
+
+def test_database_image_storage(user_client, monkeypatch):
+    """IMAGE_STORAGE=database (automatic on Vercel) keeps photos in the database and serves them from /api/media/."""
+    from app.core.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "image_storage", "database")
+    c, _ = user_client
+    lid = c.post("/api/marketplace/listings", json={**LISTING, "price_amount": 265}).json()["id"]
+    r = c.post(f"/api/marketplace/listings/{lid}/images", files={"file": ("a.png", _png(), "image/png")})
+    assert r.status_code == 201
+    url = r.json()["images"][0]["url"]
+    assert url.startswith("/api/media/listings/") and url.endswith(".png")
+    img = c.get(url)
+    assert img.status_code == 200 and img.headers["content-type"] == "image/png"
+    assert img.content.startswith(b"\x89PNG") and "sandbox" in img.headers["content-security-policy"]
+    img_id = r.json()["images"][0]["id"]
+    c.delete(f"/api/marketplace/listings/{lid}/images/{img_id}")
+    assert c.get(url).status_code == 404
+
+
+def test_auto_image_storage_uses_database_on_vercel(monkeypatch):
+    from app.core.config import get_settings
+
+    s = get_settings()
+    monkeypatch.setattr(s, "image_storage", "auto")
+    monkeypatch.delenv("VERCEL", raising=False)
+    assert s.image_backend == "local"
+    monkeypatch.setenv("VERCEL", "1")
+    assert s.image_backend == "database"

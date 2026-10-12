@@ -172,7 +172,7 @@ function Results({ result }: { result: UsedSearchResult }) {
               {b.found && <Badge tone="sky" title="Identification confidence (1.0 = exact ISBN match)">match confidence {b.confidence.toFixed(2)}</Badge>}
               {b.ambiguous && <Badge tone="gold">Ambiguous</Badge>}
             </p>
-            {b.authors.length > 0 && <p className="text-muted">{b.authors.join(', ')} · {b.method.replace(/_/g, ' ')}</p>}
+            {b.authors.length > 0 && <p className="text-muted">{b.authors.join(', ')}</p>}
             {b.notes.map((n) => <p key={n} className="text-xs text-muted">{n}</p>)}
             {b.ambiguous && b.candidates.length > 0 && (
               <p className="mt-1 text-xs">Did you mean: {b.candidates.slice(1).map((c, i) => <span key={i}>{i > 0 && ', '}{c.book_id ? <Link className="link" to={`/marketplace/find?title=${encodeURIComponent(c.title)}`} reloadDocument>{c.title}</Link> : c.title}</span>)}</p>

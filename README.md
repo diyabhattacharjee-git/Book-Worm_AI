@@ -16,8 +16,8 @@ API quotas depend on providers' current free tiers.)
 | Frontend | React 19, Vite, TypeScript, Tailwind CSS v4, React Router 7, Lucide, Vitest + Testing Library |
 | Backend | Python 3.11, FastAPI, Pydantic 2, SQLAlchemy 2, Alembic, PyJWT, bcrypt, httpx, Pillow |
 | ML / agents | scikit-learn (TF-IDF), NumPy/SciPy, LangGraph; optional Groq SDK, Hugging Face Hub, Ollama, sentence-transformers |
-| Data | SQLite locally, PostgreSQL (Neon) in production; Cloudinary for photos; Open Library + Google Books metadata; optional eBay Browse API |
-| Tests | 92 backend tests (pytest, SQLite and PostgreSQL) · 13 frontend tests (Vitest) · all run offline |
+| Data | SQLite locally, PostgreSQL (Neon) in production; photos in the database or Cloudinary; Open Library + Google Books metadata; optional eBay Browse API |
+| Tests | 94 backend tests (pytest, SQLite and PostgreSQL) · 13 frontend tests (Vitest) · all run offline |
 
 ## Quick start
 
@@ -50,7 +50,7 @@ Email codes need SMTP settings (a free Gmail app password works; see `backend/.e
 development prints codes to the backend log. Google sign-in appears once `GOOGLE_CLIENT_ID` is set.
 Test both with `python -m app.cli check-email --to you@example.com` and `python -m app.cli check-llm`.
 
-Full instructions, the free **Vercel + Neon + Cloudinary** deployment and a troubleshooting table: **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
+Full instructions, the free **Vercel + Neon** deployment and a troubleshooting table: **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
 
 ## Feature checklist
 
@@ -72,7 +72,7 @@ Full instructions, the free **Vercel + Neon + Cloudinary** deployment and a trou
 | 14 | New-copy offers via provider adapters | ✅ / ⚠️ | Only real prices returned by sources (Google Play Books prices, eBay “new”). Often none are available; the page says so |
 | 15 | Used-book search across community + eBay | ✅ / ⚠️ | eBay requires your own free developer keys; otherwise community only, clearly stated |
 | 16 | Accounts: email-OTP sign-up, username/email + password, email-code sign-in, Google sign-in, password reset; seller profiles, avatar, privacy controls | ✅ | Email needs SMTP; Google needs a client ID |
-| 17 | Sell a book: create/edit/deactivate/reactivate/mark sold/delete, up to 6 validated photos | ✅ | Local disk storage |
+| 17 | Sell a book: create/edit/deactivate/reactivate/mark sold/delete, up to 6 validated photos | ✅ | Local disk, the database (automatic on Vercel) or Cloudinary |
 | 18 | Buyer experience: browse/filter/sort, favourites, private inquiries & replies, reports, same-book comparison | ✅ | No payments by design |
 | 19 | Price intelligence with documented confidence and refusal on thin data | ✅ | Asking prices, not sale prices |
 | 20 | Listing validation, dedup, quality scoring, deal ranking | ✅ | Suspicious bargains not auto-ranked first |
@@ -110,7 +110,7 @@ docker-compose.yml (optional)
 ## Running tests
 
 ```bash
-cd backend  && pip install -r requirements-dev.txt && .venv/Scripts/python -m pytest -q   # 92 tests, temporary DB, no network
+cd backend  && pip install -r requirements-dev.txt && .venv/Scripts/python -m pytest -q   # 94 tests, temporary DB, no network
 # Against Postgres: set TEST_DATABASE_URL=postgresql://... (an empty, disposable database)
 cd frontend && npm test && npm run typecheck && npm run build
 ```
@@ -135,7 +135,8 @@ Everything lives in `backend/.env` (see the commented [backend/.env.example](bac
 * **eBay** needs your own keys and Browse API access; India-specific availability/shipping is never assumed.
 * **Google Books** without a key shares a public quota that is frequently exhausted (Open Library still works).
 * **Free hosting** typically sleeps when idle and wipes local disk (SQLite file, uploaded photos). See DEPLOYMENT.md.
-* Rate limiting is in-memory per process; no email verification or password-reset email (no free mail service assumed).
+* Rate limiting is in-memory per process (it resets when a new server instance starts).
+* Email codes (sign-up, sign-in, password reset) need an SMTP account; a free Gmail app password works.
 
 ## Documentation
 

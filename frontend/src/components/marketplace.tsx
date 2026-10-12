@@ -2,7 +2,7 @@ import { AlertTriangle, CheckCircle2, Circle, ExternalLink, Heart, Image as Imag
 import { Link } from 'react-router'
 import type { Deal, Listing, PriceEstimate, PriceVerdict, TraceStep } from '../types'
 import { CONDITION_LABELS, money, relativeTime } from '../utils/format'
-import { Badge, SampleBadge } from './ui'
+import { Badge } from './ui'
 
 export function ConditionBadge({ condition }: { condition: string }) {
   const tone = condition === 'like_new' || condition === 'new' ? 'forest' : condition === 'very_good' || condition === 'good' ? 'sky' : condition === 'unknown' ? 'neutral' : 'gold'
@@ -44,7 +44,6 @@ export function ListingCard({ listing, onFavorite }: { listing: Listing; onFavor
         <div className="flex flex-wrap gap-1.5">
           <ConditionBadge condition={listing.condition} />
           {listing.status !== 'active' && <StatusBadge status={listing.status} />}
-          {listing.is_sample && <SampleBadge what="listing" />}
         </div>
         <Link to={`/marketplace/listings/${listing.id}`} className="mt-2 font-serif font-semibold leading-snug hover:text-forest line-clamp-2">{listing.title}</Link>
         <p className="text-xs text-muted line-clamp-1">{listing.author}{listing.edition_text ? ` · ${listing.edition_text}` : ''}</p>
@@ -119,7 +118,7 @@ export function PriceEstimateCard({ estimate, title = 'Fair price estimate' }: {
         </div>
         {ok && estimate.confidence && (
           <Badge tone={estimate.confidence === 'high' ? 'forest' : estimate.confidence === 'medium' ? 'sky' : 'gold'}
-            title={estimate.confidence_score !== null ? `Confidence score ${estimate.confidence_score} (documented formula: comparables, match tier, price spread, sample share)` : 'Rule-based estimate'}>
+            title={estimate.confidence_score !== null ? `Based on how many comparable copies were found, how closely they match and how consistent their prices are (score ${estimate.confidence_score})` : undefined}>
             {estimate.confidence} confidence
           </Badge>
         )}
@@ -159,7 +158,6 @@ export function DealCard({ deal, rank }: { deal: Deal; rank: number }) {
           <Badge tone={l.is_external ? 'sky' : 'forest'}>{l.provider_label}</Badge>
           <ConditionBadge condition={l.condition} />
           <VerdictBadge verdict={deal.deal.price_verdict} />
-          {l.is_sample && <SampleBadge what="listing" />}
           <Badge tone={deal.deal.group === 'match' ? 'forest' : deal.deal.group === 'near_match' ? 'gold' : 'neutral'}>{groupLabel}</Badge>
         </div>
         <h3 className="mt-2 font-serif text-lg font-semibold leading-snug">{l.title}</h3>

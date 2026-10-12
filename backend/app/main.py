@@ -8,9 +8,9 @@ from pathlib import Path
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
-from sqlalchemy import text
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app.agents import llm
@@ -29,6 +29,7 @@ from app.core.errors import install_error_handlers
 from app.core.logging import configure_logging, log_event
 from app.db.session import get_db
 from app.marketplace.providers import providers_status
+from app.models.media import StoredImage
 from app.recommender.content import get_content_model
 from app.security.middleware import CSRFHeaderMiddleware, SecurityHeadersMiddleware
 
@@ -77,6 +78,14 @@ def create_app() -> FastAPI:
     upload_dir = Path(settings.upload_dir)
     upload_dir.mkdir(parents=True, exist_ok=True)
     app.mount("/uploads", StaticFiles(directory=str(upload_dir)), name="uploads")
+
+    @app.get("/api/media/{subdir}/{name}", include_in_schema=False)
+    def media(subdir: str, name: str, db: Session = Depends(get_db)):
+        """Photos stored in the database (IMAGE_STORAGE=database). Keys are random, so URLs are unguessable."""
+        img = db.scalar(select(StoredImage).where(StoredImage.key == f"{subdir}/{name}"))
+        if img is None:
+            return JSONResponse(status_code=404, content={"detail": "Not found"})
+        return Response(content=img.data, media_type=img.content_type)
 
     @app.get("/api/health", tags=["health"])
     def health(db: Session = Depends(get_db)):

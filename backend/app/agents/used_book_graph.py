@@ -251,11 +251,8 @@ def _deterministic_summary(state: UsedBookState) -> str:
     bl = listings[best["uid"]]
     cur = bl.get("currency") or ""
     price_txt = f"{cur} {bl['price']:,.0f}" if bl.get("price") is not None else "an unknown price"
-    sample_note = ""
-    if all(listings[r["uid"]].get("is_sample") for r in ranking):
-        sample_note = " All of them are sample (demo) listings, not real offers."
     parts.append(f"Found {len(ranking)} relevant listing(s) for “{title}”; {len(matches)} meet all your "
-                 f"constraints.{sample_note}")
+                 f"constraints.")
     lead = "Best match" if matches else "Closest option (doesn't meet every constraint)"
     parts.append(f"{lead}: a {bl['condition'].replace('_', ' ')} copy from {bl['provider_label']} at {price_txt}"
                  + (f" ({best['reasons'][0]})." if best["reasons"] else "."))

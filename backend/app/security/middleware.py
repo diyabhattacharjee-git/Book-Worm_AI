@@ -31,7 +31,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers.setdefault("X-Content-Type-Options", "nosniff")
         response.headers.setdefault("X-Frame-Options", "DENY")
         response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
-        if request.url.path.startswith("/uploads/"):
+        if request.url.path.startswith(("/uploads/", "/api/media/")):
             response.headers["Content-Security-Policy"] = "default-src 'none'; img-src 'self'; sandbox"
             response.headers["Cache-Control"] = "public, max-age=86400"
         return response
