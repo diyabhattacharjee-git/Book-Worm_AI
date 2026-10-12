@@ -26,3 +26,7 @@ frontend/coverage/
 .DS_Store
 Thumbs.db
 .neon
+
+.vercel
+.env*
+!**/.env.example
