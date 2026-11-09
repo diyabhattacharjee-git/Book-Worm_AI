@@ -10,6 +10,7 @@ import { ToastProvider } from '../contexts/ToastContext'
 import Assistant from '../pages/Assistant'
 import BookDetail from '../pages/BookDetail'
 import Discover from '../pages/Discover'
+import Privacy from '../pages/Privacy'
 import SellBook from '../pages/SellBook'
 import SmartSearch from '../pages/SmartSearch'
 import Todos from '../pages/Todos'
@@ -363,6 +364,15 @@ describe('Books the catalogue does not hold', () => {
     await user.click(screen.getByRole('button', { name: 'Search' }))
     expect(await screen.findByRole('button', { name: /Search Google Books/ })).toBeInTheDocument()
     expect(calls(spy, LIVE)).toBe(0)
+  })
+})
+
+describe('Privacy policy', () => {
+  it('is open to signed-out visitors and points to the data controls', async () => {
+    server(() => undefined, null)
+    show('/privacy', '/privacy', <Privacy />)
+    expect(await screen.findByRole('heading', { name: 'Privacy policy' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Profile & settings' })).toHaveAttribute('href', '/settings')
   })
 })
 

@@ -164,6 +164,7 @@ export function AppLayout() {
             <Link to="/marketplace/find" className="hover:text-ink">Find a deal</Link>
             <Link to="/plans" className="hover:text-ink">Reading plans</Link>
             <Link to="/sell" className="hover:text-ink">Sell a book</Link>
+            <Link to="/privacy" className="hover:text-ink">Privacy policy</Link>
           </div>
           <p className="text-xs leading-relaxed">
             BookWorm doesn’t process payments, hold funds or guarantee transactions, and doesn’t verify every seller.

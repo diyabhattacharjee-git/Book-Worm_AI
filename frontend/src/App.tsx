@@ -30,6 +30,7 @@ const Settings = lazy(() => import('./pages/Settings'))
 const Login = lazy(() => import('./pages/Login'))
 const Register = lazy(() => import('./pages/Register'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
+const Privacy = lazy(() => import('./pages/Privacy'))
 const Admin = lazy(() => import('./pages/Admin'))
 const Moderation = lazy(() => import('./pages/Moderation'))
 const NotFound = lazy(() => import('./pages/NotFound'))
@@ -66,6 +67,7 @@ export const routes = [
       { path: '/login', element: page(<Login />) },
       { path: '/register', element: page(<Register />) },
       { path: '/forgot-password', element: page(<ForgotPassword />) },
+      { path: '/privacy', element: page(<Privacy />) },
       { path: '/admin', element: admin(<Admin />) },
       { path: '/admin/moderation', element: admin(<Moderation />) },
       { path: '*', element: page(<NotFound />) },
