@@ -195,3 +195,22 @@ def test_upload_dir_moves_to_tmp_on_vercel(monkeypatch):
     monkeypatch.setenv("VERCEL", "1")
     assert Settings(upload_dir="./uploads").upload_dir == "/tmp/bookworm-uploads"
     assert Settings(upload_dir="/tmp/photos").upload_dir.replace("\\", "/").endswith("/tmp/photos")
+
+
+def test_photo_is_kept_when_cloudinary_rejects_the_upload(user_client, monkeypatch):
+    import httpx
+
+    from app.core.config import get_settings
+    from app.services import uploads
+
+    monkeypatch.setattr(get_settings(), "cloudinary_url", "cloudinary://badkey:badsecret@democloud")
+    monkeypatch.setattr(uploads.httpx, "post", lambda *a, **k: httpx.Response(401, json={"error": {"message": "Invalid API key"}}))
+    c, _ = user_client
+    lid = c.post("/api/marketplace/listings", json={**LISTING, "price_amount": 245}).json()["id"]
+    r = c.post(f"/api/marketplace/listings/{lid}/images", files={"file": ("a.png", _png(), "image/png")})
+    assert r.status_code == 201
+    url = r.json()["images"][0]["url"]
+    assert url.startswith("/api/media/listings/") and url.endswith(".png")
+    served = c.get(url)
+    assert served.status_code == 200 and served.headers["content-type"] == "image/png"
+

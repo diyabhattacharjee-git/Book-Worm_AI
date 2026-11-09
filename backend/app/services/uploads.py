@@ -81,7 +81,10 @@ def save_image(data: bytes, subdir: str) -> str:
     token = secrets.token_hex(16)
     backend = get_settings().image_backend
     if backend == "cloudinary":
-        return _cloudinary_upload(out.getvalue(), f"{CLOUDINARY_FOLDER}/{subdir}/{token}")
+        try:
+            return _cloudinary_upload(out.getvalue(), f"{CLOUDINARY_FOLDER}/{subdir}/{token}")
+        except HTTPException:  # already logged; a seller's photo shouldn't be lost to a storage outage or bad key
+            backend = "database"
     if backend == "database":
         return _db_save(f"{subdir}/{token}.{ALLOWED[fmt]}", out.getvalue())
     root = Path(get_settings().upload_dir)
