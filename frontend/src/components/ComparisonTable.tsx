@@ -17,7 +17,7 @@ export function ComparisonTable({ data, compact = false }: { data: ComparisonDat
                 <th key={r.book_id} className="p-3 align-bottom">
                   <Link to={`/books/${r.book_id}`} className="flex items-end gap-3 hover:text-forest">
                     {!compact && <div className="w-12 shrink-0"><BookCover title={r.title} url={r.cover_url} size="sm" /></div>}
-                    <span className="font-serif text-base font-semibold leading-snug">{r.title}</span>
+                    <span className="user-text font-serif text-base font-semibold leading-snug">{r.title}</span>
                   </Link>
                 </th>
               ))}
@@ -30,7 +30,7 @@ export function ComparisonTable({ data, compact = false }: { data: ComparisonDat
                 {data.rows.map((r) => {
                   const v = r[key]
                   const text = key === 'language' && typeof v === 'string' && v !== 'Not available' ? languageName(v) : v ?? 'Not available'
-                  return <td key={r.book_id} className={`p-3 align-top ${text === 'Not available' ? 'text-muted' : 'text-ink-soft'}`}>{String(text)}</td>
+                  return <td key={r.book_id} className={`user-text p-3 align-top ${text === 'Not available' ? 'text-muted' : 'text-ink-soft'}`}>{String(text)}</td>
                 })}
               </tr>
             ))}

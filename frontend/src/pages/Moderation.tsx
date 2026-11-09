@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { ConditionBadge, StatusBadge } from '../components/marketplace'
-import { Badge, EmptyState, ErrorState, Notice, PageHeader, Spinner, Tabs } from '../components/ui'
+import { Badge, EmptyState, ErrorState, ListSkeleton, Notice, PageHeader, Tabs } from '../components/ui'
+import { usePrompt } from '../contexts/ConfirmContext'
 import { useToast } from '../contexts/ToastContext'
-import { useApi } from '../hooks/useApi'
+import { TTL, useGet } from '../hooks/useApi'
 import { api } from '../services/api'
 import type { Listing } from '../types'
 import { money, relativeTime } from '../utils/format'
@@ -36,19 +37,19 @@ export default function Moderation() {
 function ReportQueue() {
   const toast = useToast()
   const [status, setStatus] = useState<'open' | 'resolved' | 'dismissed'>('open')
-  const r = useApi(() => api.get<Reports>('/api/admin/reports', { status }), [status])
+  const r = useGet<Reports>('/api/admin/reports', { status }, { ttl: TTL.short })
   async function call(fn: () => Promise<unknown>, msg: string) {
     try { await fn(); toast.success(msg); r.reload() } catch (e) { toast.error((e as Error).message) }
   }
   return (
     <div className="space-y-8">
       <select aria-label="Report status" className="input w-auto" value={status} onChange={(e) => setStatus(e.target.value as typeof status)}><option value="open">Open</option><option value="resolved">Resolved</option><option value="dismissed">Dismissed</option></select>
-      {r.loading ? <Spinner /> : r.error ? <ErrorState error={r.error} onRetry={r.reload} /> : (
+      {r.loading ? <ListSkeleton rows={3} /> : r.error || !r.data ? <ErrorState error={r.error} onRetry={r.reload} /> : (
         <>
           <section>
-            <h2 className="mb-3 text-lg font-semibold">Listing reports ({r.data!.listing_reports.length})</h2>
-            {r.data!.listing_reports.length === 0 ? <p className="text-sm text-muted">Nothing here.</p> : (
-              <ul className="space-y-3">{r.data!.listing_reports.map((rep) => (
+            <h2 className="mb-3 text-lg font-semibold">Listing reports ({r.data.listing_reports.length})</h2>
+            {r.data.listing_reports.length === 0 ? <p className="text-sm text-muted">Nothing here.</p> : (
+              <ul className="space-y-3">{r.data.listing_reports.map((rep) => (
                 <li key={rep.id} className="card p-4 text-sm">
                   <div className="flex flex-wrap items-center gap-2"><Link to={`/marketplace/listings/${rep.listing_id}`} className="font-semibold hover:text-forest">{rep.listing_title}</Link><StatusBadge status={rep.listing_status} /><Badge tone="rust">{rep.reason}</Badge><span className="text-xs text-muted">{relativeTime(rep.created_at)}</span></div>
                   {rep.details && <p className="mt-1 text-ink-soft">“{rep.details}”</p>}
@@ -62,9 +63,9 @@ function ReportQueue() {
             )}
           </section>
           <section>
-            <h2 className="mb-3 text-lg font-semibold">Review reports ({r.data!.review_reports.length})</h2>
-            {r.data!.review_reports.length === 0 ? <p className="text-sm text-muted">Nothing here.</p> : (
-              <ul className="space-y-3">{r.data!.review_reports.map((rep) => (
+            <h2 className="mb-3 text-lg font-semibold">Review reports ({r.data.review_reports.length})</h2>
+            {r.data.review_reports.length === 0 ? <p className="text-sm text-muted">Nothing here.</p> : (
+              <ul className="space-y-3">{r.data.review_reports.map((rep) => (
                 <li key={rep.id} className="card p-4 text-sm">
                   <div className="flex flex-wrap items-center gap-2"><Link to={`/books/${rep.book_id}`} className="font-semibold hover:text-forest">Review #{rep.review_id}</Link><Badge tone={rep.review_status === 'hidden' ? 'neutral' : 'forest'}>{rep.review_status}</Badge><Badge tone="rust">{rep.reason}</Badge><span className="text-xs text-muted">{relativeTime(rep.created_at)}</span></div>
                   <p className="mt-1 text-ink-soft">“{rep.review_excerpt}”</p>
@@ -85,17 +86,19 @@ function ReportQueue() {
 
 function SuspiciousListings() {
   const toast = useToast()
-  const l = useApi(() => api.get<{ items: AdminListing[]; total: number; note: string }>('/api/admin/listings', { suspicious: true, status: 'active' }), [])
+  const prompt = usePrompt()
+  const l = useGet<{ items: AdminListing[]; total: number; note: string }>('/api/admin/listings', { suspicious: true, status: 'active' }, { ttl: TTL.short })
   async function moderate(id: number, status: string) {
-    const note = status === 'active' ? null : prompt('Note for the seller (optional):') ?? null
+    const note = status === 'active' ? null : (await prompt({ title: 'Moderate this listing', label: 'Note for the seller (optional)', maxLength: 300, confirmLabel: 'Continue' }))
+    if (status !== 'active' && note === null) return
     try { await api.patch(`/api/admin/listings/${id}`, { status, note }); toast.success('Listing updated.'); l.reload() } catch (e) { toast.error((e as Error).message) }
   }
-  if (l.loading) return <Spinner />
-  if (l.error) return <ErrorState error={l.error} onRetry={l.reload} />
+  if (l.loading) return <ListSkeleton rows={3} />
+  if (l.error || !l.data) return <ErrorState error={l.error} onRetry={l.reload} />
   return (
     <div className="space-y-4">
-      <Notice tone="info">{l.data!.note}</Notice>
-      {l.data!.items.length === 0 ? <EmptyState title="Nothing to review">No active listings with limited information or open reports.</EmptyState> : l.data!.items.map((x) => (
+      <Notice tone="info">{l.data.note}</Notice>
+      {l.data.items.length === 0 ? <EmptyState title="Nothing to review">No active listings with limited information or open reports.</EmptyState> : l.data.items.map((x) => (
         <div key={x.id} className="card flex flex-wrap items-start gap-4 p-4 text-sm">
           <div className="min-w-0 flex-1">
             <Link to={`/marketplace/listings/${x.id}`} className="font-semibold hover:text-forest">{x.title}</Link>
@@ -112,17 +115,17 @@ function SuspiciousListings() {
 function ReviewModeration() {
   const toast = useToast()
   const [status, setStatus] = useState<'visible' | 'hidden'>('visible')
-  const r = useApi(() => api.get<{ id: number; book_id: number; user: string; rating: number; body: string; status: string; helpful_count: number; updated_at: string }[]>('/api/admin/reviews', { status }), [status])
+  const r = useGet<{ id: number; book_id: number; user: string; rating: number; body: string; status: string; helpful_count: number; updated_at: string }[]>('/api/admin/reviews', { status }, { ttl: TTL.short })
   async function set(id: number, s: 'visible' | 'hidden') {
     try { await api.patch(`/api/admin/reviews/${id}`, { status: s }); toast.success(`Review ${s}.`); r.reload() } catch (e) { toast.error((e as Error).message) }
   }
   return (
     <div className="space-y-3">
       <select aria-label="Review status" className="input w-auto" value={status} onChange={(e) => setStatus(e.target.value as typeof status)}><option value="visible">Visible</option><option value="hidden">Hidden</option></select>
-      {r.loading ? <Spinner /> : r.data?.length === 0 ? <p className="text-sm text-muted">No reviews.</p> : r.data?.map((rv) => (
+      {r.loading ? <ListSkeleton rows={3} /> : r.error ? <ErrorState error={r.error} onRetry={r.reload} /> : r.data?.length === 0 ? <p className="text-sm text-muted">No reviews.</p> : r.data?.map((rv) => (
         <div key={rv.id} className="card p-4 text-sm">
           <p><strong>{rv.user}</strong> · {rv.rating}★ · <Link to={`/books/${rv.book_id}`} className="link">book #{rv.book_id}</Link> · {relativeTime(rv.updated_at)}</p>
-          <p className="mt-1 text-ink-soft line-clamp-3">{rv.body}</p>
+          <p className="user-text mt-1 line-clamp-3 text-ink-soft">{rv.body}</p>
           <button className="btn-outline btn-sm mt-2" onClick={() => set(rv.id, rv.status === 'visible' ? 'hidden' : 'visible')}>{rv.status === 'visible' ? 'Hide' : 'Restore'}</button>
         </div>
       ))}
@@ -131,8 +134,9 @@ function ReviewModeration() {
 }
 
 function AuditLog() {
-  const a = useApi(() => api.get<{ id: number; actor_id: number | null; action: string; target_type: string; target_id: number | null; details: Record<string, unknown>; created_at: string }[]>('/api/admin/audit-log'), [])
-  if (a.loading) return <Spinner />
+  const a = useGet<{ id: number; actor_id: number | null; action: string; target_type: string; target_id: number | null; details: Record<string, unknown>; created_at: string }[]>('/api/admin/audit-log', undefined, { ttl: TTL.short })
+  if (a.loading) return <ListSkeleton rows={3} />
+  if (a.error) return <ErrorState error={a.error} onRetry={a.reload} />
   return a.data?.length ? (
     <ul className="divide-y divide-line rounded-xl border border-line bg-paper text-sm">
       {a.data.map((e) => <li key={e.id} className="flex flex-wrap gap-3 p-3"><span className="text-xs text-muted">{relativeTime(e.created_at)}</span><span className="font-medium">{e.action}</span><span>{e.target_type} #{e.target_id}</span><span className="text-xs text-muted">admin #{e.actor_id ?? '—'} {Object.keys(e.details).length ? JSON.stringify(e.details) : ''}</span></li>)}

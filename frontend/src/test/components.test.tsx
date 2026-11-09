@@ -24,7 +24,7 @@ describe('BookCover', () => {
     expect(screen.getByText('Dune')).toBeInTheDocument()
   })
   it('uses the real cover image when available', () => {
-    render(<BookCover title="Dune" url="https://covers.openlibrary.org/b/isbn/1-L.jpg" />)
+    render(<BookCover title="Dune" size="lg" url="https://covers.openlibrary.org/b/isbn/1-L.jpg" />)
     expect(screen.getByAltText('Cover of Dune')).toHaveAttribute('src', 'https://covers.openlibrary.org/b/isbn/1-L.jpg')
   })
 })

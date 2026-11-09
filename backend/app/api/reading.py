@@ -55,10 +55,12 @@ def _sync_shelf_signal(db: Session, user_id: int, book_id: int, status: str | No
 
 @router.get("/bookshelf")
 def get_bookshelf(status: Literal["want_to_read", "reading", "read", "abandoned"] | None = None,
-                  user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+                  book_id: int | None = None, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     q = select(BookshelfEntry).where(BookshelfEntry.user_id == user.id)
     if status:
         q = q.where(BookshelfEntry.status == status)
+    if book_id:
+        q = q.where(BookshelfEntry.book_id == book_id)
     entries = list(db.scalars(q.order_by(BookshelfEntry.updated_at.desc())).unique())
     sums = {s.id: s for s in summaries(db, [e.book for e in entries])}
     counts = dict(db.execute(select(BookshelfEntry.status, func.count(BookshelfEntry.id))
@@ -245,8 +247,8 @@ def _goal_out(db: Session, g: ReadingGoal) -> dict:
 
 @router.get("/reading-goals")
 def list_goals(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    goals = db.scalars(select(ReadingGoal).where(ReadingGoal.user_id == user.id)
-                       .order_by(ReadingGoal.year.desc(), ReadingGoal.month))
+    goals = list(db.scalars(select(ReadingGoal).where(ReadingGoal.user_id == user.id)
+                            .order_by(ReadingGoal.year.desc(), ReadingGoal.month)))
     return [_goal_out(db, g) for g in goals]
 
 

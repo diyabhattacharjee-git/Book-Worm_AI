@@ -1,9 +1,10 @@
 import { BarChart3, BookOpen, Flag, Store, Users } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { Badge, EmptyState, ErrorState, Notice, PageHeader, Spinner, Tabs } from '../components/ui'
+import { Badge, EmptyState, ErrorState, ListSkeleton, Notice, PageHeader, Tabs } from '../components/ui'
+import { useConfirm, usePrompt } from '../contexts/ConfirmContext'
 import { useToast } from '../contexts/ToastContext'
-import { useApi } from '../hooks/useApi'
+import { TTL, useDebounced, useGet } from '../hooks/useApi'
 import { api } from '../services/api'
 import { date, money } from '../utils/format'
 
@@ -45,10 +46,10 @@ function Stat({ label, value, sub }: { label: string; value: number | string; su
 }
 
 function OverviewTab() {
-  const o = useApi(() => api.get<Overview>('/api/admin/overview'), [])
-  if (o.loading) return <Spinner />
-  if (o.error) return <ErrorState error={o.error} onRetry={o.reload} />
-  const d = o.data!
+  const o = useGet<Overview>('/api/admin/overview', undefined, { ttl: TTL.short })
+  if (o.loading) return <ListSkeleton rows={3} />
+  if (o.error || !o.data) return <ErrorState error={o.error} onRetry={o.reload} />
+  const d = o.data
   return (
     <div className="space-y-8">
       <section><h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><Users className="h-5 w-5" aria-hidden />Users</h2>
@@ -76,7 +77,7 @@ const METRIC_LABELS: [string, string][] = [['precision_at_', 'Precision@K'], ['r
 
 function RecsTab() {
   const toast = useToast()
-  const m = useApi(() => api.get<Metrics>('/api/recommendations/metrics'), [])
+  const m = useGet<Metrics>('/api/recommendations/metrics', undefined, { ttl: TTL.short })
   const [k, setK] = useState(10)
   const [running, setRunning] = useState(false)
   const [last, setLast] = useState<{ status: string; message?: string; methodology: string; requirements: string; data_warning: string | null } | null>(null)
@@ -94,9 +95,9 @@ function RecsTab() {
     }
   }
 
-  if (m.loading) return <Spinner />
-  if (m.error) return <ErrorState error={m.error} onRetry={m.reload} />
-  const d = m.data!
+  if (m.loading) return <ListSkeleton rows={3} />
+  if (m.error || !m.data) return <ErrorState error={m.error} onRetry={m.reload} />
+  const d = m.data
   return (
     <div className="space-y-8">
       <section className="grid gap-4 sm:grid-cols-4">
@@ -160,7 +161,8 @@ function RecsTab() {
 function UsersTab() {
   const toast = useToast()
   const [q, setQ] = useState('')
-  const users = useApi(() => api.get<{ total: number; items: { id: number; email: string; username: string | null; display_name: string; role: string; is_seller: boolean; is_active: boolean; is_demo: boolean; created_at: string; last_login_at: string | null }[] }>('/api/admin/users', { q }), [q])
+  const term = useDebounced(q.trim())
+  const users = useGet<{ total: number; items: { id: number; email: string; username: string | null; display_name: string; role: string; is_seller: boolean; is_active: boolean; is_demo: boolean; created_at: string; last_login_at: string | null }[] }>('/api/admin/users', { q: term }, { ttl: TTL.short, keepPrevious: true })
   async function toggle(id: number, is_active: boolean) {
     try {
       await api.patch(`/api/admin/users/${id}`, { is_active })
@@ -174,7 +176,7 @@ function UsersTab() {
     <div>
       <label htmlFor="uq" className="sr-only">Search users</label>
       <input id="uq" className="input max-w-sm" placeholder="Search name or email" value={q} onChange={(e) => setQ(e.target.value)} />
-      {users.loading ? <Spinner className="mt-4" /> : (
+      {users.error ? <div className="mt-4"><ErrorState error={users.error} onRetry={users.reload} /></div> : users.loading ? <div className="mt-4"><ListSkeleton rows={3} /></div> : (
         <div className="mt-4 overflow-x-auto rounded-xl border border-line bg-paper">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="border-b border-line text-xs uppercase text-muted"><tr><th className="p-3">User</th><th>Role</th><th>Joined</th><th>Last login</th><th>Status</th><th /></tr></thead>
@@ -197,10 +199,13 @@ function UsersTab() {
 
 function BooksTab() {
   const toast = useToast()
+  const confirm = useConfirm()
+  const prompt = usePrompt()
   const [q, setQ] = useState('')
-  const books = useApi(() => api.get<{ total: number; items: { id: number; title: string; authors: string[]; page_count: number | null; source: string; has_description: boolean; is_sample: boolean }[] }>('/api/admin/books', { q }), [q])
+  const term = useDebounced(q.trim())
+  const books = useGet<{ total: number; items: { id: number; title: string; authors: string[]; page_count: number | null; source: string; has_description: boolean; is_sample: boolean }[] }>('/api/admin/books', { q: term }, { ttl: TTL.short, keepPrevious: true })
   async function setPages(id: number) {
-    const v = prompt('Page count (from a reliable source):')
+    const v = await prompt({ title: 'Add page count', label: 'Page count (from a reliable source)', type: 'number', required: true })
     if (!v) return
     try {
       await api.patch(`/api/admin/books/${id}`, { page_count: Number(v) })
@@ -211,9 +216,13 @@ function BooksTab() {
     }
   }
   async function remove(id: number, title: string) {
-    if (!confirm(`Delete “${title}” from the catalogue?`)) return
-    await api.del(`/api/admin/books/${id}`)
-    books.reload()
+    if (!await confirm({ title: `Delete “${title}” from the catalogue?`, confirmLabel: 'Delete', danger: true })) return
+    try {
+      await api.del(`/api/admin/books/${id}`)
+      books.setData((d) => d && { ...d, total: d.total - 1, items: d.items.filter((b) => b.id !== id) })
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
   }
   return (
     <div>
@@ -222,7 +231,7 @@ function BooksTab() {
         <input id="bq" className="input max-w-sm" placeholder="Search title" value={q} onChange={(e) => setQ(e.target.value)} />
         <Link to="/discover" className="link text-sm"><BookOpen className="mr-1 inline h-4 w-4" aria-hidden />Import books by ISBN from Discover</Link>
       </div>
-      {books.loading ? <Spinner className="mt-4" /> : (
+      {books.error ? <div className="mt-4"><ErrorState error={books.error} onRetry={books.reload} /></div> : books.loading ? <div className="mt-4"><ListSkeleton rows={3} /></div> : (
         <div className="mt-4 overflow-x-auto rounded-xl border border-line bg-paper">
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="border-b border-line text-xs uppercase text-muted"><tr><th className="p-3">Book</th><th>Pages</th><th>Description</th><th>Source</th><th /></tr></thead>

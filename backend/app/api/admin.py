@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from app.core.errors import not_found
 from app.db.session import get_db
+from app.integrations import ebay_seller
 from app.marketplace.providers import community_to_normalized
 from app.marketplace.quality import assess
 from app.models.book import Book
@@ -173,6 +174,8 @@ def moderate_listing(listing_id: int, body: ListingModeration, admin: User = Dep
             rep.status, rep.resolved_at = "resolved", datetime.now(timezone.utc)
     audit(db, admin, "listing_moderated", "listing", listing.id, previous=previous, new=body.status, note=body.note)
     db.commit()
+    if body.status != "active":
+        ebay_seller.end_if_live(db, listing)
     return {"id": listing.id, "status": listing.status}
 
 

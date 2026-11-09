@@ -73,7 +73,7 @@ class Settings(BaseSettings):
     # Optional LLM providers (tried in this order: groq -> huggingface -> ollama)
     llm_provider_order: str = "groq,huggingface,ollama"
     groq_api_key: str = ""
-    groq_model: str = "llama-3.1-8b-instant"
+    groq_model: str = "openai/gpt-oss-120b"
     hf_token: str = ""
     hf_model: str = ""
     hf_provider: str = "auto"  # HF Inference Providers routing; free accounts are limited to free credits
@@ -99,6 +99,17 @@ class Settings(BaseSettings):
     ebay_environment: str = "sandbox"  # sandbox | production
     ebay_marketplace_id: str = "EBAY_US"
     ebay_cache_ttl_minutes: int = 60
+    # Seller tools (connect an eBay account, publish listings). EBAY_RUNAME is the "RuName" from the eBay
+    # developer portal (User Tokens > Get a Token from eBay via Your Application); its "auth accepted URL"
+    # must be <PUBLIC_BASE_URL>/api/ebay/callback.
+    ebay_runame: str = ""
+    # Public https address of this site, needed so eBay can fetch listing photos. Empty = same origin only.
+    public_base_url: str = ""
+    # Marketplace Account Deletion notifications (required by eBay for production keys).
+    # Token: 32-80 chars of letters, digits, _ or -. Endpoint: the exact public URL registered with eBay,
+    # e.g. https://your-site.vercel.app/api/ebay/account-deletion
+    ebay_verification_token: str = ""
+    ebay_deletion_endpoint: str = ""
 
     # Price intelligence
     default_currency: str = "INR"
@@ -196,6 +207,15 @@ class Settings(BaseSettings):
     @property
     def ebay_configured(self) -> bool:
         return bool(self.ebay_client_id and self.ebay_client_secret)
+
+    @property
+    def ebay_seller_configured(self) -> bool:
+        return self.ebay_configured and bool(self.ebay_runame)
+
+    @property
+    def ebay_deletion_configured(self) -> bool:
+        return bool(re.fullmatch(r"[A-Za-z0-9_-]{32,80}", self.ebay_verification_token)
+                    and self.ebay_deletion_endpoint.startswith("https://"))
 
     @property
     def cors_origins(self) -> list[str]:

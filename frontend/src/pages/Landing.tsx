@@ -5,8 +5,7 @@ import { BookCard, BookCover, BookGrid } from '../components/books'
 import { ListingCard } from '../components/marketplace'
 import { BookGridSkeleton, EmptyState, ErrorState } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
-import { useApi } from '../hooks/useApi'
-import { api } from '../services/api'
+import { TTL, useGet } from '../hooks/useApi'
 import type { BookSummary, Listing, Page } from '../types'
 
 const EXAMPLES = [
@@ -28,8 +27,8 @@ export default function Landing() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
-  const popular = useApi(() => api.get<Page<BookSummary>>('/api/books', { sort: 'popularity', page_size: 10 }), [])
-  const listings = useApi(() => api.get<Page<Listing>>('/api/marketplace/listings', { page_size: 4 }), [])
+  const popular = useGet<Page<BookSummary>>('/api/books', { sort: 'popularity', page_size: 10 }, { ttl: TTL.long })
+  const listings = useGet<Page<Listing>>('/api/marketplace/listings', { page_size: 4 }, { ttl: TTL.medium })
 
   function findDeal(e: FormEvent) {
     e.preventDefault()
@@ -94,8 +93,8 @@ export default function Landing() {
           <h2 id="popular" className="section-title">Popular in the catalogue</h2>
           <Link to="/discover?sort=popularity" className="link text-sm">Browse all</Link>
         </div>
-        {popular.loading ? <BookGridSkeleton count={5} /> : popular.error ? <ErrorState error={popular.error} onRetry={popular.reload} /> : (
-          <BookGrid>{popular.data!.items.slice(0, 10).map((b) => <BookCard key={b.id} book={b} />)}</BookGrid>
+        {popular.loading ? <BookGridSkeleton count={5} /> : popular.error || !popular.data ? <ErrorState error={popular.error} onRetry={popular.reload} /> : (
+          <BookGrid>{popular.data.items.slice(0, 10).map((b) => <BookCard key={b.id} book={b} />)}</BookGrid>
         )}
       </section>
 

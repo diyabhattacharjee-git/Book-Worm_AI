@@ -2,8 +2,7 @@ import { ExternalLink, Info, Tag } from 'lucide-react'
 import { Link, useParams } from 'react-router'
 import { BookCover } from '../components/books'
 import { EmptyState, ErrorState, Notice, PageHeader, Spinner } from '../components/ui'
-import { useApi } from '../hooks/useApi'
-import { api } from '../services/api'
+import { TTL, useGet } from '../hooks/useApi'
 import type { BookSummary } from '../types'
 import { authorsText, money, relativeTime } from '../utils/format'
 
@@ -17,8 +16,8 @@ interface Offers {
 
 export default function BookOffers() {
   const { id } = useParams()
-  const book = useApi(() => api.get<BookSummary>(`/api/books/${id}`), [id])
-  const offers = useApi(() => api.get<Offers>(`/api/books/${id}/offers`), [id])
+  const book = useGet<BookSummary>(`/api/books/${id}`, { track: false }, { ttl: TTL.medium })
+  const offers = useGet<Offers>(`/api/books/${id}/offers`, undefined, { ttl: TTL.long })
   const b = book.data
   return (
     <div>
@@ -31,7 +30,7 @@ export default function BookOffers() {
           <div><Link to={`/books/${b.id}`} className="font-serif text-lg font-semibold hover:text-forest">{b.title}</Link><p className="text-sm text-muted">{authorsText(b.authors)}</p></div>
         </div>
       )}
-      {offers.loading ? <Spinner label="Checking sources" /> : offers.error ? <ErrorState error={offers.error} onRetry={offers.reload} /> : (
+      {offers.loading ? <Spinner label="Checking sources" /> : offers.error || !offers.data ? <ErrorState error={offers.error} onRetry={offers.reload} /> : (
         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
           <section>
             {offers.data!.offers.length === 0 ? (

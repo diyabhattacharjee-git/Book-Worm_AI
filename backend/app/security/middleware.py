@@ -12,6 +12,8 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
+# Server-to-server webhooks: no browser, no cookies, so no CSRF risk.
+CSRF_EXEMPT_PATHS = {"/api/ebay/account-deletion"}
 
 
 class CSRFHeaderMiddleware(BaseHTTPMiddleware):
@@ -19,6 +21,7 @@ class CSRFHeaderMiddleware(BaseHTTPMiddleware):
         if (
             request.method not in SAFE_METHODS
             and request.url.path.startswith("/api/")
+            and request.url.path not in CSRF_EXEMPT_PATHS
             and not request.headers.get("x-requested-with")
         ):
             return JSONResponse(status_code=403, content={"detail": "Missing X-Requested-With header"})
@@ -33,5 +36,5 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
         if request.url.path.startswith(("/uploads/", "/api/media/")):
             response.headers["Content-Security-Policy"] = "default-src 'none'; img-src 'self'; sandbox"
-            response.headers["Cache-Control"] = "public, max-age=86400"
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"  # names are random and never reused
         return response

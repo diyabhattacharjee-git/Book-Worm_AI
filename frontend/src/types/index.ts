@@ -346,6 +346,57 @@ export interface AssistantReply {
   source: string
   payloads: AssistantPayload[]
   suggestions: string[]
+  degraded?: boolean
+}
+
+export interface Todo {
+  id: number
+  title: string
+  notes: string | null
+  due_date: string | null
+  completed: boolean
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface EbayPublication {
+  listing_id: number
+  status: 'draft' | 'published' | 'ended'
+  url: string | null
+  price_amount: number | null
+  currency: string | null
+  last_error: string | null
+  published_at: string | null
+}
+
+export interface EbayStatus {
+  market_check: boolean
+  seller_tools: boolean
+  connected: boolean
+  test_environment: boolean
+  marketplace: string
+  currency: string
+  publications: EbayPublication[]
+}
+
+export interface EbayMarketCheck {
+  currency: string
+  test_environment: boolean
+  total_found: number
+  estimate: PriceEstimate
+  lowest: number | null
+  items: { title: string; price: number; currency: string; condition: string; shipping_cost: number | null; shipping_known: boolean; url: string; image_url: string | null; location: string | null; country: string | null }[]
+}
+
+export interface EbaySetup {
+  fulfillment_policies: { id: string; name: string }[]
+  payment_policies: { id: string; name: string }[]
+  return_policies: { id: string; name: string }[]
+  locations: { key: string; name: string }[]
+  ready: boolean
+  message: string | null
+  help_url: string
 }
 
 export interface ReadingPlan {

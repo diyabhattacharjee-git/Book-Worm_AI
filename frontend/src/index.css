@@ -28,10 +28,15 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
   }
   body {
     @apply bg-cream font-sans text-ink antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+  img {
+    max-width: 100%;
   }
   h1, h2, h3, h4 {
     @apply font-serif text-ink;
@@ -48,7 +53,7 @@
 
 @layer components {
   .btn, .btn-primary, .btn-forest, .btn-outline, .btn-ghost, .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-[color,background-color,border-color,transform] duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100;
   }
   .btn-primary {
     @apply bg-ink text-paper hover:bg-ink-soft;
@@ -72,7 +77,19 @@
     @apply rounded-2xl border border-line bg-paper shadow-[var(--shadow-card)];
   }
   .input {
-    @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink placeholder:text-muted/70 focus:border-ink-soft focus:outline-none focus:ring-2 focus:ring-gold/30;
+    @apply w-full min-w-0 max-w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink transition-colors placeholder:text-muted/70 focus:border-ink-soft focus:outline-none focus:ring-2 focus:ring-gold/30 aria-[invalid=true]:border-rust aria-[invalid=true]:ring-rust/20;
+    box-sizing: border-box;
+  }
+  textarea.input {
+    resize: vertical;
+    overflow-wrap: anywhere;
+    min-height: 2.5rem;
+  }
+  /* Anything people or external sources wrote: keep long words and URLs inside their container. */
+  .user-text {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: pre-line;
   }
   .label {
     @apply mb-1 block text-sm font-medium text-ink-soft;
@@ -108,6 +125,13 @@
   transform: translateX(-100%);
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
   animation: shimmer 1.4s infinite;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

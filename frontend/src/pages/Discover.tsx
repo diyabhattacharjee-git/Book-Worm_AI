@@ -1,31 +1,19 @@
-import { BookPlus, Filter, Globe, SearchX } from 'lucide-react'
+import { Filter, SearchX } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { BookCard, BookGrid } from '../components/books'
-import { BookGridSkeleton, EmptyState, ErrorState, Notice, PageHeader, Pagination, Spinner } from '../components/ui'
-import { useAuth } from '../contexts/AuthContext'
-import { useToast } from '../contexts/ToastContext'
-import { useApi } from '../hooks/useApi'
-import { api } from '../services/api'
-import type { BookDetail, BookSummary, Page } from '../types'
+import { ExternalLookup } from '../components/ExternalLookup'
+import { BookGridSkeleton, EmptyState, ErrorState, PageHeader, Pagination } from '../components/ui'
+import { TTL, useGet } from '../hooks/useApi'
+import type { BookSummary, Page } from '../types'
 import { languageName } from '../utils/format'
+import { hasCloseMatch } from '../utils/search'
 
 interface Facets {
   genres: { name: string; slug: string; count: number }[]
   languages: { code: string; count: number }[]
   formats: string[]
   year_range: [number | null, number | null]
-}
-
-interface ExternalResult {
-  title: string
-  authors: string[]
-  published_year: number | null
-  isbns: string[]
-  cover_url: string | null
-  source: string
-  info_url: string | null
-  in_catalogue_book_id: number | null
 }
 
 const SORTS = [
@@ -39,15 +27,16 @@ export default function Discover() {
   const [params, setParams] = useSearchParams()
   const [showFilters, setShowFilters] = useState(false)
   const q = params.get('q') ?? ''
-  const page = Number(params.get('page') ?? 1)
+  const page = Math.max(1, Number(params.get('page')) || 1)
   const [term, setTerm] = useState(q)
   useEffect(() => setTerm(q), [q])
 
-  const facets = useApi(() => api.get<Facets>('/api/books/facets'), [])
+  const facets = useGet<Facets>('/api/books/facets', undefined, { ttl: TTL.hour })
   const query = Object.fromEntries([...params.entries()])
-  const results = useApi(() => api.get<Page<BookSummary>>('/api/books', { ...query, page_size: 20 }), [params.toString()])
+  const results = useGet<Page<BookSummary>>('/api/books', { ...query, page_size: 20 }, { ttl: TTL.medium, keepPrevious: true })
 
   function update(changes: Record<string, string | null>) {
+    if (Object.entries(changes).every(([k, v]) => (params.get(k) ?? null) === (v || null))) return
     const next = new URLSearchParams(params)
     for (const [k, v] of Object.entries(changes)) {
       if (v) next.set(k, v)
@@ -81,7 +70,7 @@ export default function Discover() {
         </div>
       </form>
 
-      <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
+      <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
         <aside className={`${showFilters ? 'block' : 'hidden'} space-y-5 lg:block`} aria-label="Filters">
           <div>
             <label className="label" htmlFor="f-genre">Genre</label>
@@ -92,7 +81,7 @@ export default function Discover() {
           </div>
           <div>
             <label className="label" htmlFor="f-author">Author</label>
-            <input id="f-author" className="input" defaultValue={params.get('author') ?? ''} placeholder="Any author"
+            <input id="f-author" key={`author-${params.get('author') ?? ''}`} className="input" defaultValue={params.get('author') ?? ''} placeholder="Any author"
               onBlur={(e) => update({ author: e.target.value.trim() || null })} onKeyDown={(e) => { if (e.key === 'Enter') update({ author: (e.target as HTMLInputElement).value.trim() || null }) }} />
           </div>
           <div>
@@ -105,8 +94,8 @@ export default function Discover() {
           <fieldset>
             <legend className="label">Publication year</legend>
             <div className="flex gap-2">
-              <input aria-label="From year" type="number" className="input" placeholder={String(facets.data?.year_range[0] ?? 'From')} defaultValue={params.get('year_min') ?? ''} onBlur={(e) => update({ year_min: e.target.value || null })} />
-              <input aria-label="To year" type="number" className="input" placeholder={String(facets.data?.year_range[1] ?? 'To')} defaultValue={params.get('year_max') ?? ''} onBlur={(e) => update({ year_max: e.target.value || null })} />
+              <input aria-label="From year" key={`from-${params.get('year_min') ?? ''}`} type="number" className="input" placeholder={String(facets.data?.year_range[0] ?? 'From')} defaultValue={params.get('year_min') ?? ''} onBlur={(e) => update({ year_min: e.target.value || null })} />
+              <input aria-label="To year" key={`to-${params.get('year_max') ?? ''}`} type="number" className="input" placeholder={String(facets.data?.year_range[1] ?? 'To')} defaultValue={params.get('year_max') ?? ''} onBlur={(e) => update({ year_max: e.target.value || null })} />
             </div>
           </fieldset>
           <div>
@@ -143,7 +132,7 @@ export default function Discover() {
           )}
         </aside>
 
-        <section aria-live="polite">
+        <section aria-live="polite" className="min-w-0">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <p className="text-sm text-muted">
               {results.loading ? 'Searching…' : results.data ? `${results.data.total} book${results.data.total === 1 ? '' : 's'}${q ? ` for “${q}”` : ''}` : ''}
@@ -157,75 +146,20 @@ export default function Discover() {
           </div>
           {results.loading ? <BookGridSkeleton count={10} />
             : results.error ? <ErrorState error={results.error} onRetry={results.reload} />
-              : results.data!.items.length === 0 ? (
+              : !results.data || results.data.items.length === 0 ? (
                 <EmptyState icon={<SearchX className="h-6 w-6" />} title="No books match"
                   action={activeFilters.length ? <button className="btn-outline" onClick={() => update(Object.fromEntries(FILTER_KEYS.map((k) => [k, null])))}>Clear filters</button> : undefined}>
                   Try a broader search{activeFilters.length ? ' or remove some filters' : ''}. You can also look it up in public catalogues below.
                 </EmptyState>
               ) : (
                 <>
-                  <BookGrid>{results.data!.items.map((b) => <BookCard key={b.id} book={b} />)}</BookGrid>
-                  <Pagination page={page} total={results.data!.total} pageSize={20} onPage={(p) => update({ page: String(p) })} />
+                  <div className={`transition-opacity ${results.refreshing ? 'opacity-60' : ''}`}><BookGrid>{results.data.items.map((b) => <BookCard key={b.id} book={b} />)}</BookGrid></div>
+                  <Pagination page={page} total={results.data.total} pageSize={20} onPage={(p) => { update({ page: String(p) }); window.scrollTo({ top: 0 }) }} />
                 </>
               )}
-          {q && !results.loading && <ExternalLookup query={q} />}
+          {q && !results.loading && !results.refreshing && <ExternalLookup key={q} query={q} autoOpen={!hasCloseMatch(q, results.data?.items ?? [])} />}
         </section>
       </div>
-    </div>
-  )
-}
-
-function ExternalLookup({ query }: { query: string }) {
-  const { user } = useAuth()
-  const toast = useToast()
-  const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
-  const [importing, setImporting] = useState<string | null>(null)
-  const ext = useApi(() => api.get<{ results: ExternalResult[]; errors: string[] }>('/api/books/external-search', { q: query }), [query, open], open)
-
-  async function importIsbn(isbn: string) {
-    setImporting(isbn)
-    try {
-      const b = await api.post<BookDetail>('/api/books/import', { isbn })
-      toast.success(`Added “${b.title}” to the catalogue.`)
-      navigate(`/books/${b.id}`)
-    } catch (e) {
-      toast.error((e as Error).message)
-    } finally {
-      setImporting(null)
-    }
-  }
-
-  return (
-    <div className="mt-10 border-t border-line pt-6">
-      {!open ? (
-        <button className="btn-outline" onClick={() => setOpen(true)}><Globe className="h-4 w-4" aria-hidden /> Search Open Library & Google Books for “{query}”</button>
-      ) : (
-        <div>
-          <h2 className="text-xl font-semibold">From public catalogues</h2>
-          <p className="mb-4 text-sm text-muted">Live results from Open Library and Google Books. Importing by ISBN stores the metadata locally.</p>
-          {ext.loading && <Spinner label="Searching public catalogues" />}
-          {ext.error && <ErrorState error={ext.error} onRetry={ext.reload} />}
-          {ext.data?.errors.map((e) => <Notice key={e} tone="warn">{e}. Results from the other source are still shown.</Notice>)}
-          {ext.data && ext.data.results.length === 0 && <p className="text-sm text-muted">No matches found.</p>}
-          <ul className="mt-3 divide-y divide-line">
-            {ext.data?.results.map((r) => (
-              <li key={`${r.source}-${r.title}-${r.isbns[0]}`} className="flex flex-wrap items-center gap-3 py-3">
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium">{r.title} <span className="text-xs text-muted">({r.source.replace('_', ' ')})</span></p>
-                  <p className="text-sm text-muted">{r.authors.join(', ') || 'Unknown author'}{r.published_year ? ` · ${r.published_year}` : ''}{r.isbns[0] ? ` · ISBN ${r.isbns[0]}` : ''}</p>
-                </div>
-                {r.in_catalogue_book_id ? <Link to={`/books/${r.in_catalogue_book_id}`} className="btn-outline btn-sm">In catalogue</Link>
-                  : r.isbns[0] ? (user
-                    ? <button className="btn-forest btn-sm" disabled={importing !== null} onClick={() => importIsbn(r.isbns[0])}><BookPlus className="h-4 w-4" aria-hidden />{importing === r.isbns[0] ? 'Importing…' : 'Import'}</button>
-                    : <Link to="/login?next=/discover" className="btn-outline btn-sm">Log in to import</Link>)
-                    : <span className="text-xs text-muted">No ISBN to import</span>}
-                {r.info_url && <a href={r.info_url} target="_blank" rel="noopener noreferrer" className="link text-sm">Source</a>}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   )
 }

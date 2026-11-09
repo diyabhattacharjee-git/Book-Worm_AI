@@ -1,21 +1,33 @@
-import { Plus, Scale, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Scale, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
+import { BookSearch } from '../components/BookSearch'
 import { BookCover } from '../components/books'
 import { ComparisonTable } from '../components/ComparisonTable'
-import { EmptyState, ErrorState, PageHeader, Spinner } from '../components/ui'
-import { useApi, useDebounced } from '../hooks/useApi'
+import { EmptyState, ErrorState, PageHeader, Skeleton, Spinner } from '../components/ui'
+import { TTL, useGet } from '../hooks/useApi'
 import { ApiError, api } from '../services/api'
-import type { BookSummary, ComparisonData, Page } from '../types'
+import type { BookSummary, ComparisonData } from '../types'
+
+function ChosenBook({ id, onRemove }: { id: number; onRemove: () => void }) {
+  const book = useGet<BookSummary>(`/api/books/${id}`, { track: false }, { ttl: TTL.long })
+  if (book.loading) return <Skeleton className="h-36 w-24 rounded-xl" />
+  if (book.error || !book.data) return <div className="w-24"><p className="text-xs text-rust">{book.error?.message ?? 'Unavailable'}</p><button className="link text-xs" onClick={onRemove}>Remove</button></div>
+  const b = book.data
+  return (
+    <div className="relative w-24">
+      <BookCover title={b.title} authors={b.authors} url={b.cover_url} size="sm" />
+      <p className="mt-1 text-xs font-medium line-clamp-2">{b.title}</p>
+      <button className="absolute -right-2 -top-2 rounded-full bg-paper p-1 shadow" aria-label={`Remove ${b.title}`} onClick={onRemove}><X className="h-3.5 w-3.5" /></button>
+    </div>
+  )
+}
 
 export default function Compare() {
   const [params, setParams] = useSearchParams()
   const ids = (params.get('ids') ?? '').split(',').map(Number).filter(Boolean).slice(0, 4)
   const [goal, setGoal] = useState(params.get('goal') ?? '')
-  const [q, setQ] = useState('')
-  const dq = useDebounced(q)
-  const found = useApi(() => api.get<Page<BookSummary>>('/api/books', { q: dq, page_size: 6 }), [dq], dq.length > 1)
-  const chosen = useApi(() => Promise.all(ids.map((id) => api.get<BookSummary>(`/api/books/${id}`))), [ids.join(',')], ids.length > 0)
+  const comparing = useRef(false)
   const [result, setResult] = useState<ComparisonData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ApiError | null>(null)
@@ -29,6 +41,8 @@ export default function Compare() {
   }
 
   async function compare() {
+    if (comparing.current) return
+    comparing.current = true
     setLoading(true)
     setError(null)
     try {
@@ -36,6 +50,7 @@ export default function Compare() {
     } catch (e) {
       setError(e as ApiError)
     } finally {
+      comparing.current = false
       setLoading(false)
     }
   }
@@ -52,25 +67,10 @@ export default function Compare() {
       </PageHeader>
       <div className="card p-5">
         <div className="flex flex-wrap gap-4">
-          {(chosen.data ?? []).map((b) => (
-            <div key={b.id} className="relative w-24">
-              <BookCover title={b.title} authors={b.authors} url={b.cover_url} size="sm" />
-              <p className="mt-1 text-xs font-medium line-clamp-2">{b.title}</p>
-              <button className="absolute -right-2 -top-2 rounded-full bg-paper p-1 shadow" aria-label={`Remove ${b.title}`} onClick={() => setIds(ids.filter((i) => i !== b.id))}><X className="h-3.5 w-3.5" /></button>
-            </div>
-          ))}
+          {ids.map((id) => <ChosenBook key={id} id={id} onRemove={() => setIds(ids.filter((i) => i !== id))} />)}
           {ids.length < 4 && (
-            <div className="min-w-[240px] flex-1">
-              <label className="label" htmlFor="cmp-search">Add a book</label>
-              <input id="cmp-search" className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by title or author" />
-              {found.data && dq.length > 1 && (
-                <ul className="mt-2 divide-y divide-line rounded-lg border border-line bg-white">
-                  {found.data.items.filter((b) => !ids.includes(b.id)).map((b) => (
-                    <li key={b.id}><button className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-parchment" onClick={() => { setIds([...ids, b.id]); setQ('') }}><Plus className="h-3.5 w-3.5" aria-hidden />{b.title} <span className="text-muted">· {b.authors.join(', ')}</span></button></li>
-                  ))}
-                  {found.data.items.length === 0 && <li className="px-3 py-2 text-sm text-muted">No matches</li>}
-                </ul>
-              )}
+            <div className="min-w-0 flex-1 basis-60">
+              <BookSearch id="cmp-search" label="Add a book" placeholder="Search by title or author" pageSize={6} exclude={ids} onPick={(b) => setIds([...ids, b.id])} />
             </div>
           )}
         </div>

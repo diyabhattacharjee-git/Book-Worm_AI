@@ -59,8 +59,15 @@ def seller_sales(db: Session, seller_ids: list[int]) -> dict[int, int]:
     return {sid: int(c) for sid, c in rows}
 
 
+def _counts_by_listing(db: Session, column, listing_ids: list[int]) -> dict[int, int]:
+    if not listing_ids:
+        return {}
+    return {i: int(c) for i, c in db.execute(select(column, func.count()).where(column.in_(listing_ids)).group_by(column)).all()}
+
+
 def listing_out(db: Session, listing: MarketplaceListing, viewer: User | None, *, sales: dict[int, int] | None = None,
-                favorites: set[int] | None = None) -> ListingOut:
+                favorites: set[int] | None = None, inquiry_counts: dict[int, int] | None = None,
+                favorite_counts: dict[int, int] | None = None) -> ListingOut:
     is_owner = bool(viewer and viewer.id == listing.seller_id)
     is_admin = bool(viewer and viewer.is_admin)
     sales = sales if sales is not None else seller_sales(db, [listing.seller_id])
@@ -85,8 +92,12 @@ def listing_out(db: Session, listing: MarketplaceListing, viewer: User | None, *
     )
     if is_owner or is_admin:
         out.view_count = listing.view_count
-        out.inquiry_count = db.scalar(select(func.count(ListingInquiry.id)).where(ListingInquiry.listing_id == listing.id))
-        out.favorite_count = db.scalar(select(func.count(ListingFavorite.id)).where(ListingFavorite.listing_id == listing.id))
+        if inquiry_counts is None:
+            inquiry_counts = _counts_by_listing(db, ListingInquiry.listing_id, [listing.id])
+        if favorite_counts is None:
+            favorite_counts = _counts_by_listing(db, ListingFavorite.listing_id, [listing.id])
+        out.inquiry_count = inquiry_counts.get(listing.id, 0)
+        out.favorite_count = favorite_counts.get(listing.id, 0)
         out.location_public = listing.location_public
         out.moderation_note = listing.moderation_note
     return out
@@ -98,7 +109,11 @@ def listings_out(db: Session, listings: list[MarketplaceListing], viewer: User |
     if viewer and listings:
         favs = set(db.scalars(select(ListingFavorite.listing_id).where(
             ListingFavorite.user_id == viewer.id, ListingFavorite.listing_id.in_([lst.id for lst in listings]))))
-    return [listing_out(db, lst, viewer, sales=sales, favorites=favs) for lst in listings]
+    managed = [lst.id for lst in listings if viewer and (viewer.is_admin or lst.seller_id == viewer.id)]
+    inquiries = _counts_by_listing(db, ListingInquiry.listing_id, managed)
+    saved = _counts_by_listing(db, ListingFavorite.listing_id, managed)
+    return [listing_out(db, lst, viewer, sales=sales, favorites=favs, inquiry_counts=inquiries, favorite_counts=saved)
+            for lst in listings]
 
 
 def search_community(db: Session, *, q: str | None = None, isbn: str | None = None, book_id: int | None = None,

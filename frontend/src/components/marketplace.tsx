@@ -18,7 +18,7 @@ export function ListingImage({ listing, className = '' }: { listing: Listing; cl
   const src = listing.images[0]?.url ?? listing.cover_url
   return (
     <div className={`relative aspect-[4/5] overflow-hidden rounded-xl bg-parchment ${className}`}>
-      {src ? <img src={src} alt={listing.images[0] ? `Seller photo of ${listing.title}` : `Catalogue cover of ${listing.title}`} loading="lazy" className="h-full w-full object-cover" />
+      {src ? <img src={src} alt={listing.images[0] ? `Seller photo of ${listing.title}` : `Catalogue cover of ${listing.title}`} loading="lazy" decoding="async" className="h-full w-full object-cover" />
         : <div className="flex h-full items-center justify-center text-muted"><ImageIcon className="h-8 w-8" aria-hidden /></div>}
       {!listing.images[0] && src && <span className="absolute bottom-2 left-2 rounded bg-ink/70 px-1.5 py-0.5 text-[10px] text-paper">Catalogue cover, not seller photo</span>}
     </div>
@@ -27,7 +27,7 @@ export function ListingImage({ listing, className = '' }: { listing: Listing; cl
 
 export function ListingCard({ listing, onFavorite }: { listing: Listing; onFavorite?: (l: Listing) => void }) {
   return (
-    <article className="card group flex flex-col overflow-hidden p-3 transition-shadow hover:shadow-[var(--shadow-lift)]">
+    <article className="card group flex min-w-0 flex-col overflow-hidden p-3 transition-shadow hover:shadow-[var(--shadow-lift)]">
       <div className="relative">
         <Link to={`/marketplace/listings/${listing.id}`} aria-label={`${listing.title}, ${money(listing.price_amount, listing.currency)}`}>
           <ListingImage listing={listing} />
@@ -148,7 +148,7 @@ export function DealCard({ deal, rank }: { deal: Deal; rank: number }) {
     <article className={`card flex flex-col gap-4 p-4 sm:flex-row ${deal.deal.group === 'match' && rank === 1 ? 'ring-2 ring-gold/60' : ''}`}>
       <div className="w-full shrink-0 sm:w-28">
         <div className="aspect-[4/5] overflow-hidden rounded-lg bg-parchment">
-          {l.image_url ? <img src={l.image_url} alt={`Image for ${l.title}`} loading="lazy" className="h-full w-full object-cover" />
+          {l.image_url ? <img src={l.image_url} alt={`Image for ${l.title}`} loading="lazy" decoding="async" className="h-full w-full object-cover" />
             : <div className="flex h-full items-center justify-center text-muted"><ImageIcon className="h-6 w-6" aria-hidden /></div>}
         </div>
       </div>
@@ -160,7 +160,7 @@ export function DealCard({ deal, rank }: { deal: Deal; rank: number }) {
           <VerdictBadge verdict={deal.deal.price_verdict} />
           <Badge tone={deal.deal.group === 'match' ? 'forest' : deal.deal.group === 'near_match' ? 'gold' : 'neutral'}>{groupLabel}</Badge>
         </div>
-        <h3 className="mt-2 font-serif text-lg font-semibold leading-snug">{l.title}</h3>
+        <h3 className="user-text mt-2 font-serif text-lg font-semibold leading-snug">{l.title}</h3>
         <p className="text-xs text-muted">
           {[l.author, l.edition_text, l.isbn && `ISBN ${l.isbn}`].filter(Boolean).join(' · ')}
           {' · '}match: {l.match.replace('_', ' ')}

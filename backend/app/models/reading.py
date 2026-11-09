@@ -12,10 +12,12 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     Text,
     UniqueConstraint,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -120,8 +122,28 @@ class ReadingPlanItem(Base):
     plan: Mapped[ReadingPlan] = relationship(back_populates="items")
 
 
+class ReadingTask(TimestampMixin, Base):
+    """A reader's to-do item. Two open tasks with the same wording would be a mistake, so the database refuses them."""
+
+    __tablename__ = "reading_tasks"
+    __table_args__ = (
+        Index("uq_reading_tasks_open_title", "user_id", "normalized_title", unique=True,
+              postgresql_where=text("NOT completed"), sqlite_where=text("NOT completed")),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    normalized_title: Mapped[str] = mapped_column(String(200), nullable=False)
+    notes: Mapped[str | None] = mapped_column(String(1000))
+    due_date: Mapped[date | None] = mapped_column(Date)
+    completed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
 class Conversation(TimestampMixin, Base):
     __tablename__ = "conversations"
+    __table_args__ = (Index("ix_conversations_user_updated", "user_id", "updated_at"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
@@ -133,7 +155,6 @@ class Conversation(TimestampMixin, Base):
         back_populates="conversation",
         cascade="all, delete-orphan",
         order_by="ConversationMessage.id",
-        lazy="selectin",
     )
 
 

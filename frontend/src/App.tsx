@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import { RequireAdmin, RequireAuth } from './components/guards'
 import { Spinner } from './components/ui'
 import { AuthProvider } from './contexts/AuthContext'
+import { ConfirmProvider } from './contexts/ConfirmContext'
 import { ToastProvider } from './contexts/ToastContext'
 import { AppLayout } from './layouts/AppLayout'
 
@@ -22,6 +23,7 @@ const SellBook = lazy(() => import('./pages/SellBook'))
 const SellerDashboard = lazy(() => import('./pages/SellerDashboard'))
 const SellerProfile = lazy(() => import('./pages/SellerProfile'))
 const Saved = lazy(() => import('./pages/Saved'))
+const Todos = lazy(() => import('./pages/Todos'))
 const Bookshelf = lazy(() => import('./pages/Bookshelf'))
 const History = lazy(() => import('./pages/History'))
 const Settings = lazy(() => import('./pages/Settings'))
@@ -57,6 +59,7 @@ export const routes = [
       { path: '/seller', element: auth(<SellerDashboard />) },
       { path: '/sellers/:id', element: page(<SellerProfile />) },
       { path: '/saved', element: auth(<Saved />) },
+      { path: '/todos', element: auth(<Todos />) },
       { path: '/shelf', element: auth(<Bookshelf />) },
       { path: '/history', element: auth(<History />) },
       { path: '/settings', element: auth(<Settings />) },
@@ -75,9 +78,11 @@ const router = createBrowserRouter(routes)
 export default function App() {
   return (
     <ToastProvider>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <ConfirmProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </ConfirmProvider>
     </ToastProvider>
   )
 }

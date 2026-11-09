@@ -2,10 +2,12 @@ import { Target, Trash2 } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { BookCard, BookGrid, BookRow } from '../components/books'
-import { EmptyState, ErrorState, PageHeader, Spinner } from '../components/ui'
+import { EmptyState, ErrorState, ListSkeleton, PageHeader } from '../components/ui'
+import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
-import { useApi } from '../hooks/useApi'
+import { TTL, queryKey, useGet } from '../hooks/useApi'
 import { api } from '../services/api'
+import { optimistic, setQueryData } from '../services/queryCache'
 import type { BookSummary } from '../types'
 import { date } from '../utils/format'
 
@@ -18,12 +20,16 @@ interface HistoryData {
   recently_viewed: BookSummary[]
 }
 
+const GOALS = '/api/reading-goals'
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 export default function History() {
+  const { user } = useAuth()
   const toast = useToast()
-  const goals = useApi(() => api.get<Goal[]>('/api/reading-goals'), [])
-  const hist = useApi(() => api.get<HistoryData>('/api/reading-history'), [])
+  const goalsKey = queryKey(GOALS, undefined, user?.id)
+  const goals = useGet<Goal[]>(GOALS, undefined, { userId: user?.id, ttl: TTL.medium })
+  const hist = useGet<HistoryData>('/api/reading-history', undefined, { userId: user?.id, ttl: TTL.medium })
+  const [saving, setSaving] = useState(false)
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState<string>('')
@@ -31,17 +37,26 @@ export default function History() {
 
   async function saveGoal(e: FormEvent) {
     e.preventDefault()
+    if (saving) return
+    if (!Number.isInteger(year) || year < 2000 || year > 2100) return toast.error('Enter a year between 2000 and 2100.')
+    if (!Number.isInteger(target) || target < 1 || target > 1000) return toast.error('Choose a target between 1 and 1000 books.')
+    setSaving(true)
     try {
-      await api.post('/api/reading-goals', { year, month: month ? Number(month) : null, target_books: target })
+      const saved = await api.post<Goal>(GOALS, { year, month: month ? Number(month) : null, target_books: target })
+      setQueryData<Goal[]>(goalsKey, (prev) => [saved, ...(prev ?? []).filter((g) => g.id !== saved.id)].sort((a, b) => b.year - a.year || (a.month ?? 0) - (b.month ?? 0)))
       toast.success('Goal saved.')
-      goals.reload()
     } catch (err) {
       toast.error((err as Error).message)
+    } finally {
+      setSaving(false)
     }
   }
   async function deleteGoal(id: number) {
-    await api.del(`/api/reading-goals/${id}`)
-    goals.reload()
+    try {
+      await optimistic<Goal[], void>(goalsKey, (d) => d.filter((g) => g.id !== id), () => api.del(`${GOALS}/${id}`))
+    } catch (err) {
+      toast.error((err as Error).message)
+    }
   }
 
   return (
@@ -54,7 +69,7 @@ export default function History() {
         <div>
           <h2 id="goals" className="section-title">Goals</h2>
           <div className="mt-4 space-y-3">
-            {goals.loading ? <Spinner /> : goals.data?.length === 0 ? <EmptyState icon={<Target className="h-6 w-6" />} title="No goals yet">Set a yearly or monthly target to track your progress.</EmptyState>
+            {goals.loading ? <ListSkeleton rows={2} /> : goals.error ? <ErrorState error={goals.error} onRetry={goals.reload} /> : goals.data?.length === 0 ? <EmptyState icon={<Target className="h-6 w-6" />} title="No goals yet">Set a yearly or monthly target to track your progress.</EmptyState>
               : goals.data?.map((g) => (
                 <div key={g.id} className="card p-4">
                   <div className="flex items-center justify-between">
@@ -72,27 +87,27 @@ export default function History() {
         <form onSubmit={saveGoal} className="card h-fit space-y-3 p-5">
           <h3 className="font-semibold">Set a goal</h3>
           <div className="grid grid-cols-2 gap-3">
-            <div><label className="label" htmlFor="g-year">Year</label><input id="g-year" type="number" className="input" value={year} onChange={(e) => setYear(Number(e.target.value))} /></div>
+            <div><label className="label" htmlFor="g-year">Year</label><input id="g-year" type="number" min={2000} max={2100} className="input" value={year} onChange={(e) => setYear(Number(e.target.value))} /></div>
             <div><label className="label" htmlFor="g-month">Month</label>
               <select id="g-month" className="input" value={month} onChange={(e) => setMonth(e.target.value)}><option value="">Whole year</option>{MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}</select></div>
           </div>
           <div><label className="label" htmlFor="g-target">Books</label><input id="g-target" type="number" min={1} max={1000} className="input" value={target} onChange={(e) => setTarget(Number(e.target.value))} /></div>
-          <button className="btn-primary w-full">Save goal</button>
+          <button className="btn-primary w-full" disabled={saving}>{saving ? 'Saving…' : 'Save goal'}</button>
           <p className="text-xs text-muted">Saving a goal for the same period updates it.</p>
         </form>
       </section>
 
       <section aria-labelledby="finished">
         <h2 id="finished" className="section-title">Finished books</h2>
-        {hist.loading ? <Spinner /> : hist.error ? <ErrorState error={hist.error} onRetry={hist.reload} /> : (
+        {hist.loading ? <div className="mt-4"><ListSkeleton rows={2} /></div> : hist.error || !hist.data ? <ErrorState error={hist.error} onRetry={hist.reload} /> : (
           <>
             <div className="mt-3 flex flex-wrap gap-4 text-sm text-muted">
-              {Object.entries(hist.data!.by_year).map(([y, n]) => <span key={y} className="chip">{y}: {n} book{n === 1 ? '' : 's'}</span>)}
-              <span>{hist.data!.pages_read_known.toLocaleString()} pages read{hist.data!.books_with_unknown_pages ? ` (+ ${hist.data!.books_with_unknown_pages} book(s) with unknown page count)` : ''}</span>
+              {Object.entries(hist.data.by_year).map(([y, n]) => <span key={y} className="chip">{y}: {n} book{n === 1 ? '' : 's'}</span>)}
+              <span>{hist.data.pages_read_known.toLocaleString()} pages read{hist.data.books_with_unknown_pages ? ` (+ ${hist.data.books_with_unknown_pages} book(s) with unknown page count)` : ''}</span>
             </div>
-            {hist.data!.finished.length === 0 ? <div className="mt-4"><EmptyState title="No finished books yet">Mark books as Read on your shelf to build your history.</EmptyState></div> : (
+            {hist.data.finished.length === 0 ? <div className="mt-4"><EmptyState title="No finished books yet">Mark books as Read on your shelf to build your history.</EmptyState></div> : (
               <ul className="mt-5 space-y-3">
-                {hist.data!.finished.map((f) => (
+                {hist.data.finished.map((f) => (
                   <li key={f.entry_id} className="card p-4"><BookRow book={f.book} right={<span className="text-xs text-muted">Finished {date(f.finished_on)}</span>} /></li>
                 ))}
               </ul>

@@ -60,6 +60,7 @@ class UsedBookState(TypedDict, total=False):
     query: str | None
     form: dict
     allow_network: bool
+    use_llm: bool
     params: dict
     book: dict
     provider_results: list[dict]
@@ -118,7 +119,7 @@ def understand(state: UsedBookState) -> dict:
     form = {k: v for k, v in (state.get("form") or {}).items() if v not in (None, "", "any")}
     query = (state.get("query") or "").strip()
     with SessionLocal() as db:
-        params = parse_request(db, query, use_llm=state.get("allow_network", True)) if query else SearchParams()
+        params = parse_request(db, query, use_llm=state.get("allow_network", True) and state.get("use_llm", True)) if query else SearchParams()
     data = params.model_dump()
     for k in ("title", "author", "isbn", "edition", "max_price", "min_condition", "location"):
         if form.get(k):
@@ -313,7 +314,7 @@ def _llm_summary(state: UsedBookState, fallback: str) -> tuple[str, str]:
 def explain(state: UsedBookState) -> dict:
     fallback = _deterministic_summary(state)
     text, source = fallback, "deterministic"
-    if state.get("allow_network", True) and llm.is_available() and state.get("ranking"):
+    if state.get("allow_network", True) and state.get("use_llm", True) and llm.is_available() and state.get("ranking"):
         text, source = _llm_summary(state, fallback)
     listings = {d["uid"]: d for d in state.get("listings", [])}
     deals = []
@@ -374,12 +375,12 @@ def build_graph():
 GRAPH = build_graph()
 
 
-def initial_state(query: str | None, form: dict | None, allow_network: bool = True) -> UsedBookState:
-    return {"query": query, "form": form or {}, "allow_network": allow_network, "errors": [], "trace": []}
+def initial_state(query: str | None, form: dict | None, allow_network: bool = True, use_llm: bool = True) -> UsedBookState:
+    return {"query": query, "form": form or {}, "allow_network": allow_network, "use_llm": use_llm, "errors": [], "trace": []}
 
 
-def run(query: str | None, form: dict | None = None, allow_network: bool = True) -> dict:
-    final = GRAPH.invoke(initial_state(query, form, allow_network))
+def run(query: str | None, form: dict | None = None, allow_network: bool = True, use_llm: bool = True) -> dict:
+    final = GRAPH.invoke(initial_state(query, form, allow_network, use_llm))
     resp = final.get("response") or {"status": "error", "errors": final.get("errors", [])}
     resp["trace"] = final.get("trace", [])
     return resp

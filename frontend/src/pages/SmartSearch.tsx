@@ -1,9 +1,11 @@
 import { Sparkles, Wand2 } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { BookCard, BookGrid } from '../components/books'
+import { ExternalLookup } from '../components/ExternalLookup'
 import { Badge, BookGridSkeleton, EmptyState, ErrorState, Notice, PageHeader } from '../components/ui'
 import { ApiError, api } from '../services/api'
 import type { BookSummary } from '../types'
+import { hasCloseMatch, looksLikeBookName } from '../utils/search'
 
 interface NLResult {
   query: Record<string, unknown>
@@ -24,23 +26,43 @@ const REFINEMENTS = ['Shorter', 'Longer', 'More technical', 'Simpler', 'Cheaper 
 
 export default function SmartSearch() {
   const [q, setQ] = useState('')
+  const [searched, setSearched] = useState('')
   const [refine, setRefine] = useState('')
   const [result, setResult] = useState<NLResult | null>(null)
   const [history, setHistory] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<ApiError | null>(null)
 
+  const abortRef = useRef<AbortController | null>(null)
+  const seenRef = useRef(new Map<string, NLResult>())
+  useEffect(() => () => abortRef.current?.abort(), [])
+
   async function run(body: object, label: string) {
+    const cacheKey = JSON.stringify(body)
+    const known = seenRef.current.get(cacheKey)
+    if (known) {
+      abortRef.current?.abort()
+      setLoading(false)
+      setError(null)
+      setResult(known)
+      setHistory((h) => [...h, label])
+      return
+    }
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
     setLoading(true)
     setError(null)
     try {
-      const r = await api.post<NLResult>('/api/books/nl-search', body)
+      const r = await api.post<NLResult>('/api/books/nl-search', body, { signal: controller.signal })
+      seenRef.current.set(cacheKey, r)
       setResult(r)
       setHistory((h) => [...h, label])
     } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return
       setError(e as ApiError)
     } finally {
-      setLoading(false)
+      if (abortRef.current === controller) setLoading(false)
     }
   }
 
@@ -48,6 +70,7 @@ export default function SmartSearch() {
     e?.preventDefault()
     if (!text.trim()) return
     setQ(text)
+    setSearched(text.trim())
     setHistory([])
     void run({ query: text.trim() }, text.trim())
   }
@@ -99,7 +122,7 @@ export default function SmartSearch() {
             </div>
 
             {result.results.length === 0 ? (
-              <EmptyState title="No matching books">Try removing a constraint, or search the public catalogues from Discover.</EmptyState>
+              <EmptyState title="No matching books">Try removing a constraint, or search the public catalogues below.</EmptyState>
             ) : (
               <BookGrid>
                 {result.results.map((r) => (
@@ -107,6 +130,7 @@ export default function SmartSearch() {
                 ))}
               </BookGrid>
             )}
+            {searched && <ExternalLookup key={searched} query={searched} autoOpen={looksLikeBookName(searched) && !hasCloseMatch(searched, result.results.map((r) => r.book))} />}
           </div>
         )}
         {!loading && !result && !error && (

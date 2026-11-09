@@ -133,7 +133,7 @@ def _comparison_advice(rows: list[dict], goal: str | None) -> list[dict]:
             best = max(counted, key=lambda r: r["_bayes"])
             advice.append({"pick_book_id": best["book_id"],
                            "text": f"“{best['title']}” has the strongest BookWorm rating after smoothing for sample size.",
-                           "evidence": f"Bayesian-smoothed rating {best['_bayes']:.2f} (see docs/RECOMMENDER.md)."})
+                           "evidence": "Based on reader ratings, adjusted for how many people have rated each book."})
     if not advice:
         advice.append({"pick_book_id": None, "text": "There isn't enough rating or metadata evidence to prefer one book; compare the descriptions above.",
                        "evidence": None})
@@ -170,7 +170,7 @@ def new_offers(db: Session, book: Book) -> OffersResponse:
         notes.append("No ISBN on file, so price sources can't be queried precisely.")
     if s.ebay_configured:
         try:
-            for item in ebay.search(book.title, isbn=isbn, limit=10):
+            for item in ebay.search(book.title, isbn=isbn, limit=10, db=db):
                 if item.condition == "new" and item.price is not None:
                     offers.append(OfferOut(
                         source="eBay", title=item.title, format=None, price=item.price, currency=item.currency,

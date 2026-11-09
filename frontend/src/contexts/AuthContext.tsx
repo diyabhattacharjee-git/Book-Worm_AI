@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ApiError, api } from '../services/api'
+import { clearUserData } from '../services/queryCache'
 import type { User } from '../types'
 
 interface AuthState {
@@ -14,8 +15,20 @@ interface AuthState {
 const AuthContext = createContext<AuthState | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUserState] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const currentId = useRef<number | null>(null)
+
+  // Cached account data belongs to whoever fetched it, so it can't outlive a change of account.
+  const setUser = useCallback((next: User | null) => {
+    const nextId = next?.id ?? null
+    if (currentId.current !== nextId) {
+      if (currentId.current !== null) clearUserData()
+      currentId.current = nextId
+    }
+    setUserState(next)
+  }, [])
 
   const refresh = useCallback(async () => {
     try {
@@ -25,9 +38,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [setUser])
 
+  const sessionRequested = useRef(false)
   useEffect(() => {
+    if (sessionRequested.current) return
+    sessionRequested.current = true
     void refresh()
   }, [refresh])
 
@@ -45,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await api.post('/api/auth/logout')
       setUser(null)
     },
-  }), [user, loading, refresh])
+  }), [user, loading, refresh, setUser])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

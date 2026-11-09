@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
-import { useApi } from '../hooks/useApi'
+import { TTL, useGet } from '../hooks/useApi'
 import { api } from '../services/api'
 import type { User } from '../types'
 
@@ -29,7 +29,7 @@ function loadGsi(): Promise<void> {
 
 /** “Continue with Google”. Renders nothing when Google sign-in isn't enabled on the server. */
 export function GoogleButton({ onSignedIn }: { onSignedIn: (u: User) => void }) {
-  const config = useApi(() => api.get<{ google_client_id: string | null }>('/api/auth/config'), [])
+  const config = useGet<{ google_client_id: string | null }>('/api/auth/config', undefined, { ttl: TTL.hour })
   const ref = useRef<HTMLDivElement>(null)
   const toast = useToast()
   const { setUser } = useAuth()
@@ -83,6 +83,7 @@ export function CodeInput({ value, onChange, id = 'otp' }: { value: string; onCh
 
 /** Resend link with a cooldown that matches the server's limit. */
 export function ResendCode({ onResend, seconds = 60 }: { onResend: () => Promise<void>; seconds?: number }) {
+  const toast = useToast()
   const [left, setLeft] = useState(seconds)
   useEffect(() => {
     if (left <= 0) return
@@ -91,5 +92,5 @@ export function ResendCode({ onResend, seconds = 60 }: { onResend: () => Promise
   }, [left])
   return left > 0
     ? <span className="text-sm text-muted">Resend code in {left}s</span>
-    : <button type="button" className="link text-sm" onClick={async () => { await onResend(); setLeft(seconds) }}>Resend code</button>
+    : <button type="button" className="link text-sm" onClick={() => onResend().then(() => setLeft(seconds)).catch((e: Error) => toast.error(e.message))}>Resend code</button>
 }

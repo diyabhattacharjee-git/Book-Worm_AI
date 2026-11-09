@@ -33,6 +33,7 @@ class Review(TimestampMixin, Base):
     __table_args__ = (
         UniqueConstraint("user_id", "book_id"),
         CheckConstraint("rating >= 1 AND rating <= 5", name="rating_range"),
+        Index("ix_reviews_book_status", "book_id", "status"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -104,6 +105,7 @@ class SearchQuery(Base):
     """Recent searches feed the content profile (as free text), nothing else."""
 
     __tablename__ = "search_queries"
+    __table_args__ = (Index("ix_search_queries_user_created", "user_id", "created_at"),)
 
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)

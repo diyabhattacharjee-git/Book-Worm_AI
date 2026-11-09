@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import delete, func, select
 from sqlalchemy.exc import IntegrityError
@@ -14,7 +14,7 @@ from app.core.text import strip_control
 from app.db.session import get_db
 from app.integrations.http import ProviderError
 from app.integrations.metadata import ol_editions, search_metadata
-from app.models.book import Book
+from app.models.book import Book, BookEdition
 from app.models.social import Review, ReviewHelpfulVote, ReviewReport, SearchQuery
 from app.models.user import User
 from app.recommender.service import similar_books
@@ -43,11 +43,13 @@ from app.schemas.books import (
 from app.schemas.common import Page
 from app.security.deps import get_current_user, get_current_user_optional
 from app.services.books import book_detail, compare_books, new_offers
-from app.services.catalogue import find_book_by_isbn, import_by_isbn
+from app.services.catalogue import import_by_isbn
 from app.services.nl_search import apply_refinement, parse_query, run_search
 from app.services.users import record_interaction
 
 router = APIRouter(tags=["books"])
+
+EXTERNAL_RESULT_LIMIT = 20
 
 
 def _get_book(db: Session, book_id: int) -> Book:
@@ -80,6 +82,7 @@ def list_books(
     sort: str = Query("relevance"),
     page: int = Query(1, ge=1, le=1000),
     page_size: int = Query(24, ge=1, le=60),
+    track: bool = Query(True, description="False for typeahead pickers, which aren't real searches"),
     user: User | None = Depends(get_current_user_optional),
     db: Session = Depends(get_db),
 ):
@@ -87,14 +90,15 @@ def list_books(
         raise HTTPException(status_code=422, detail=f"sort must be one of {', '.join(SORTS)}")
     f = _filters(q, genre, author, language, year_min, year_max, min_rating, pages_min, pages_max, format, availability)
     items, total = search_books(db, f, sort, page, page_size)
-    if user and f.q and page == 1:
+    if track and user and f.q and page == 1:
         db.add(SearchQuery(user_id=user.id, query=f.q))
         db.commit()
     return Page(items=items, total=total, page=page, page_size=page_size)
 
 
 @router.get("/books/facets")
-def facets(db: Session = Depends(get_db)):
+def facets(response: Response, db: Session = Depends(get_db)):
+    response.headers["Cache-Control"] = "public, max-age=600, s-maxage=3600"
     return facet_options(db)
 
 
@@ -126,22 +130,25 @@ def external_search(q: str = Query(..., min_length=2, max_length=200), db: Sessi
     results, errors = search_metadata(q.strip(), db, limit=10)
     out = []
     seen = set()
+    unique = []
     for m in results:
         key = (m.title.lower(), tuple(a.lower() for a in m.authors[:1]))
-        if key in seen:
-            continue
-        seen.add(key)
-        local = next((find_book_by_isbn(db, i) for i in m.isbns if find_book_by_isbn(db, i)), None)
+        if key not in seen:
+            seen.add(key)
+            unique.append(m)
+    all_isbns = {i for m in unique for i in m.isbns}
+    local = dict(db.execute(select(BookEdition.isbn13, BookEdition.book_id).where(BookEdition.isbn13.in_(all_isbns))).all()) if all_isbns else {}
+    for m in unique:
         out.append(ExternalSearchResult(title=m.title, authors=m.authors, published_year=m.published_year,
-                                        isbns=m.isbns[:3], cover_url=m.cover_url, source=m.source,
-                                        info_url=m.info_url, in_catalogue_book_id=local.id if local else None))
-    return {"results": [r.model_dump() for r in out[:15]], "errors": errors}
+                                        isbns=m.isbns[:3], cover_url=m.cover_url, source=m.source, info_url=m.info_url,
+                                        in_catalogue_book_id=next((local[i] for i in m.isbns if i in local), None)))
+    return {"results": [r.model_dump() for r in out[:EXTERNAL_RESULT_LIMIT]], "errors": errors}
 
 
 @router.post("/books/import", response_model=BookDetail, status_code=201,
              dependencies=[Depends(rate_limit("import", 20, 3600))])
 def import_book(body: ImportIsbnIn, _: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    book, errors = import_by_isbn(db, body.isbn)
+    book, errors = import_by_isbn(db, body.isbn, prefer=body.source)
     if not book:
         raise HTTPException(status_code=404, detail="; ".join(errors))
     return book_detail(db, book)
@@ -156,9 +163,10 @@ def compare(body: CompareIn, db: Session = Depends(get_db)):
 
 
 @router.get("/books/{book_id}", response_model=BookDetail)
-def get_book(book_id: int, user: User | None = Depends(get_current_user_optional), db: Session = Depends(get_db)):
+def get_book(book_id: int, track: bool = True, user: User | None = Depends(get_current_user_optional),
+             db: Session = Depends(get_db)):
     book = _get_book(db, book_id)
-    if user:
+    if track and user:
         record_interaction(db, user.id, book.id, "view")
         db.commit()
     return book_detail(db, book)

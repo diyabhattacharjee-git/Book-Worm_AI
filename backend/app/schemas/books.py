@@ -64,22 +64,27 @@ class BookDetail(BookSummary):
     difficulty_signal: str | None
 
 
+REVIEW_MAX_LENGTH = 5000
+
+
+def _clean_review_body(v):
+    if not isinstance(v, str):
+        return v
+    return v.strip() or None
+
+
 class ReviewIn(BaseModel):
     rating: int = Field(ge=1, le=5)
-    body: str | None = Field(default=None, max_length=5000)
+    body: str | None = Field(default=None, max_length=REVIEW_MAX_LENGTH)
 
-    @field_validator("body")
-    @classmethod
-    def _strip(cls, v: str | None) -> str | None:
-        if v is None:
-            return None
-        v = v.strip()
-        return v or None
+    _clean = field_validator("body", mode="before")(_clean_review_body)
 
 
 class ReviewUpdateIn(BaseModel):
     rating: int | None = Field(default=None, ge=1, le=5)
-    body: str | None = Field(default=None, max_length=5000)
+    body: str | None = Field(default=None, max_length=REVIEW_MAX_LENGTH)
+
+    _clean = field_validator("body", mode="before")(_clean_review_body)
 
 
 class ReviewOut(BaseModel):
@@ -116,6 +121,7 @@ class CompareIn(BaseModel):
 
 class ImportIsbnIn(BaseModel):
     isbn: str = Field(min_length=10, max_length=17)
+    source: Literal["google_books", "open_library"] | None = None
 
 
 class ExternalSearchResult(BaseModel):

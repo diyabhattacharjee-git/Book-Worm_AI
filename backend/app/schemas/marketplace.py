@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from datetime import datetime
+import re
+from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Literal
 
@@ -11,6 +12,13 @@ from app.core.text import to_isbn13
 Condition = Literal["like_new", "very_good", "good", "acceptable", "poor"]
 Delivery = Literal["pickup", "shipping", "both"]
 SUPPORTED_CURRENCIES = ("INR", "USD", "EUR", "GBP")
+MIN_PRICE = Decimal("1")
+MAX_PRICE = Decimal("1000000")
+MAX_SHIPPING = Decimal("100000")
+MIN_DESCRIPTION = 10
+_HAS_TEXT = re.compile(r"[^\W_]")
+_SINGLE_LINE_FIELDS = ("title", "author", "edition_text", "location_city")
+_NOT_NULLABLE = ("title", "author", "description", "condition", "price_amount", "currency", "delivery")
 
 
 def validate_isbn(v: str | None) -> str | None:
@@ -31,17 +39,41 @@ def validate_currency(v: str | None) -> str | None:
     return v
 
 
+def _collapse_spaces(v):
+    return " ".join(v.split()) if isinstance(v, str) else v
+
+
+def _trim(v):
+    return v.strip() if isinstance(v, str) else v
+
+
+def _empty_to_none(v: str | None) -> str | None:
+    return v or None
+
+
+def _must_have_text(v: str | None) -> str | None:
+    if v is not None and not _HAS_TEXT.search(v):
+        raise ValueError("Enter real text, not just symbols")
+    return v
+
+
+def validate_year(v: int | None) -> int | None:
+    if v is not None and v > datetime.now(timezone.utc).year + 1:
+        raise ValueError("Publication year can't be in the future")
+    return v
+
+
 class ListingBase(BaseModel):
     title: str = Field(min_length=1, max_length=300)
     author: str = Field(min_length=1, max_length=200)
     isbn: str | None = Field(default=None, max_length=20)
     edition_text: str | None = Field(default=None, max_length=100)
-    published_year: int | None = Field(default=None, ge=1450, le=2100)
-    description: str | None = Field(default=None, max_length=3000)
+    published_year: int | None = Field(default=None, ge=1450)
+    description: str = Field(min_length=MIN_DESCRIPTION, max_length=3000)
     condition: Condition
-    price_amount: Decimal = Field(gt=0, le=Decimal("1000000"), decimal_places=2)
+    price_amount: Decimal = Field(ge=MIN_PRICE, le=MAX_PRICE, decimal_places=2)
     currency: str = Field(default="INR", min_length=3, max_length=3)
-    shipping_cost: Decimal | None = Field(default=None, ge=0, le=Decimal("100000"), decimal_places=2)
+    shipping_cost: Decimal | None = Field(default=None, ge=0, le=MAX_SHIPPING, decimal_places=2)
     delivery: Delivery = "pickup"
     location_city: str | None = Field(default=None, max_length=80)
     location_public: bool = True
@@ -50,11 +82,11 @@ class ListingBase(BaseModel):
 
     _isbn = field_validator("isbn")(validate_isbn)
     _currency = field_validator("currency")(validate_currency)
-
-    @field_validator("title", "author", "edition_text", "location_city")
-    @classmethod
-    def _squash(cls, v: str | None) -> str | None:
-        return " ".join(v.split()) if v else v
+    _year = field_validator("published_year")(validate_year)
+    _spaces = field_validator(*_SINGLE_LINE_FIELDS, mode="before")(_collapse_spaces)
+    _description = field_validator("description", mode="before")(_trim)
+    _text = field_validator("title", "author", "location_city", "description")(_must_have_text)
+    _blank_optional = field_validator("edition_text", "location_city")(_empty_to_none)
 
     @model_validator(mode="after")
     def _shipping(self):
@@ -72,12 +104,12 @@ class ListingUpdate(BaseModel):
     author: str | None = Field(default=None, min_length=1, max_length=200)
     isbn: str | None = Field(default=None, max_length=20)
     edition_text: str | None = Field(default=None, max_length=100)
-    published_year: int | None = Field(default=None, ge=1450, le=2100)
-    description: str | None = Field(default=None, max_length=3000)
+    published_year: int | None = Field(default=None, ge=1450)
+    description: str | None = Field(default=None, min_length=MIN_DESCRIPTION, max_length=3000)
     condition: Condition | None = None
-    price_amount: Decimal | None = Field(default=None, gt=0, le=Decimal("1000000"), decimal_places=2)
+    price_amount: Decimal | None = Field(default=None, ge=MIN_PRICE, le=MAX_PRICE, decimal_places=2)
     currency: str | None = Field(default=None, min_length=3, max_length=3)
-    shipping_cost: Decimal | None = Field(default=None, ge=0, le=Decimal("100000"), decimal_places=2)
+    shipping_cost: Decimal | None = Field(default=None, ge=0, le=MAX_SHIPPING, decimal_places=2)
     delivery: Delivery | None = None
     location_city: str | None = Field(default=None, max_length=80)
     location_public: bool | None = None
@@ -87,6 +119,18 @@ class ListingUpdate(BaseModel):
 
     _isbn = field_validator("isbn")(validate_isbn)
     _currency = field_validator("currency")(validate_currency)
+    _year = field_validator("published_year")(validate_year)
+    _spaces = field_validator(*_SINGLE_LINE_FIELDS, mode="before")(_collapse_spaces)
+    _description = field_validator("description", mode="before")(_trim)
+    _text = field_validator("title", "author", "location_city", "description")(_must_have_text)
+    _blank_optional = field_validator("edition_text", "location_city")(_empty_to_none)
+
+    @model_validator(mode="after")
+    def _required_stay_set(self):
+        for name in _NOT_NULLABLE:
+            if name in self.model_fields_set and getattr(self, name) is None:
+                raise ValueError(f"{name.replace('_', ' ').capitalize()} can't be empty")
+        return self
 
 
 class ListingImageOut(BaseModel):

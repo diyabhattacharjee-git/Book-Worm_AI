@@ -19,10 +19,12 @@ from app.api import (
     assistant,
     auth,
     books,
+    ebay,
     intelligence,
     marketplace,
     reading,
     recommendations,
+    todos,
 )
 from app.core.config import get_secret_key, get_settings, integration_warnings
 from app.core.errors import install_error_handlers
@@ -72,7 +74,7 @@ def create_app() -> FastAPI:
         allow_headers=["Content-Type", "X-Requested-With"],
     )
     for r in (auth.router, books.router, reading.router, recommendations.router, marketplace.router,
-              intelligence.router, assistant.router, admin.router):
+              intelligence.router, assistant.router, admin.router, ebay.router, todos.router):
         app.include_router(r, prefix="/api")
 
     upload_dir = Path(settings.upload_dir)

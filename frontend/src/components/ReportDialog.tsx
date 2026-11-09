@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useToast } from '../contexts/ToastContext'
 import { api } from '../services/api'
-import { Field, Modal } from './ui'
+import { CharCounter, Field, Modal } from './ui'
 
 const REASONS = [
   ['spam', 'Spam or advertising'],
@@ -13,12 +13,15 @@ const REASONS = [
   ['other', 'Something else'],
 ] as const
 
+const DETAILS_MAX = 500
+
 export function ReportDialog({ open, onClose, endpoint, what }: { open: boolean; onClose: () => void; endpoint: string; what: string }) {
   const toast = useToast()
   const [reason, setReason] = useState<string>('spam')
   const [details, setDetails] = useState('')
   const [busy, setBusy] = useState(false)
   async function submit() {
+    if (busy || details.length > DETAILS_MAX) return
     setBusy(true)
     try {
       await api.post(endpoint, { reason, details: details.trim() || null })
@@ -32,7 +35,7 @@ export function ReportDialog({ open, onClose, endpoint, what }: { open: boolean;
   }
   return (
     <Modal open={open} onClose={onClose} title={`Report ${what}`}
-      footer={<><button className="btn-ghost" onClick={onClose}>Cancel</button><button className="btn-danger" onClick={submit} disabled={busy}>Send report</button></>}>
+      footer={<><button className="btn-ghost" onClick={onClose}>Cancel</button><button className="btn-danger" onClick={submit} disabled={busy || details.length > DETAILS_MAX}>{busy ? 'Sending…' : 'Send report'}</button></>}>
       <div className="space-y-4">
         <fieldset>
           <legend className="label">Reason</legend>
@@ -46,7 +49,8 @@ export function ReportDialog({ open, onClose, endpoint, what }: { open: boolean;
           </div>
         </fieldset>
         <Field label="Details (optional)" htmlFor="report-details">
-          <textarea id="report-details" className="input" rows={3} maxLength={500} value={details} onChange={(e) => setDetails(e.target.value)} />
+          <textarea id="report-details" className="input" rows={3} value={details} onChange={(e) => setDetails(e.target.value)} />
+          <div className="mt-1 text-right"><CharCounter value={details.length} max={DETAILS_MAX} /></div>
         </Field>
       </div>
     </Modal>

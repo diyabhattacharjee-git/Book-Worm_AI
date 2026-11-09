@@ -3,23 +3,30 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { ConditionBadge, PriceEstimateCard, StatusBadge, VerdictBadge } from '../components/marketplace'
 import { ReportDialog } from '../components/ReportDialog'
-import { Badge, ErrorState, Notice, Skeleton, Spinner } from '../components/ui'
+import { Badge, CharCounter, ErrorState, Notice, Skeleton, Spinner } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
+import { useConfirm } from '../contexts/ConfirmContext'
 import { useToast } from '../contexts/ToastContext'
-import { useApi } from '../hooks/useApi'
+import { TTL, queryKey, useApi, useGet } from '../hooks/useApi'
 import { api } from '../services/api'
+import { invalidate, optimistic } from '../services/queryCache'
 import type { Inquiry, Listing, PriceEstimate, PriceVerdict } from '../types'
 import { CONDITION_HELP, date, money, relativeTime } from '../utils/format'
+
+const MESSAGE_MIN = 5
+const MESSAGE_MAX = 1500
 
 interface Detail { listing: Listing; my_inquiries: Inquiry[]; disclaimer: string }
 interface CompareRow { listing_id: number; condition: string; price: number; currency: string; total_known_cost: number | null; total_cost_complete: boolean; seller: string; is_sample: boolean; quality: { score: number; flags: string[] }; price_verdict: PriceVerdict; delivery: string; location: string | null }
 
 export default function ListingDetail() {
   const { id } = useParams()
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
-  const detail = useApi(() => api.get<Detail>(`/api/marketplace/listings/${id}`), [id, user?.id])
+  const confirm = useConfirm()
+  const path = `/api/marketplace/listings/${id}`
+  const detail = useGet<Detail>(path, undefined, { userId: user?.id, ttl: TTL.short, paused: authLoading })
   const [img, setImg] = useState(0)
   const [message, setMessage] = useState('')
   const [sending, setSending] = useState(false)
@@ -28,42 +35,53 @@ export default function ListingDetail() {
   const [estimating, setEstimating] = useState(false)
 
   if (detail.loading) return <div className="grid gap-8 md:grid-cols-2"><Skeleton className="aspect-[4/5]" /><div className="space-y-3"><Skeleton className="h-10 w-3/4" /><Skeleton className="h-24" /></div></div>
-  if (detail.error) return <ErrorState error={detail.error} onRetry={detail.reload} />
-  const { listing: l, my_inquiries, disclaimer } = detail.data!
+  if (detail.error || !detail.data) return <ErrorState error={detail.error} onRetry={detail.reload} />
+  const { listing: l, my_inquiries, disclaimer } = detail.data
   const photos = l.images.length ? l.images.map((i) => i.url) : l.cover_url ? [l.cover_url] : []
 
-  async function act(path: string, msg: string) {
+  async function act(actionPath: string, msg: string) {
     try {
-      await api.post(`/api/marketplace/listings/${l.id}/${path}`)
+      await api.post(`/api/marketplace/listings/${l.id}/${actionPath}`)
       toast.success(msg)
-      detail.reload()
+      invalidate('/api/marketplace/listings', '/api/marketplace/seller-dashboard', '/api/ebay/status')
     } catch (e) {
       toast.error((e as Error).message)
     }
   }
 
   async function remove() {
-    if (!confirm('Delete this listing permanently? Photos and messages will be removed.')) return
-    await api.del(`/api/marketplace/listings/${l.id}`)
-    toast.info('Listing deleted.')
-    navigate('/seller')
+    if (!await confirm({ title: 'Delete this listing permanently?', message: 'Photos and messages will be removed.', confirmLabel: 'Delete', danger: true })) return
+    try {
+      await api.del(`/api/marketplace/listings/${l.id}`)
+      invalidate('/api/marketplace/listings', '/api/marketplace/seller-dashboard')
+      toast.info('Listing deleted.')
+      navigate('/seller')
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
   }
 
   async function favorite() {
     if (!user) return navigate(`/login?next=/marketplace/listings/${l.id}`)
-    if (l.is_favorite) await api.del(`/api/marketplace/listings/${l.id}/favorite`)
-    else await api.post(`/api/marketplace/listings/${l.id}/favorite`)
-    detail.reload()
+    try {
+      await optimistic<Detail, void>(queryKey(path, undefined, user.id), (d) => ({ ...d, listing: { ...d.listing, is_favorite: !l.is_favorite } }),
+        () => (l.is_favorite ? api.del(`/api/marketplace/listings/${l.id}/favorite`) : api.post(`/api/marketplace/listings/${l.id}/favorite`)))
+      invalidate('/api/marketplace/favorites')
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
   }
 
   async function sendInquiry(e: FormEvent) {
     e.preventDefault()
+    if (sending || message.trim().length < MESSAGE_MIN || message.length > MESSAGE_MAX) return
     setSending(true)
     try {
-      await api.post(`/api/marketplace/listings/${l.id}/inquiries`, { message: message.trim() })
+      const inquiry = await api.post<Inquiry>(`/api/marketplace/listings/${l.id}/inquiries`, { message: message.trim() })
       setMessage('')
       toast.success('Message sent. The seller’s reply will appear here and under Saved → Messages.')
-      detail.reload()
+      detail.setData((d) => d && { ...d, my_inquiries: [inquiry, ...d.my_inquiries] })
+      invalidate('/api/marketplace/inquiries')
     } catch (err) {
       toast.error((err as Error).message)
     } finally {
@@ -87,14 +105,14 @@ export default function ListingDetail() {
 
   return (
     <div className="space-y-10">
-      <nav className="text-sm text-muted"><Link to="/marketplace" className="hover:text-ink">Marketplace</Link> / <span>{l.title}</span></nav>
+      <nav className="user-text text-sm text-muted"><Link to="/marketplace" className="hover:text-ink">Marketplace</Link> / <span>{l.title}</span></nav>
       {l.status !== 'active' && (
         <Notice tone="warn" title={l.status === 'sold' ? 'This book has been sold' : l.status === 'removed' ? 'Removed by a moderator' : 'This listing is inactive'}>
           {l.status === 'sold' ? `Marked sold ${date(l.sold_at)}.` : l.moderation_note ?? 'It isn’t visible in search and can’t receive messages.'}
         </Notice>
       )}
-      <div className="grid gap-10 md:grid-cols-2">
-        <div>
+      <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="min-w-0">
           <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-parchment">
             {photos[img] ? <img src={photos[img]} alt={l.images.length ? `Seller photo ${img + 1} of ${l.title}` : `Catalogue cover of ${l.title}`} className="h-full w-full object-contain" /> : <div className="flex h-full items-center justify-center text-muted">No photos</div>}
           </div>
@@ -111,10 +129,10 @@ export default function ListingDetail() {
           <p className="mt-2 text-xs text-muted">Photos are provided by the seller and don’t prove a book’s authenticity or condition.</p>
         </div>
 
-        <div>
+        <div className="min-w-0">
           <div className="flex flex-wrap gap-2"><ConditionBadge condition={l.condition} /><StatusBadge status={l.status} /></div>
-          <h1 className="mt-3 font-serif text-3xl font-semibold leading-tight">{l.title}</h1>
-          <p className="mt-1 text-ink-soft">{l.author}{l.edition_text ? ` · ${l.edition_text}` : ''}{l.published_year ? ` · ${l.published_year}` : ''}</p>
+          <h1 className="user-text mt-3 font-serif text-3xl font-semibold leading-tight">{l.title}</h1>
+          <p className="user-text mt-1 text-ink-soft">{l.author}{l.edition_text ? ` · ${l.edition_text}` : ''}{l.published_year ? ` · ${l.published_year}` : ''}</p>
           {l.book_id && <Link to={`/books/${l.book_id}`} className="link mt-1 inline-block text-sm">About this book</Link>}
 
           <div className="card mt-5 p-5">
@@ -140,7 +158,7 @@ export default function ListingDetail() {
             </div>
           )}
 
-          {l.description && <div className="mt-6"><h2 className="text-lg font-semibold">Seller’s description</h2><p className="mt-1 whitespace-pre-line text-ink-soft">{l.description}</p></div>}
+          {l.description && <div className="mt-6"><h2 className="text-lg font-semibold">Seller’s description</h2><p className="user-text mt-1 text-ink-soft">{l.description}</p></div>}
           <dl className="mt-6 grid grid-cols-2 gap-3 text-sm">
             <div><dt className="text-xs uppercase text-muted">ISBN</dt><dd>{l.isbn ?? 'Not provided'}</dd></div>
             <div><dt className="text-xs uppercase text-muted">Listed</dt><dd>{relativeTime(l.created_at)}</dd></div>
@@ -171,8 +189,8 @@ export default function ListingDetail() {
               <h2 className="flex items-center gap-2 text-lg font-semibold"><MessageCircle className="h-5 w-5" aria-hidden />Contact the seller</h2>
               {my_inquiries.map((q) => (
                 <div key={q.id} className="mt-3 space-y-2 text-sm">
-                  <p className="rounded-xl rounded-tr-sm bg-parchment px-3 py-2"><span className="text-xs text-muted">You · {relativeTime(q.created_at)}</span><br />{q.message}</p>
-                  {q.seller_reply ? <p className="rounded-xl rounded-tl-sm border border-forest/30 bg-forest-soft px-3 py-2"><span className="text-xs text-muted">Seller · {relativeTime(q.replied_at)}</span><br />{q.seller_reply}</p>
+                  <p className="rounded-xl rounded-tr-sm bg-parchment px-3 py-2"><span className="text-xs text-muted">You · {relativeTime(q.created_at)}</span><br /><span className="user-text">{q.message}</span></p>
+                  {q.seller_reply ? <p className="rounded-xl rounded-tl-sm border border-forest/30 bg-forest-soft px-3 py-2"><span className="text-xs text-muted">Seller · {relativeTime(q.replied_at)}</span><br /><span className="user-text">{q.seller_reply}</span></p>
                     : <p className="text-xs text-muted">Waiting for the seller’s reply.</p>}
                 </div>
               ))}
@@ -182,9 +200,9 @@ export default function ListingDetail() {
                     : (
                       <form onSubmit={sendInquiry} className="mt-3 space-y-2">
                         <label htmlFor="inq" className="sr-only">Message to seller</label>
-                        <textarea id="inq" className="input" rows={3} minLength={5} maxLength={1500} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Hi! Is this still available? Could we meet near…" />
+                        <textarea id="inq" className="input" rows={3} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Hi! Is this still available? Could we meet near…" />
                         <p className="text-xs text-muted">Your email is never shared. Only the seller sees your message, and only you see their reply.</p>
-                        <button className="btn-primary" disabled={sending || message.trim().length < 5}>{sending ? 'Sending…' : 'Send message'}</button>
+                        <div className="flex items-center justify-between gap-2"><button className="btn-primary" disabled={sending || message.trim().length < MESSAGE_MIN || message.length > MESSAGE_MAX}>{sending ? 'Sending…' : 'Send message'}</button><CharCounter value={message.length} max={MESSAGE_MAX} /></div>
                       </form>
                     )}
             </div>
@@ -199,7 +217,7 @@ export default function ListingDetail() {
 }
 
 function SameBook({ listing }: { listing: Listing }) {
-  const others = useApi(() => api.get<Listing[]>(`/api/marketplace/listings/${listing.id}/same-book`), [listing.id])
+  const others = useGet<Listing[]>(`/api/marketplace/listings/${listing.id}/same-book`, undefined, { ttl: TTL.medium })
   const ids = [listing.id, ...(others.data ?? []).map((o) => o.id)].slice(0, 6)
   const cmp = useApi(() => api.post<{ rows: CompareRow[]; suggestion: { listing_id: number; text: string } | null }>('/api/marketplace/compare-listings', { listing_ids: ids }), [ids.join(',')], ids.length >= 2)
   if (others.loading || !others.data?.length) return null

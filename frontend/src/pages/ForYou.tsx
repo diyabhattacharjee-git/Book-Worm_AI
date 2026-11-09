@@ -5,44 +5,63 @@ import { BookCard, BookGrid } from '../components/books'
 import { Badge, BookGridSkeleton, EmptyState, ErrorState, Modal, Notice, PageHeader, StarInput } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
-import { useApi, useDebounced } from '../hooks/useApi'
+import { BookSearch } from '../components/BookSearch'
+import { TTL, useGet } from '../hooks/useApi'
 import { api } from '../services/api'
-import type { BookSummary, Page, RecommendationItem, RecommendationResponse, User } from '../types'
+import { invalidate } from '../services/queryCache'
+import type { BookSummary, RecommendationItem, RecommendationResponse, User } from '../types'
 
 const SIGNAL_LABEL: Record<string, string> = { content: 'Content similarity', collaborative: 'Similar readers', popularity: 'Popularity', preference: 'Your preferences' }
 
 export default function ForYou() {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const toast = useToast()
   const [params, setParams] = useSearchParams()
   const genre = params.get('genre') ?? ''
-  const recs = useApi(() => api.get<RecommendationResponse>('/api/recommendations', { limit: 15, genre }), [user?.id, genre])
-  const facets = useApi(() => api.get<{ genres: { name: string; slug: string }[] }>('/api/books/facets'), [])
+  const recs = useGet<RecommendationResponse>('/api/recommendations', { limit: 15, genre }, { userId: user?.id, ttl: TTL.medium, paused: authLoading })
+  const facets = useGet<{ genres: { name: string; slug: string }[] }>('/api/books/facets', undefined, { ttl: TTL.hour })
   const [onboarding, setOnboarding] = useState(false)
   const [rating, setRating] = useState<RecommendationItem | null>(null)
   const [hidden, setHidden] = useState<Set<number>>(new Set())
   const [showHow, setShowHow] = useState(false)
+  const [recomputing, setRecomputing] = useState(false)
 
   useEffect(() => {
     if (user && params.get('onboarding') === '1') setOnboarding(true)
   }, [user, params])
 
   async function feedback(item: RecommendationItem, action: 'save' | 'dismiss' | 'not_interested', msg: string) {
+    setHidden((h) => new Set(h).add(item.book.id))
     try {
       await api.post('/api/recommendations/feedback', { book_id: item.book.id, action })
-      if (action === 'save') await api.post('/api/bookshelf', { book_id: item.book.id, status: 'want_to_read' })
-      setHidden((h) => new Set(h).add(item.book.id))
+      if (action === 'save') {
+        await api.post('/api/bookshelf', { book_id: item.book.id, status: 'want_to_read' })
+        invalidate('/api/bookshelf')
+      }
       toast.success(msg)
     } catch (e) {
+      setHidden((h) => {
+        const next = new Set(h)
+        next.delete(item.book.id)
+        return next
+      })
       toast.error((e as Error).message)
     }
   }
 
   async function recompute() {
-    await api.post('/api/recommendations/recompute')
-    setHidden(new Set())
-    recs.reload()
-    toast.info('Recommendations refreshed.')
+    if (recomputing) return
+    setRecomputing(true)
+    try {
+      await api.post('/api/recommendations/recompute')
+      setHidden(new Set())
+      invalidate('/api/recommendations')
+      toast.info('Recommendations refreshed.')
+    } catch (e) {
+      toast.error((e as Error).message)
+    } finally {
+      setRecomputing(false)
+    }
   }
 
   const items = recs.data?.items.filter((i) => !hidden.has(i.book.id)) ?? []
@@ -52,7 +71,7 @@ export default function ForYou() {
       <PageHeader eyebrow="Recommendations" title={user ? `For you, ${user.display_name}` : 'Popular picks'}
         actions={user && <>
           <button className="btn-outline" onClick={() => setOnboarding(true)}><Sparkles className="h-4 w-4" aria-hidden />{user.preferences.onboarding_completed ? 'Edit preferences' : 'Tell us your tastes'}</button>
-          <button className="btn-ghost" onClick={recompute}><RefreshCw className="h-4 w-4" aria-hidden />Refresh</button>
+          <button className="btn-ghost" onClick={recompute} disabled={recomputing}><RefreshCw className={`h-4 w-4 ${recomputing ? 'animate-spin' : ''}`} aria-hidden />Refresh</button>
         </>}>
         {user ? 'Every pick comes with the reason it was chosen. Save, dismiss or rate to steer what comes next.'
           : <>These are popular books in the catalogue. <Link to="/login?next=/for-you" className="link">Log in</Link> and rate a few books for personalised picks.</>}
@@ -108,7 +127,7 @@ export default function ForYou() {
       )}
 
       {rating && <RateDialog item={rating} onClose={(done) => { if (done) setHidden((h) => new Set(h).add(rating.book.id)); setRating(null) }} />}
-      {user && onboarding && <Onboarding user={user} onClose={() => { setOnboarding(false); params.delete('onboarding'); setParams(params); recs.reload() }} />}
+      {user && onboarding && <Onboarding user={user} onClose={(saved) => { setOnboarding(false); params.delete('onboarding'); setParams(params); if (saved) invalidate('/api/recommendations') }} />}
     </div>
   )
 }
@@ -120,6 +139,7 @@ function RateDialog({ item, onClose }: { item: RecommendationItem; onClose: (don
     try {
       await api.post('/api/recommendations/feedback', { book_id: item.book.id, action: 'rate', rating: value })
       toast.success('Rating saved. Your recommendations will adapt.')
+      invalidate(`/api/books/${item.book.id}`, '/api/recommendations')
       onClose(true)
     } catch (e) {
       toast.error((e as Error).message)
@@ -137,11 +157,11 @@ function RateDialog({ item, onClose }: { item: RecommendationItem; onClose: (don
 const THEMES = ['adventure', 'friendship', 'mystery', 'habits', 'money', 'history', 'space', 'love', 'philosophy', 'technology', 'family', 'war', 'identity', 'mythology']
 const LANGS = [['en', 'English'], ['hi', 'Hindi'], ['bn', 'Bengali'], ['ta', 'Tamil'], ['es', 'Spanish'], ['fr', 'French']]
 
-function Onboarding({ user, onClose }: { user: User; onClose: () => void }) {
+function Onboarding({ user, onClose }: { user: User; onClose: (saved: boolean) => void }) {
   const toast = useToast()
   const { setUser } = useAuth()
   const p = user.preferences
-  const facets = useApi(() => api.get<{ genres: { name: string; slug: string }[] }>('/api/books/facets'), [])
+  const facets = useGet<{ genres: { name: string; slug: string }[] }>('/api/books/facets', undefined, { ttl: TTL.hour })
   const [genres, setGenres] = useState<string[]>(p.favorite_genres)
   const [authors, setAuthors] = useState(p.favorite_authors.join(', '))
   const [languages, setLanguages] = useState<string[]>(p.preferred_languages)
@@ -150,9 +170,6 @@ function Onboarding({ user, onClose }: { user: User; onClose: () => void }) {
   const [length, setLength] = useState(p.preferred_length ?? 'any')
   const [goal, setGoal] = useState(p.reading_goal_text ?? '')
   const [enjoyed, setEnjoyed] = useState<BookSummary[]>([])
-  const [bookQ, setBookQ] = useState('')
-  const dq = useDebounced(bookQ)
-  const found = useApi(() => api.get<Page<BookSummary>>('/api/books', { q: dq, page_size: 5 }), [dq], dq.length > 1)
   const [busy, setBusy] = useState(false)
 
   const toggle = (list: string[], set: (v: string[]) => void, v: string) => set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v])
@@ -168,7 +185,7 @@ function Onboarding({ user, onClose }: { user: User; onClose: () => void }) {
       })
       setUser(u)
       toast.success('Preferences saved.')
-      onClose()
+      onClose(true)
     } catch (e) {
       toast.error((e as Error).message)
     } finally {
@@ -177,8 +194,8 @@ function Onboarding({ user, onClose }: { user: User; onClose: () => void }) {
   }
 
   return (
-    <Modal open wide onClose={onClose} title="What do you like to read?"
-      footer={<><button className="btn-ghost" onClick={onClose}>Skip for now</button><button className="btn-primary" disabled={busy} onClick={() => save(true)}>Save preferences</button></>}>
+    <Modal open wide onClose={() => onClose(false)} title="What do you like to read?"
+      footer={<><button className="btn-ghost" onClick={() => onClose(false)}>Skip for now</button><button className="btn-primary" disabled={busy} onClick={() => save(true)}>Save preferences</button></>}>
       <div className="space-y-6">
         <p className="text-sm text-muted">Everything here is optional and you can change it any time in Settings.</p>
         <fieldset>
@@ -214,15 +231,7 @@ function Onboarding({ user, onClose }: { user: User; onClose: () => void }) {
           </div>
         </fieldset>
         <div>
-          <label className="label" htmlFor="ob-books">Books you’ve enjoyed</label>
-          <input id="ob-books" className="input" value={bookQ} onChange={(e) => setBookQ(e.target.value)} placeholder="Search the catalogue" />
-          {found.data && dq.length > 1 && (
-            <ul className="mt-2 divide-y divide-line rounded-lg border border-line">
-              {found.data.items.map((b) => (
-                <li key={b.id}><button type="button" className="w-full px-3 py-2 text-left text-sm hover:bg-parchment" onClick={() => { if (!enjoyed.some((x) => x.id === b.id)) setEnjoyed([...enjoyed, b]); setBookQ('') }}>{b.title} <span className="text-muted">· {b.authors.join(', ')}</span></button></li>
-              ))}
-            </ul>
-          )}
+          <BookSearch id="ob-books" label="Books you’ve enjoyed" placeholder="Search the catalogue" exclude={enjoyed.map((b) => b.id)} onPick={(b) => setEnjoyed((list) => (list.some((x) => x.id === b.id) ? list : [...list, b]))} />
           <div className="mt-2 flex flex-wrap gap-2">
             {enjoyed.map((b) => <span key={b.id} className="chip">{b.title}<button type="button" aria-label={`Remove ${b.title}`} onClick={() => setEnjoyed(enjoyed.filter((x) => x.id !== b.id))}><X className="h-3 w-3" /></button></span>)}
             {p.enjoyed_book_ids.length > 0 && <span className="text-xs text-muted">+ {p.enjoyed_book_ids.length} saved earlier</span>}

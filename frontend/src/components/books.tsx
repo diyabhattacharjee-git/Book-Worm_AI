@@ -16,13 +16,14 @@ function hash(s: string): number {
 /** Real cover from the metadata provider; a designed typographic placeholder if missing or broken. */
 export function BookCover({ title, authors = [], url, className = '', size = 'md' }: { title: string; authors?: string[]; url: string | null; className?: string; size?: 'sm' | 'md' | 'lg' }) {
   const [failed, setFailed] = useState(false)
-  const showImg = url && !failed
+  const src = url && size !== 'lg' ? url.replace(/^(https:\/\/covers\.openlibrary\.org\/.+)-L\.jpg$/, '$1-M.jpg') : url
+  const showImg = src && !failed
   const bg = PALETTE[hash(title) % PALETTE.length]
   const text = size === 'sm' ? 'text-[10px]' : size === 'lg' ? 'text-xl' : 'text-sm'
   return (
     <div className={`relative aspect-[2/3] overflow-hidden rounded-xl bg-parchment shadow-[var(--shadow-card)] ${className}`}>
       {showImg ? (
-        <img src={url} alt={`Cover of ${title}`} loading="lazy" onError={() => setFailed(true)}
+        <img src={src} alt={`Cover of ${title}`} loading="lazy" decoding="async" onError={() => setFailed(true)}
           onLoad={(e) => { if ((e.target as HTMLImageElement).naturalWidth <= 1) setFailed(true) }}
           className="h-full w-full object-cover" />
       ) : (
@@ -59,7 +60,7 @@ export function RatingLine({ book }: { book: BookSummary }) {
 
 export function BookCard({ book, footer, why }: { book: BookSummary; footer?: ReactNode; why?: ReactNode }) {
   return (
-    <article className="group flex flex-col">
+    <article className="group flex min-w-0 flex-col">
       <Link to={`/books/${book.id}`} className="block rounded-xl transition-transform duration-200 group-hover:-translate-y-0.5" aria-label={`${book.title} by ${authorsText(book.authors)}`}>
         <BookCover title={book.title} authors={book.authors} url={book.cover_url} />
       </Link>
@@ -88,7 +89,7 @@ export function BookRow({ book, right }: { book: BookSummary; right?: ReactNode 
     <div className="flex gap-4">
       <Link to={`/books/${book.id}`} className="w-16 shrink-0"><BookCover title={book.title} authors={book.authors} url={book.cover_url} size="sm" /></Link>
       <div className="min-w-0 flex-1">
-        <Link to={`/books/${book.id}`} className="font-serif font-semibold hover:text-forest">{book.title}</Link>
+        <Link to={`/books/${book.id}`} className="user-text font-serif font-semibold hover:text-forest">{book.title}</Link>
         <p className="text-sm text-muted">{authorsText(book.authors)}</p>
         <div className="mt-1 flex flex-wrap items-center gap-2">
           <RatingLine book={book} />

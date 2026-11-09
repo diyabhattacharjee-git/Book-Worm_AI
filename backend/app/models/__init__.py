@@ -9,6 +9,7 @@ from app.models.book import (
     book_authors,
     book_genres,
 )
+from app.models.ebay import EbayAccount, EbayPublication
 from app.models.marketplace import (
     CachedExternalListing,
     ListingFavorite,
@@ -28,6 +29,7 @@ from app.models.reading import (
     ReadingListItem,
     ReadingPlan,
     ReadingPlanItem,
+    ReadingTask,
 )
 from app.models.social import (
     AuditLog,
@@ -46,7 +48,7 @@ __all__ = [
     "CachedExternalListing", "ListingFavorite", "ListingImage", "ListingInquiry", "ListingReport",
     "MarketplaceListing", "MarketplaceProvider", "StoredImage",
     "BookshelfEntry", "Conversation", "ConversationMessage", "ReadingGoal", "ReadingList",
-    "ReadingListItem", "ReadingPlan", "ReadingPlanItem",
+    "ReadingListItem", "ReadingPlan", "ReadingPlanItem", "ReadingTask", "EbayAccount", "EbayPublication",
     "AuditLog", "RecommendationEvaluationRun", "RecommendationEvent", "Review", "ReviewHelpfulVote",
     "ReviewReport", "SearchQuery", "UserBookInteraction",
     "EmailOTP", "User", "UserProfile",

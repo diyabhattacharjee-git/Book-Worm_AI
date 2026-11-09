@@ -205,6 +205,6 @@ def _validated_llm_fill(text: str, p: SearchParams) -> SearchParams:
 
 def parse_request(db: Session, text: str, use_llm: bool = True) -> SearchParams:
     p = parse_rules(db, text)
-    if use_llm and llm.is_available() and (not p.title or p.max_price is None) and not p.isbn:
+    if use_llm and llm.is_available() and not p.title and not p.isbn:
         p = _validated_llm_fill(text, p)
     return p

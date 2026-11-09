@@ -11,15 +11,22 @@ from sqlalchemy.orm import Session
 from app.core.text import (
     normalize_name,
     normalize_title,
+    similarity,
     slugify,
     strip_control,
     to_isbn13,
 )
 from app.integrations.http import ProviderError
-from app.integrations.metadata import BookMetadata, gb_by_isbn, ol_by_isbn
+from app.integrations.metadata import BookMetadata, gb_by_isbn, gb_search, ol_by_isbn, ol_search
 from app.models.book import Author, Book, BookEdition, Genre
+from app.repositories.books import find_by_title
 
 logger = logging.getLogger("bookworm.catalogue")
+
+TITLE_MATCH = 0.8
+LOCAL_TITLE_MATCH = 0.9
+# A star average from a handful of people says more about them than the book.
+MIN_EXTERNAL_RATINGS = 5
 
 FORMAT_ALIASES = {"paperback": "paperback", "mass market paperback": "paperback", "trade paperback": "paperback",
                   "hardcover": "hardcover", "hardback": "hardcover", "ebook": "ebook", "e-book": "ebook",
@@ -97,7 +104,7 @@ def upsert_book(
     fill("page_count", meta.page_count if meta.page_count and 0 < meta.page_count < 10000 else None)
     fill("publisher", strip_control(meta.publisher, 200))
     fill("cover_url", meta.cover_url)
-    if meta.rating_avg and meta.rating_count and book.external_rating_avg is None:
+    if meta.rating_avg and (meta.rating_count or 0) >= MIN_EXTERNAL_RATINGS and book.external_rating_avg is None:
         book.external_rating_avg = float(meta.rating_avg)
         book.external_rating_count = int(meta.rating_count)
         book.external_rating_source = meta.source
@@ -150,8 +157,8 @@ def upsert_book(
     return book
 
 
-def import_by_isbn(db: Session, isbn: str) -> tuple[Book | None, list[str]]:
-    """Local lookup first, then Open Library, then Google Books."""
+def import_by_isbn(db: Session, isbn: str, prefer: str | None = None) -> tuple[Book | None, list[str]]:
+    """Local lookup first, then Google Books and Open Library (`prefer="open_library"` swaps them)."""
     isbn13 = to_isbn13(isbn)
     if not isbn13:
         return None, ["Invalid ISBN"]
@@ -159,7 +166,10 @@ def import_by_isbn(db: Session, isbn: str) -> tuple[Book | None, list[str]]:
     if existing:
         return existing, []
     errors: list[str] = []
-    for fetch, label in ((ol_by_isbn, "Open Library"), (gb_by_isbn, "Google Books")):
+    providers = [(gb_by_isbn, "Google Books"), (ol_by_isbn, "Open Library")]
+    if prefer == "open_library":
+        providers.reverse()
+    for fetch, label in providers:
         try:
             meta = fetch(isbn13, db)
         except ProviderError as exc:
@@ -170,3 +180,34 @@ def import_by_isbn(db: Session, isbn: str) -> tuple[Book | None, list[str]]:
             db.commit()
             return book, errors
     return None, errors or ["No metadata found for this ISBN"]
+
+
+def _same_book(meta: BookMetadata, title: str, author: str | None) -> bool:
+    if not meta.authors or similarity(title, meta.title) < TITLE_MATCH:
+        return False
+    if not author or not author.strip():
+        return True
+    wanted = normalize_name(author).split()
+    names = normalize_name(" ".join(meta.authors)).split()
+    return bool(wanted) and wanted[-1] in names
+
+
+def find_or_add_by_title(db: Session, title: str, author: str | None = None) -> Book | None:
+    """The real book with this title: from the catalogue, or else fetched from Google Books /
+    Open Library and added. Returns None when no provider knows it, so nothing can be invented."""
+    matches = find_by_title(db, title, author, limit=1)
+    if matches and matches[0][1] >= LOCAL_TITLE_MATCH:
+        return matches[0][0]
+    google_query = f'intitle:"{title}"' + (f' inauthor:"{author}"' if author else "")
+    open_library_query = f"{title} {author or ''}".strip()
+    for search, query in ((gb_search, google_query), (ol_search, open_library_query)):
+        try:
+            candidates = search(query, db, 5)
+        except ProviderError:
+            continue
+        meta = next((m for m in candidates if _same_book(m, title, author)), None)
+        if meta:
+            book = upsert_book(db, meta)
+            db.commit()
+            return book
+    return None

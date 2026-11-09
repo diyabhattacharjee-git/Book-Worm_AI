@@ -11,17 +11,28 @@ from __future__ import annotations
 import base64
 import threading
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from urllib.parse import urlencode
 
 import httpx
+from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.text import strip_control, to_isbn13
-from app.integrations.http import USER_AGENT, ProviderError
+from app.integrations.http import (
+    USER_AGENT,
+    ProviderError,
+    breaker_remaining,
+    cache_get,
+    cache_put,
+    open_breaker,
+)
 from app.marketplace.types import NormalizedListing
 
 _HOSTS = {"sandbox": "https://api.sandbox.ebay.com", "production": "https://api.ebay.com"}
 BOOKS_CATEGORY_ID = "267"
+BACKOFF_SECONDS = 0.6
+RATE_LIMIT_COOLDOWN_SECONDS = 900
 
 # eBay condition IDs used for books
 _CONDITION_IDS = {"1000": "new", "1500": "new", "2750": "like_new", "3000": "unknown", "4000": "very_good",
@@ -130,41 +141,98 @@ def normalize_item(item: dict, fetched_at: datetime) -> NormalizedListing | None
     )
 
 
+def _invalidate_token() -> None:
+    with _token_lock:
+        _token["value"], _token["expires"] = None, 0.0
+
+
+def _browse(params: dict) -> dict:
+    """One Browse API search. Retries once for an expired token or a transient server error."""
+    s = get_settings()
+    for attempt in range(2):
+        retry = attempt == 0
+        try:
+            resp = httpx.get(
+                f"{_host()}/buy/browse/v1/item_summary/search",
+                params=params,
+                headers={"Authorization": f"Bearer {_get_token()}", "X-EBAY-C-MARKETPLACE-ID": s.ebay_marketplace_id,
+                         "User-Agent": USER_AGENT},
+                timeout=s.external_http_timeout_seconds,
+            )
+        except httpx.TimeoutException as exc:
+            raise ProviderError("ebay", "request timed out") from exc
+        except httpx.HTTPError as exc:
+            if retry:
+                time.sleep(BACKOFF_SECONDS)
+                continue
+            raise ProviderError("ebay", "unreachable") from exc
+        if resp.status_code == 401 and retry:
+            _invalidate_token()
+            continue
+        if resp.status_code >= 500 and retry:
+            time.sleep(BACKOFF_SECONDS)
+            continue
+        if resp.status_code == 429:
+            raise ProviderError("ebay", "rate limit reached", retry_after=RATE_LIMIT_COOLDOWN_SECONDS)
+        if resp.status_code in (401, 403):
+            raise ProviderError("ebay", "access denied for Browse API; check application keyset permissions")
+        if resp.status_code != 200:
+            raise ProviderError("ebay", f"search failed (HTTP {resp.status_code})")
+        return resp.json()
+    raise ProviderError("ebay", "unavailable")
+
+
+def _cached_search(params: dict, db: Session | None) -> tuple[list[dict], datetime]:
+    """Search through the shared cache and breaker so repeat lookups cost no eBay calls."""
+    s = get_settings()
+    key = f"ebay:{s.ebay_environment}:{s.ebay_marketplace_id}:{urlencode(sorted(params.items()))}"
+    ttl = timedelta(minutes=s.ebay_cache_ttl_minutes)
+
+    def unpack(row: dict) -> tuple[list[dict], datetime]:
+        return row["items"], datetime.fromisoformat(row["fetched_at"])
+
+    cached = cache_get(db, key)
+    if cached is not None:
+        return unpack(cached)
+    try:
+        remaining = breaker_remaining("ebay", db)
+        if remaining:
+            raise ProviderError("ebay", "temporarily paused to stay within its free limit", retry_after=remaining)
+        fetched_at = datetime.now(timezone.utc)
+        items = _browse(params).get("itemSummaries", []) or []
+    except ProviderError as exc:
+        if exc.retry_after and not breaker_remaining("ebay", db):
+            open_breaker("ebay", exc.retry_after, exc.message, db)
+        stale = cache_get(db, key, allow_stale=True)
+        if stale is not None:
+            return unpack(stale)
+        raise
+    cache_put(db, key, "ebay", {"items": items, "fetched_at": fetched_at.isoformat()}, ttl)
+    return items, fetched_at
+
+
 def search(query: str, isbn: str | None = None, limit: int = 25, max_price: float | None = None,
-           currency: str | None = None) -> list[NormalizedListing]:
+           currency: str | None = None, db: Session | None = None) -> list[NormalizedListing]:
     s = get_settings()
     if not s.ebay_configured:
         raise ProviderError("ebay", "not configured")
-    token = _get_token()
-    params: dict = {"q": query[:100], "category_ids": BOOKS_CATEGORY_ID, "limit": str(min(limit, 50))}
-    if isbn:
-        params["gtin"] = isbn
+    base: dict = {"category_ids": BOOKS_CATEGORY_ID, "limit": str(min(limit, 50))}
     filters = ["buyingOptions:{FIXED_PRICE}"]
     if max_price and currency:
         filters.append(f"price:[..{max_price:.2f}],priceCurrency:{currency}")
-    params["filter"] = ",".join(filters)
-    try:
-        resp = httpx.get(
-            f"{_host()}/buy/browse/v1/item_summary/search",
-            params=params,
-            headers={"Authorization": f"Bearer {token}", "X-EBAY-C-MARKETPLACE-ID": s.ebay_marketplace_id,
-                     "User-Agent": USER_AGENT},
-            timeout=s.external_http_timeout_seconds,
-        )
-    except httpx.TimeoutException as exc:
-        raise ProviderError("ebay", "request timed out") from exc
-    except httpx.HTTPError as exc:
-        raise ProviderError("ebay", "unreachable") from exc
-    if resp.status_code == 429:
-        raise ProviderError("ebay", "rate limit reached")
-    if resp.status_code in (401, 403):
-        raise ProviderError("ebay", "access denied for Browse API; check application keyset permissions")
-    if resp.status_code != 200:
-        raise ProviderError("ebay", f"search failed (HTTP {resp.status_code})")
-    fetched_at = datetime.now(timezone.utc)
+    base["filter"] = ",".join(filters)
+    # An ISBN is exact, and combining it with free text would make eBay require both.
+    items, fetched_at, matched_isbn = [], datetime.now(timezone.utc), None
+    if isbn:
+        items, fetched_at = _cached_search({**base, "gtin": isbn}, db)
+        matched_isbn = isbn if items else None
+    if not items and query.strip():
+        items, fetched_at = _cached_search({**base, "q": query[:100]}, db)
     out = []
-    for item in resp.json().get("itemSummaries", []) or []:
+    for item in items:
         n = normalize_item(item, fetched_at)
         if n:
+            if matched_isbn and not n.isbn:
+                n.isbn = matched_isbn
             out.append(n)
     return out

@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from fastapi.exceptions import RequestValidationError
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
@@ -12,6 +13,7 @@ from app.core.errors import forbidden, not_found
 from app.core.ratelimit import rate_limit
 from app.core.text import normalize_title, strip_control
 from app.db.session import get_db
+from app.integrations import ebay_seller
 from app.models.book import Book
 from app.models.marketplace import (
     ListingFavorite,
@@ -106,6 +108,8 @@ def create_listing(body: ListingCreate, user: User = Depends(get_current_user), 
         link_to_catalogue(db, listing)
     if not listing.location_city and user.profile and user.profile.location_city:
         listing.location_city = user.profile.location_city
+    if not listing.location_city:
+        raise RequestValidationError([{"loc": ("body", "location_city"), "msg": "Enter your city or area so buyers know where the book is"}])
     db.add(listing)
     user.is_seller = True
     db.commit()
@@ -175,6 +179,7 @@ def update_listing(listing_id: int, body: ListingUpdate, user: User = Depends(ge
 @router.delete("/listings/{listing_id}", status_code=204)
 def delete_listing(listing_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     listing = _owned(db, listing_id, user)
+    ebay_seller.end_if_live(db, listing)
     paths = [i.path for i in listing.images]
     db.delete(listing)
     db.commit()
@@ -190,6 +195,7 @@ def mark_sold(listing_id: int, user: User = Depends(get_current_user), db: Sessi
     listing.status = "sold"
     listing.sold_at = datetime.now(timezone.utc)
     db.commit()
+    ebay_seller.end_if_live(db, listing)
     return listing_out(db, listing, user)
 
 
@@ -200,6 +206,7 @@ def deactivate(listing_id: int, user: User = Depends(get_current_user), db: Sess
         raise HTTPException(status_code=409, detail="Only active listings can be deactivated")
     listing.status = "inactive"
     db.commit()
+    ebay_seller.end_if_live(db, listing)
     return listing_out(db, listing, user)
 
 

@@ -29,6 +29,20 @@ export function BookGridSkeleton({ count = 8 }: { count?: number }) {
   )
 }
 
+export function ListSkeleton({ rows = 3 }: { rows?: number }) {
+  return (
+    <div className="space-y-3" aria-busy="true" aria-label="Loading">
+      {Array.from({ length: rows }).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
+    </div>
+  )
+}
+
+export function CharCounter({ value, max, warnAt = 0.9, id }: { value: number; max: number; warnAt?: number; id?: string }) {
+  const over = value > max
+  const near = value >= max * warnAt
+  return <span id={id} aria-live={over ? 'polite' : 'off'} className={`text-xs tabular-nums ${over ? 'font-medium text-rust' : near ? 'text-gold-dark' : 'text-muted'}`}>{value.toLocaleString()} / {max.toLocaleString()}</span>
+}
+
 export function EmptyState({ icon, title, children, action }: { icon?: ReactNode; title: string; children?: ReactNode; action?: ReactNode }) {
   return (
     <div className="card flex flex-col items-center px-6 py-12 text-center">
@@ -44,9 +58,9 @@ export function ErrorState({ error, onRetry }: { error: ApiError | Error | null;
   return (
     <div role="alert" className="flex items-start gap-3 rounded-xl border border-rust/30 bg-rust-soft px-4 py-3 text-sm text-rust">
       <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         <p className="font-medium">Something went wrong</p>
-        <p className="opacity-90">{error?.message ?? 'Unknown error'}</p>
+        <p className="user-text opacity-90">{error?.message ?? 'Unknown error'}</p>
       </div>
       {onRetry && <button className="btn-outline btn-sm" onClick={onRetry}>Try again</button>}
     </div>
@@ -96,7 +110,7 @@ export function StarInput({ value, onChange, label = 'Your rating' }: { value: n
     <div role="radiogroup" aria-label={label} className="inline-flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((i) => (
         <button key={i} type="button" role="radio" aria-checked={value === i} aria-label={`${i} star${i > 1 ? 's' : ''}`}
-          onClick={() => onChange(i)} className="rounded p-0.5 transition-transform hover:scale-110">
+          onClick={() => onChange(i)} className="rounded p-1 transition-transform hover:scale-110">
           <Star className={`h-6 w-6 ${i <= value ? 'fill-gold text-gold' : 'text-line'}`} aria-hidden />
         </button>
       ))}
@@ -133,24 +147,24 @@ export function Modal({ open, onClose, title, children, footer, wide }: { open: 
   return (
     <dialog ref={ref} aria-labelledby={titleId} onCancel={(e) => { e.preventDefault(); onClose() }}
       onClick={(e) => { if (e.target === ref.current) onClose() }}
-      className={`m-auto w-[calc(100%-2rem)] ${wide ? 'max-w-3xl' : 'max-w-lg'} rounded-2xl border border-line bg-paper p-0 text-ink shadow-[var(--shadow-lift)] backdrop:bg-ink/40`}>
-      <div className="flex items-center justify-between border-b border-line px-5 py-4">
-        <h2 id={titleId} className="text-lg font-semibold">{title}</h2>
+      className={`m-auto w-[calc(100%-2rem)] ${wide ? 'max-w-3xl' : 'max-w-lg'} rounded-2xl border border-line bg-paper p-0 text-ink shadow-[var(--shadow-lift)] backdrop:bg-ink/40 open:animate-[pop_160ms_ease-out]`}>
+      <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
+        <h2 id={titleId} className="user-text min-w-0 text-lg font-semibold">{title}</h2>
         <button onClick={onClose} className="btn-ghost btn-sm" aria-label="Close dialog"><X className="h-4 w-4" /></button>
       </div>
-      <div className="max-h-[70vh] overflow-y-auto px-5 py-4">{children}</div>
+      <div className="max-h-[70vh] overflow-y-auto overscroll-contain px-5 py-4">{children}</div>
       {footer && <div className="flex justify-end gap-2 border-t border-line px-5 py-3">{footer}</div>}
     </dialog>
   )
 }
 
-export function Field({ label, error, hint, children, htmlFor }: { label: string; error?: string; hint?: ReactNode; children: ReactNode; htmlFor?: string }) {
+export function Field({ label, error, hint, children, htmlFor, errorId }: { label: string; error?: string; hint?: ReactNode; children: ReactNode; htmlFor?: string; errorId?: string }) {
   return (
-    <div>
+    <div className="min-w-0">
       <label className="label" htmlFor={htmlFor}>{label}</label>
       {children}
       {hint && !error && <p className="mt-1 text-xs text-muted">{hint}</p>}
-      {error && <p className="mt-1 text-xs text-rust" role="alert">{error}</p>}
+      {error && <p id={errorId} className="mt-1 text-xs text-rust" role="alert">{error}</p>}
     </div>
   )
 }
@@ -171,9 +185,9 @@ export function Tabs<T extends string>({ tabs, value, onChange, label }: { tabs:
 export function PageHeader({ eyebrow, title, children, actions }: { eyebrow?: string; title: string; children?: ReactNode; actions?: ReactNode }) {
   return (
     <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
+      <div className="min-w-0">
         {eyebrow && <p className="eyebrow mb-2">{eyebrow}</p>}
-        <h1 className="font-serif text-3xl font-semibold sm:text-4xl">{title}</h1>
+        <h1 className="user-text font-serif text-3xl font-semibold sm:text-4xl">{title}</h1>
         {children && <div className="mt-2 max-w-2xl text-muted">{children}</div>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}

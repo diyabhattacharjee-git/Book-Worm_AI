@@ -1,6 +1,6 @@
 import { AlertTriangle, BookCheck, ChevronDown, Scale, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { Link, useNavigate, useSearchParams } from 'react-router'
 import { BookCover } from '../components/books'
 import { DealCard, PriceEstimateCard, VerdictBadge, WorkflowStatus } from '../components/marketplace'
 import { Badge, EmptyState, ErrorState, Notice, PageHeader } from '../components/ui'
@@ -21,6 +21,8 @@ interface Form {
   include_external: boolean
 }
 
+const REPEAT_WINDOW_MS = 60_000
+
 const EMPTY: Form = { query: '', title: '', author: '', isbn: '', max_price: '', currency: 'INR', min_condition: '', location: '', delivery: 'any', include_external: true }
 
 export default function UsedSearch() {
@@ -32,21 +34,26 @@ export default function UsedSearch() {
   const [result, setResult] = useState<UsedSearchResult | null>(null)
   const [error, setError] = useState<ApiError | null>(null)
   const abortRef = useRef<AbortController | null>(null)
+  const lastRunRef = useRef<{ body: string; at: number } | null>(null)
+  const navigate = useNavigate()
 
   async function run(f: Form = form) {
     if (!f.query.trim() && !f.title.trim() && !f.isbn.trim()) return
     abortRef.current?.abort()
+    const body = {
+      query: f.query.trim() || null, title: f.title.trim() || null, author: f.author.trim() || null, isbn: f.isbn.trim() || null,
+      max_price: f.max_price ? Number(f.max_price) : null, currency: f.currency, min_condition: f.min_condition || null,
+      location: f.location.trim() || null, delivery: f.delivery, include_external: f.include_external,
+    }
+    const serialized = JSON.stringify(body)
+    if (result && lastRunRef.current?.body === serialized && Date.now() - lastRunRef.current.at < REPEAT_WINDOW_MS) return
+    lastRunRef.current = { body: serialized, at: Date.now() }
     const ctrl = new AbortController()
     abortRef.current = ctrl
     setRunning(true)
     setSteps([])
     setResult(null)
     setError(null)
-    const body = {
-      query: f.query.trim() || null, title: f.title.trim() || null, author: f.author.trim() || null, isbn: f.isbn.trim() || null,
-      max_price: f.max_price ? Number(f.max_price) : null, currency: f.currency, min_condition: f.min_condition || null,
-      location: f.location.trim() || null, delivery: f.delivery, include_external: f.include_external,
-    }
     try {
       await streamNdjson('/api/marketplace/search-used-books/stream', body, (raw) => {
         const e = raw as { type: string; data?: UsedSearchResult; detail?: string } & TraceStep
@@ -118,7 +125,7 @@ export default function UsedSearch() {
         <p className="mt-3 text-xs text-muted">Typed details override what’s understood from the sentence.</p>
       </form>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[300px_1fr]">
+      <div className="mt-8 grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)]">
         <aside className="space-y-4">
           <WorkflowStatus steps={steps} running={running} />
           {result?.providers && result.providers.length > 0 && (
@@ -137,18 +144,18 @@ export default function UsedSearch() {
           )}
         </aside>
         <section aria-live="polite" className="min-w-0 space-y-6">
-          {error && <ErrorState error={error} onRetry={() => run()} />}
+          {error && <ErrorState error={error} onRetry={() => { lastRunRef.current = null; void run() }} />}
           {!running && !result && !error && (
             <EmptyState icon={<Scale className="h-6 w-6" />} title="Ask about any book">Try: “Clean Code under ₹500 with pickup in Kolkata” or “Is ₹300 a fair price for The Alchemist?”</EmptyState>
           )}
-          {result && <Results result={result} />}
+          {result && <Results result={result} onChooseTitle={(title) => { const next = { ...EMPTY, title }; setForm(next); setAdvanced(true); navigate(`/marketplace/find?title=${encodeURIComponent(title)}`, { replace: true }); void run(next) }} />}
         </section>
       </div>
     </div>
   )
 }
 
-function Results({ result }: { result: UsedSearchResult }) {
+function Results({ result, onChooseTitle }: { result: UsedSearchResult; onChooseTitle: (title: string) => void }) {
   const [showExcluded, setShowExcluded] = useState(false)
   if (result.status === 'needs_clarification') {
     return <Notice tone="warn" title="Which book?">{result.summary.text}</Notice>
@@ -175,7 +182,7 @@ function Results({ result }: { result: UsedSearchResult }) {
             {b.authors.length > 0 && <p className="text-muted">{b.authors.join(', ')}</p>}
             {b.notes.map((n) => <p key={n} className="text-xs text-muted">{n}</p>)}
             {b.ambiguous && b.candidates.length > 0 && (
-              <p className="mt-1 text-xs">Did you mean: {b.candidates.slice(1).map((c, i) => <span key={i}>{i > 0 && ', '}{c.book_id ? <Link className="link" to={`/marketplace/find?title=${encodeURIComponent(c.title)}`} reloadDocument>{c.title}</Link> : c.title}</span>)}</p>
+              <p className="mt-1 text-xs">Did you mean: {b.candidates.slice(1).map((c, i) => <span key={i}>{i > 0 && ', '}{c.book_id ? <button type="button" className="link" onClick={() => onChooseTitle(c.title)}>{c.title}</button> : c.title}</span>)}</p>
             )}
           </div>
         </div>

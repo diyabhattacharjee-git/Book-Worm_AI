@@ -33,6 +33,8 @@ from app.services.uploads import public_url
 logger = logging.getLogger("bookworm.marketplace.providers")
 
 PROVIDER_TIMEOUT_SECONDS = 12.0
+STATUS_WRITE_INTERVAL_SECONDS = 300.0
+_last_success_write: dict[str, float] = {}
 
 
 @dataclass
@@ -116,7 +118,7 @@ def _cache_external(db: Session, items: list[NormalizedListing]) -> None:
 
 def search_ebay_provider(db: Session, req: SearchRequest) -> list[NormalizedListing]:
     items = ebay.search(req.text or req.isbn or "", isbn=req.isbn, limit=30,
-                        max_price=req.max_price if req.currency == "USD" else None, currency=req.currency)
+                        max_price=req.max_price if req.currency == "USD" else None, currency=req.currency, db=db)
     try:
         _cache_external(db, items)
     except Exception:  # caching is best-effort
@@ -147,6 +149,12 @@ def _run_provider(key: str, req: SearchRequest) -> list[NormalizedListing]:
 
 
 def _record_status(key: str, ok: bool, error: str | None) -> None:
+    # Successes are only telemetry for the admin page, so one write every few minutes is plenty.
+    now_ts = time.monotonic()
+    if ok and now_ts - _last_success_write.get(key, -STATUS_WRITE_INTERVAL_SECONDS) < STATUS_WRITE_INTERVAL_SECONDS:
+        return
+    if ok:
+        _last_success_write[key] = now_ts
     try:
         with SessionLocal() as db:
             row = db.scalar(select(MarketplaceProvider).where(MarketplaceProvider.key == key))

@@ -3,14 +3,19 @@ import { useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { Field, Modal, Notice, PageHeader } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
+import { useConfirm } from '../contexts/ConfirmContext'
 import { useToast } from '../contexts/ToastContext'
 import { api } from '../services/api'
+import { clearUserData } from '../services/queryCache'
+import { MAX_PHOTO_MB, PHOTO_TYPES, canDecodeImage, photoProblem } from '../utils/validation'
 import type { User } from '../types'
 
 export default function Settings() {
   const { user, setUser, logout } = useAuth()
   const toast = useToast()
+  const confirm = useConfirm()
   const navigate = useNavigate()
+  const [busy, setBusy] = useState<string | null>(null)
   const u = user!
   const [profile, setProfile] = useState({ username: u.username ?? '', display_name: u.display_name, bio: u.bio ?? '', location_city: u.location_city ?? '', location_public: u.location_public, allow_inquiries: u.allow_inquiries, contact_note: u.contact_note ?? '' })
   const [pw, setPw] = useState({ current_password: '', new_password: '' })
@@ -20,16 +25,23 @@ export default function Settings() {
 
   async function saveProfile(e: FormEvent) {
     e.preventDefault()
+    if (busy) return
+    if (!profile.display_name.trim()) return toast.error('Enter a display name.')
+    setBusy('profile')
     try {
       setUser(await api.patch<User>('/api/users/me', { ...profile, username: profile.username.trim().toLowerCase() || undefined, bio: profile.bio || null, location_city: profile.location_city || null, contact_note: profile.contact_note || null }))
       toast.success('Profile saved.')
     } catch (err) {
       toast.error((err as Error).message)
+    } finally {
+      setBusy(null)
     }
   }
 
   async function avatar(file: File | undefined) {
     if (!file) return
+    const problem = photoProblem(file) ?? (await canDecodeImage(file) ? null : `${file.name} doesn’t look like a valid image.`)
+    if (problem) return toast.error(problem)
     try {
       setUser(await api.upload<User>('/api/users/me/avatar', file))
       toast.success('Profile photo updated.')
@@ -40,10 +52,22 @@ export default function Settings() {
 
   async function changePassword(e: FormEvent) {
     e.preventDefault()
+    if (busy) return
+    setBusy('password')
     try {
       await api.post('/api/users/me/password', pw)
       setPw({ current_password: '', new_password: '' })
       toast.success('Password changed. Other sessions were signed out.')
+    } catch (err) {
+      toast.error((err as Error).message)
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  async function removeAvatar() {
+    try {
+      setUser(await api.del<User>('/api/users/me/avatar'))
     } catch (err) {
       toast.error((err as Error).message)
     }
@@ -51,14 +75,14 @@ export default function Settings() {
 
   async function privacy(action: 'reset' | 'history' | 'everywhere') {
     const prompts = {
-      reset: 'Reset learned preferences? Views, saves, dismissals, searches and onboarding answers will be removed. Ratings and your shelf stay.',
-      history: 'Delete your reading history? Your bookshelf, interactions, searches and assistant chats will be permanently removed.',
-      everywhere: 'Sign out of every device, including this one?',
+      reset: { title: 'Reset learned preferences?', message: 'Views, saves, dismissals, searches and onboarding answers will be removed. Ratings and your shelf stay.', confirmLabel: 'Reset', danger: true },
+      history: { title: 'Delete your reading history?', message: 'Your bookshelf, interactions, searches and assistant chats will be permanently removed.', confirmLabel: 'Delete', danger: true },
+      everywhere: { title: 'Sign out of every device?', message: 'This includes the one you’re using now.', confirmLabel: 'Sign out' },
     }
-    if (!confirm(prompts[action])) return
+    if (!await confirm(prompts[action])) return
     try {
-      if (action === 'reset') { await api.post('/api/users/me/reset-recommendations'); toast.success('Learned preferences reset.') }
-      if (action === 'history') { await api.del('/api/users/me/reading-history'); toast.success('Reading history deleted.') }
+      if (action === 'reset') { await api.post('/api/users/me/reset-recommendations'); clearUserData(); toast.success('Learned preferences reset.') }
+      if (action === 'history') { await api.del('/api/users/me/reading-history'); clearUserData(); toast.success('Reading history deleted.') }
       if (action === 'everywhere') { await api.post('/api/auth/logout?everywhere=true'); await logout(); navigate('/login') }
     } catch (err) {
       toast.error((err as Error).message)
@@ -85,9 +109,9 @@ export default function Settings() {
         <div className="flex items-center gap-4">
           {u.avatar_url ? <img src={u.avatar_url} alt="Your profile" className="h-16 w-16 rounded-full object-cover" /> : <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gold-soft text-2xl text-gold-dark">{u.display_name[0]}</span>}
           <label className="btn-outline btn-sm cursor-pointer"><Camera className="h-4 w-4" aria-hidden />Change photo
-            <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => avatar(e.target.files?.[0])} />
+            <input type="file" accept={PHOTO_TYPES.join(',')} aria-label={`Upload a profile photo up to ${MAX_PHOTO_MB} MB`} className="sr-only" onChange={(e) => { void avatar(e.target.files?.[0]); e.target.value = '' }} />
           </label>
-          {u.avatar_url && <button type="button" className="btn-ghost btn-sm" onClick={async () => setUser(await api.del<User>('/api/users/me/avatar'))}>Remove</button>}
+          {u.avatar_url && <button type="button" className="btn-ghost btn-sm" onClick={removeAvatar}>Remove</button>}
         </div>
         <Field label="Username" htmlFor="un" hint="Used to sign in. Letters, numbers, dots and underscores.">
           <input id="un" className="input" maxLength={30} value={profile.username} onChange={(e) => setProfile({ ...profile, username: e.target.value })} />
@@ -103,7 +127,7 @@ export default function Settings() {
           <input id="cn" className="input" maxLength={200} value={profile.contact_note} onChange={(e) => setProfile({ ...profile, contact_note: e.target.value })} />
         </Field>
         <p className="text-sm text-muted">Email: {u.email}{u.email_verified ? ' (verified)' : ''} — never shown to other users</p>
-        <button className="btn-primary">Save profile</button>
+        <button className="btn-primary" disabled={busy === 'profile'}>{busy === 'profile' ? 'Saving…' : 'Save profile'}</button>
       </form>
 
       <section className="card p-6">
@@ -123,7 +147,7 @@ export default function Settings() {
         <h2 className="text-xl font-semibold">Password</h2>
         <Field label="Current password" htmlFor="cp"><input id="cp" type="password" autoComplete="current-password" className="input" value={pw.current_password} onChange={(e) => setPw({ ...pw, current_password: e.target.value })} /></Field>
         <Field label="New password" htmlFor="np" hint="At least 8 characters, mixing letters with numbers or symbols."><input id="np" type="password" autoComplete="new-password" className="input" value={pw.new_password} onChange={(e) => setPw({ ...pw, new_password: e.target.value })} /></Field>
-        <button className="btn-primary" disabled={!pw.current_password || pw.new_password.length < 8}>Change password</button>
+        <button className="btn-primary" disabled={busy === 'password' || !pw.current_password || pw.new_password.length < 8}>{busy === 'password' ? 'Saving…' : 'Change password'}</button>
         <Link to="/forgot-password" className="link ml-3 text-sm">Forgot your current password?</Link>
       </form>
       )}

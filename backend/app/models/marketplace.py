@@ -58,6 +58,8 @@ class MarketplaceListing(TimestampMixin, Base):
         CheckConstraint("price_amount > 0", name="price_positive"),
         CheckConstraint("shipping_cost IS NULL OR shipping_cost >= 0", name="shipping_nonneg"),
         Index("ix_listing_status_created", "status", "created_at"),
+        Index("ix_listing_seller_status", "seller_id", "status"),
+        Index("ix_listing_book_status", "book_id", "status"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)

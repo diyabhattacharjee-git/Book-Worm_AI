@@ -8,6 +8,7 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass, field
 from datetime import timedelta
+from itertools import zip_longest
 
 from sqlalchemy.orm import Session
 
@@ -60,6 +61,11 @@ def _ttl() -> timedelta:
     return timedelta(hours=get_settings().metadata_cache_ttl_hours)
 
 
+def _query_key(query: str) -> str:
+    """Case and spacing don't change the answer, so they must not create a new cache entry."""
+    return " ".join(query.lower().split())
+
+
 # ---------------------------------------------------------------- Open Library
 def _ol_doc_to_meta(doc: dict) -> BookMetadata:
     isbns = [i for i in (to_isbn13(x) for x in (doc.get("isbn") or [])[:40]) if i]
@@ -96,7 +102,7 @@ def ol_search(query: str, db: Session | None = None, limit: int = 10) -> list[Bo
         f"{OL_BASE}/search.json",
         params={"q": query, "limit": limit, "fields": fields},
         db=db,
-        cache_key=f"ol:search:{query.lower()}:{limit}",
+        cache_key=f"ol:search:{_query_key(query)}:{limit}",
         ttl=_ttl(),
     )
     return [_ol_doc_to_meta(d) for d in (data or {}).get("docs", [])]
@@ -212,8 +218,8 @@ def gb_search(query: str, db: Session | None = None, limit: int = 10) -> list[Bo
     if not get_settings().enable_google_books:
         return []
     data = get_json(
-        "google_books", f"{GB_BASE}/volumes", params=_gb_params({"q": query, "maxResults": min(limit, 40)}),
-        db=db, cache_key=f"gb:search:{query.lower()}:{limit}", ttl=_ttl(),
+        "google_books", f"{GB_BASE}/volumes", params=_gb_params({"q": query, "maxResults": min(limit, 40), "printType": "books"}),
+        db=db, cache_key=f"gb:search:{_query_key(query)}:{limit}", ttl=_ttl(),
     )
     return [_gb_item_to_meta(i) for i in (data or {}).get("items", [])]
 
@@ -234,12 +240,16 @@ def gb_by_isbn(isbn13: str, db: Session | None = None) -> BookMetadata | None:
 
 
 def search_metadata(query: str, db: Session | None = None, limit: int = 10) -> tuple[list[BookMetadata], list[str]]:
-    """Query every enabled provider; one failing provider never hides the other."""
-    results: list[BookMetadata] = []
+    """Google Books and Open Library together, alternating so both appear near the top.
+
+    Searches are cached, so a repeat costs no quota. A failing provider never hides
+    the other's results: with Google's quota used up, Open Library still answers."""
+    found: list[list[BookMetadata]] = []
     errors: list[str] = []
-    for fn, name in ((ol_search, "Open Library"), (gb_search, "Google Books")):
+    for fn, name in ((gb_search, "Google Books"), (ol_search, "Open Library")):
         try:
-            results.extend(fn(query, db, limit))
+            found.append(fn(query, db, limit))
         except ProviderError as exc:
             errors.append(f"{name}: {exc.message}")
-    return results, errors
+    merged = [item for group in zip_longest(*found) for item in group if item is not None]
+    return merged, errors

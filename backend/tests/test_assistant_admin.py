@@ -36,7 +36,7 @@ def test_logged_in_chat_persists_and_can_be_cleared(user_client, db):
     cid = r["conversation_id"]
     assert r["persisted"] and r["reply"]["tool"] == "similar_books"
     r2 = c.post("/api/assistant/chat", json={"message": "save the first one to my wishlist", "conversation_id": cid}).json()
-    assert r2["reply"]["tool"] == "save_to_wishlist" and "Saved" in r2["reply"]["text"]
+    assert r2["reply"]["tool"] == "save_to_wishlist" and "saved" in r2["reply"]["text"]
     shelf = c.get("/api/bookshelf").json()
     assert shelf["counts"].get("want_to_read") == 1
     conv = c.get(f"/api/assistant/conversations/{cid}").json()
@@ -72,7 +72,8 @@ def test_admin_moderation_flow(admin_client, user_client, other_client, db):
     seller, _ = user_client
     reporter, _ = other_client
     lid = seller.post("/api/marketplace/listings", json={"title": "Dune", "author": "Frank Herbert", "condition": "good",
-                                                         "price_amount": 300, "delivery": "pickup"}).json()["id"]
+                                                         "price_amount": 300, "delivery": "pickup", "location_city": "Pune",
+                                                         "description": "Good reading copy with a creased spine."}).json()["id"]
     reporter.post(f"/api/marketplace/listings/{lid}/report", json={"reason": "fraud", "details": "fake"})
     reports = a.get("/api/admin/reports").json()["listing_reports"]
     assert any(r["listing_id"] == lid for r in reports)
