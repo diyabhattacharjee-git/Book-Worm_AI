@@ -49,6 +49,8 @@ router = APIRouter(prefix="/ebay", tags=["ebay"], include_in_schema=False)
 CONNECT_PURPOSE = "ebay_connect"
 CONNECT_MINUTES = 10
 MARKET_CHECK_ITEMS = 8
+USED_BOOK_ITEMS = 24
+DEFAULT_USED_BOOK_QUERY = "book"
 
 
 def challenge_response(code: str, token: str, endpoint: str) -> str:
@@ -110,7 +112,7 @@ def _publication_out(pub: EbayPublication) -> dict:
 def status(user: User | None = Depends(get_current_user_optional), db: Session = Depends(get_db)):
     """Which eBay features this site can offer, so the seller area only shows what really works."""
     s = get_settings()
-    account = seller.get_account(db, user.id) if user and s.ebay_seller_configured else None
+    account = seller.get_account(db, user.id) if user and s.ebay_configured else None
     publications: list[dict] = []
     if account:
         publications = [_publication_out(p) for p in db.scalars(select(EbayPublication).where(EbayPublication.user_id == account.user_id))]
@@ -156,6 +158,27 @@ def market_check(title: str = Query(..., min_length=1, max_length=300), author: 
     }
 
 
+@router.get("/used-books", dependencies=[Depends(rate_limit("ebay_used_books", 30, 60))])
+def used_books(q: str = Query("", max_length=200), _: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Second-hand books for sale on eBay right now. Read-only, and cached so repeat views cost no eBay calls."""
+    s = get_settings()
+    if not s.ebay_configured:
+        raise HTTPException(status_code=404, detail="Not found")
+    query = q.strip()
+    try:
+        found = browse.search(query or DEFAULT_USED_BOOK_QUERY, limit=USED_BOOK_ITEMS, db=db, used_only=True)
+    except ProviderError as exc:
+        headers = {"Retry-After": str(exc.retry_after)} if exc.retry_after else None
+        raise HTTPException(status_code=503, detail="eBay's books aren't available right now. Please try again later.", headers=headers)
+    return {
+        "query": query,
+        "test_environment": s.ebay_environment == "sandbox",
+        "items": [{"title": k.title, "price": k.price, "currency": k.currency, "condition": k.condition,
+                   "shipping_cost": k.shipping_cost, "shipping_known": k.shipping_known, "url": k.url, "image_url": k.image_url,
+                   "location": k.location, "country": k.country} for k in found if k.price is not None and k.condition != "new"],
+    }
+
+
 # -------------------------------------------------------------- connect flow
 def _return_url(result: str) -> str:
     s = get_settings()
@@ -188,7 +211,7 @@ def _live_count(db: Session, user_id: int) -> int:
                                                                   EbayPublication.status == "published")) or 0
 
 
-@router.delete("/account", status_code=204, dependencies=[Depends(_require_seller_tools)])
+@router.delete("/account", status_code=204)
 def disconnect(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     account = seller.get_account(db, user.id)
     if account is None:

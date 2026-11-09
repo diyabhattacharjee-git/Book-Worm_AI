@@ -1,9 +1,9 @@
 import { Eye, MessageCircle, Package, Store } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { EbaySellerPanel, useEbayStatus } from '../components/ebay'
+import { EbayUsedBooks, useEbayStatus } from '../components/ebay'
 import { ConditionBadge, StatusBadge } from '../components/marketplace'
-import { Badge, CharCounter, EmptyState, ErrorState, ListSkeleton, Notice, PageHeader, Tabs } from '../components/ui'
+import { CharCounter, EmptyState, ErrorState, ListSkeleton, Notice, PageHeader, Tabs } from '../components/ui'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import { TTL, queryKey, useGet } from '../hooks/useApi'
@@ -18,33 +18,16 @@ type ListingStatus = Listing['status']
 
 export const DASHBOARD = '/api/marketplace/seller-dashboard'
 const REPLY_MAX = 1500
-const EBAY_RESULTS: Record<string, [string, 'success' | 'error' | 'info']> = {
-  connected: ['Your eBay account is connected.', 'success'],
-  denied: ['eBay connection was cancelled.', 'info'],
-  failed: ['eBay couldn’t complete the connection. Please try again.', 'error'],
-}
 
 export default function SellerDashboard() {
   const { user } = useAuth()
   const toast = useToast()
   const dash = useGet<Dashboard>(DASHBOARD, undefined, { userId: user?.id, ttl: TTL.short })
   const ebay = useEbayStatus()
-  const [params, setParams] = useSearchParams()
+  const [params] = useSearchParams()
   const [tab, setTab] = useState<Tab>(params.get('tab') === 'ebay' ? 'ebay' : 'active')
   const [pending, setPending] = useState<Set<number>>(new Set())
   const key = queryKey(DASHBOARD, undefined, user?.id)
-
-  useEffect(() => {
-    const result = params.get('ebay')
-    if (!result) return
-    const message = EBAY_RESULTS[result]
-    if (message) toast[message[1]](message[0])
-    invalidate('/api/ebay/status')
-    const next = new URLSearchParams(params)
-    next.delete('ebay')
-    next.delete('tab')
-    setParams(next, { replace: true })
-  }, [params, setParams, toast])
 
   async function act(l: Listing, path: string, status: ListingStatus, msg: string) {
     if (pending.has(l.id)) return
@@ -57,7 +40,7 @@ export default function SellerDashboard() {
         counts: { ...d.counts, [previous]: Math.max(0, (d.counts[previous] ?? 0) - 1), [status]: (d.counts[status] ?? 0) + 1 },
       }), () => api.post<Listing>(`/api/marketplace/listings/${l.id}/${path}`))
       toast.success(msg)
-      invalidate('/api/marketplace/listings', '/api/ebay/status')
+      invalidate('/api/marketplace/listings')
     } catch (e) {
       toast.error((e as Error).message)
     } finally {
@@ -74,7 +57,6 @@ export default function SellerDashboard() {
   const d = dash.data
   const listings = d.listings.filter((l) => l.status === tab)
   const showEbay = !!ebay.data?.market_check
-  const publications = new Map((ebay.data?.publications ?? []).map((p) => [p.listing_id, p]))
 
   return (
     <div>
@@ -92,10 +74,10 @@ export default function SellerDashboard() {
           { value: 'active', label: 'Active', count: d.counts.active ?? 0 }, { value: 'inactive', label: 'Inactive', count: d.counts.inactive ?? 0 },
           { value: 'sold', label: 'Sold', count: d.counts.sold ?? 0 }, { value: 'removed', label: 'Removed', count: d.counts.removed ?? 0 },
           { value: 'messages', label: 'Messages', count: d.inquiries.length },
-          ...(showEbay ? [{ value: 'ebay' as Tab, label: 'eBay' }] : []),
+          ...(showEbay ? [{ value: 'ebay' as Tab, label: 'eBay books' }] : []),
         ]} />
         <div className="mt-6">
-          {tab === 'ebay' ? <EbaySellerPanel listings={d.listings} />
+          {tab === 'ebay' ? <EbayUsedBooks listings={d.listings} />
             : tab === 'messages' ? <Messages inquiries={d.inquiries} onReplied={() => invalidate(DASHBOARD)} /> : listings.length === 0 ? (
               <EmptyState title={tab === 'active' ? 'No active listings' : `No ${tab} listings`} action={tab === 'active' ? <Link to="/sell" className="btn-forest">List a book</Link> : undefined}>
                 {tab === 'active' ? 'Have a book you’ve finished? List it in under a minute.' : 'Nothing here yet.'}
@@ -109,7 +91,6 @@ export default function SellerDashboard() {
                       <Link to={`/marketplace/listings/${l.id}`} className="user-text font-semibold hover:text-forest">{l.title}</Link>
                       <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
                         <ConditionBadge condition={l.condition} /><StatusBadge status={l.status} />
-                        {publications.get(l.id)?.status === 'published' && <Badge tone="sky">On eBay</Badge>}
                         <span>{money(l.price_amount, l.currency)}</span><span>· {l.view_count ?? 0} views · {l.inquiry_count ?? 0} messages · saved by {l.favorite_count ?? 0}</span>
                         <span>· listed {relativeTime(l.created_at)}</span>{l.images.length === 0 && <span className="text-gold-dark">· no photos</span>}
                       </div>

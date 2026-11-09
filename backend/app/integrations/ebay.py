@@ -212,12 +212,14 @@ def _cached_search(params: dict, db: Session | None) -> tuple[list[dict], dateti
 
 
 def search(query: str, isbn: str | None = None, limit: int = 25, max_price: float | None = None,
-           currency: str | None = None, db: Session | None = None) -> list[NormalizedListing]:
+           currency: str | None = None, db: Session | None = None, used_only: bool = False) -> list[NormalizedListing]:
     s = get_settings()
     if not s.ebay_configured:
         raise ProviderError("ebay", "not configured")
     base: dict = {"category_ids": BOOKS_CATEGORY_ID, "limit": str(min(limit, 50))}
     filters = ["buyingOptions:{FIXED_PRICE}"]
+    if used_only:
+        filters.append("conditions:{USED}")
     if max_price and currency:
         filters.append(f"price:[..{max_price:.2f}],priceCurrency:{currency}")
     base["filter"] = ",".join(filters)

@@ -72,6 +72,7 @@ def ebay(monkeypatch):
     monkeypatch.setattr(s, "ebay_client_id", "client")
     monkeypatch.setattr(s, "ebay_client_secret", "secret")
     monkeypatch.setattr(s, "ebay_runame", "Run-Name")
+    monkeypatch.setattr(s, "ebay_publishing_enabled", True)
     monkeypatch.setattr(s, "public_base_url", "https://books.example.com")
     seller._access_tokens.clear()
     reset_breakers()
@@ -271,3 +272,24 @@ def test_market_check_requires_login_and_configuration(client, user_client):
     assert client.get("/api/ebay/market-check", params={"title": "x"}).status_code == 401
     c, _ = user_client
     assert c.get("/api/ebay/market-check", params={"title": "x"}).status_code == 404
+
+
+def test_publishing_is_off_even_with_a_runame(user_client, monkeypatch):
+    s = get_settings()
+    monkeypatch.setattr(s, "ebay_client_id", "client")
+    monkeypatch.setattr(s, "ebay_client_secret", "secret")
+    monkeypatch.setattr(s, "ebay_runame", "Run-Name")
+    c, _ = user_client
+    assert c.get("/api/ebay/status").json()["seller_tools"] is False
+    assert c.get("/api/ebay/connect").status_code == 404
+    assert c.post("/api/ebay/listings/1/publish", json=PUBLISH).status_code == 404
+    assert c.post("/api/ebay/listings/1/end").status_code == 404
+
+
+def test_a_connected_account_can_still_be_removed_with_publishing_off(user_client, ebay, monkeypatch):
+    c, user = user_client
+    connect(c, user)
+    monkeypatch.setattr(get_settings(), "ebay_publishing_enabled", False)
+    assert c.get("/api/ebay/status").json()["connected"] is True
+    assert c.delete("/api/ebay/account").status_code == 204
+    assert c.get("/api/ebay/status").json()["connected"] is False

@@ -12,6 +12,7 @@ import BookDetail from '../pages/BookDetail'
 import Discover from '../pages/Discover'
 import Privacy from '../pages/Privacy'
 import SellBook from '../pages/SellBook'
+import SellerDashboard from '../pages/SellerDashboard'
 import SmartSearch from '../pages/SmartSearch'
 import Todos from '../pages/Todos'
 import { clearCache } from '../services/queryCache'
@@ -376,3 +377,38 @@ describe('Privacy policy', () => {
   })
 })
 
+describe('eBay books tab', () => {
+  const STATUS = { market_check: true, seller_tools: false, connected: true, test_environment: false, marketplace: 'EBAY_US', currency: 'USD' }
+  const copy = { title: 'Wings of Fire used copy', price: 9.5, currency: 'USD', condition: 'good', shipping_cost: 0, shipping_known: true, url: 'https://www.ebay.com/itm/1', image_url: null, location: 'Austin', country: 'US' }
+  const listing = { id: 1, status: 'active', title: 'Wings of Fire', images: [], cover_url: null, condition: 'good', price_amount: 200, currency: 'INR', created_at: '2026-11-09T10:00:00Z' }
+
+  function dashboard() {
+    return vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init) => {
+      const url = String(input)
+      if (url.endsWith('/api/auth/session')) return json(200, { user: USER })
+      if (url.includes('/api/ebay/status')) return json(200, STATUS)
+      if (url.includes('/api/ebay/used-books')) return json(200, { query: 'Wings of Fire', test_environment: false, items: [copy] })
+      if (url.includes('/api/ebay/account') && init?.method === 'DELETE') return json(204, null)
+      if (url.includes('/api/marketplace/seller-dashboard')) return json(200, { listings: [listing], counts: { active: 1 }, total_views: 0, open_inquiries: 0, inquiries: [], disclaimer: 'x' })
+      return json(404, { detail: url })
+    })
+  }
+
+  it('shows second-hand eBay books for the seller\'s listing and offers no publishing', async () => {
+    const spy = dashboard()
+    show('/seller?tab=ebay', '/seller', <SellerDashboard />)
+    expect(await screen.findByRole('link', { name: 'Wings of Fire used copy' })).toHaveAttribute('href', copy.url)
+    expect(String(spy.mock.calls.find(([u]) => String(u).includes('/used-books'))?.[0])).toContain('q=Wings')
+    expect(screen.getByText('Free shipping · Austin, US')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Connect eBay|Publish/ })).toBeNull()
+  })
+
+  it('still lets a connected seller disconnect', async () => {
+    const spy = dashboard()
+    show('/seller?tab=ebay', '/seller', <SellerDashboard />)
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: 'Disconnect' }))
+    await user.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Disconnect' }))
+    await waitFor(() => expect(calls(spy, '/api/ebay/account', 'DELETE')).toBe(1))
+  })
+})

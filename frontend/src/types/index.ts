@@ -360,16 +360,6 @@ export interface Todo {
   updated_at: string
 }
 
-export interface EbayPublication {
-  listing_id: number
-  status: 'draft' | 'published' | 'ended'
-  url: string | null
-  price_amount: number | null
-  currency: string | null
-  last_error: string | null
-  published_at: string | null
-}
-
 export interface EbayStatus {
   market_check: boolean
   seller_tools: boolean
@@ -377,7 +367,6 @@ export interface EbayStatus {
   test_environment: boolean
   marketplace: string
   currency: string
-  publications: EbayPublication[]
 }
 
 export interface EbayMarketCheck {
@@ -389,14 +378,10 @@ export interface EbayMarketCheck {
   items: { title: string; price: number; currency: string; condition: string; shipping_cost: number | null; shipping_known: boolean; url: string; image_url: string | null; location: string | null; country: string | null }[]
 }
 
-export interface EbaySetup {
-  fulfillment_policies: { id: string; name: string }[]
-  payment_policies: { id: string; name: string }[]
-  return_policies: { id: string; name: string }[]
-  locations: { key: string; name: string }[]
-  ready: boolean
-  message: string | null
-  help_url: string
+export interface EbayUsedBooksResult {
+  query: string
+  test_environment: boolean
+  items: { title: string; price: number; currency: string; condition: string; shipping_cost: number | null; shipping_known: boolean; url: string; image_url: string | null; location: string | null; country: string | null }[]
 }
 
 export interface ReadingPlan {

@@ -1,17 +1,18 @@
-import { ExternalLink, Link2, RefreshCw, Store, Unplug } from 'lucide-react'
+import { Search, Store, Unplug } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useConfirm } from '../contexts/ConfirmContext'
 import { useToast } from '../contexts/ToastContext'
-import { TTL, queryKey, useGet } from '../hooks/useApi'
-import { ApiError, api } from '../services/api'
-import { invalidate, setQueryData } from '../services/queryCache'
-import type { EbayMarketCheck, EbayPublication, EbaySetup, EbayStatus, Listing } from '../types'
+import { TTL, useGet } from '../hooks/useApi'
+import { api } from '../services/api'
+import { invalidate } from '../services/queryCache'
+import type { EbayMarketCheck, EbayStatus, EbayUsedBooksResult, Listing } from '../types'
 import { CONDITION_LABELS, money } from '../utils/format'
-import { Badge, EmptyState, ErrorState, Field, ListSkeleton, Modal, Notice, Skeleton, Spinner } from './ui'
+import { Badge, EmptyState, ErrorState, ListSkeleton, Notice, Skeleton } from './ui'
 
 const STATUS = '/api/ebay/status'
-const SETUP = '/api/ebay/seller/setup'
+const USED_BOOKS = '/api/ebay/used-books'
+const SUGGESTED_TITLES = 6
 
 export function useEbayStatus() {
   const { user } = useAuth()
@@ -92,154 +93,42 @@ export function EbayMarketCheck({ title, author, isbn, condition, currency, onUs
   )
 }
 
-function FieldErrorList({ fields }: { fields: Record<string, string> }) {
-  const entries = Object.entries(fields)
-  return entries.length ? <div className="space-y-1">{entries.map(([k, v]) => <p key={k} className="text-sm text-rust" role="alert">{v}</p>)}</div> : null
-}
-
-function PublishDialog({ listing, existing, status, onClose }: { listing: Listing; existing?: EbayPublication; status: EbayStatus; onClose: () => void }) {
-  const { user } = useAuth()
-  const toast = useToast()
-  const setup = useGet<EbaySetup>(SETUP, undefined, { userId: user?.id, ttl: TTL.medium })
-  const sameCurrency = listing.currency === status.currency
-  const [price, setPrice] = useState(existing?.price_amount ? String(existing.price_amount) : sameCurrency ? String(listing.price_amount) : '')
-  const [language, setLanguage] = useState('English')
-  const [choice, setChoice] = useState({ fulfillment: '', payment: '', ret: '', location: '' })
-  const [address, setAddress] = useState({ city: '', state: '', postal_code: '', country: '' })
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [busy, setBusy] = useState(false)
-
-  const data = setup.data
-  const selected = {
-    fulfillment: choice.fulfillment || data?.fulfillment_policies[0]?.id || '',
-    payment: choice.payment || data?.payment_policies[0]?.id || '',
-    ret: choice.ret || data?.return_policies[0]?.id || '',
-    location: choice.location || data?.locations[0]?.key || '',
-  }
-
-  async function addLocation() {
-    const missing = Object.entries(address).filter(([, v]) => !v.trim())
-    if (missing.length) return setErrors({ address: 'Fill in every address field.' })
-    setBusy(true)
-    setErrors({})
-    try {
-      const created = await api.post<{ key: string; name: string }>('/api/ebay/seller/location', address)
-      setup.setData((d) => d && { ...d, locations: [...d.locations, created] })
-      setChoice((c) => ({ ...c, location: created.key }))
-    } catch (e) {
-      setErrors({ address: (e as Error).message })
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  async function publish(e: FormEvent) {
-    e.preventDefault()
-    const amount = Number(price)
-    const problems: Record<string, string> = {}
-    if (!/^\d+(\.\d{1,2})?$/.test(price.trim()) || amount < 0.99) problems.price = `Enter a price of at least 0.99 ${status.currency}.`
-    if (!selected.fulfillment || !selected.payment || !selected.ret) problems.policies = 'Choose a shipping, payment and return policy.'
-    if (!selected.location) problems.location = 'Add the location the book ships from.'
-    setErrors(problems)
-    if (Object.keys(problems).length) return
-    setBusy(true)
-    try {
-      const pub = await api.post<EbayPublication>(`/api/ebay/listings/${listing.id}/publish`, {
-        price: amount, language, fulfillment_policy_id: selected.fulfillment, payment_policy_id: selected.payment,
-        return_policy_id: selected.ret, merchant_location_key: selected.location,
-      })
-      setQueryData<EbayStatus>(queryKey(STATUS, undefined, user?.id), (s) => s ? { ...s, publications: [...s.publications.filter((p) => p.listing_id !== pub.listing_id), pub] } : s as unknown as EbayStatus)
-      toast.success(existing?.status === 'published' ? 'eBay listing updated.' : 'Your book is live on eBay.')
-      onClose()
-    } catch (err) {
-      const apiErr = err as ApiError
-      const field = apiErr.fieldErrors?.[0]?.field
-      setErrors(field ? { [field]: apiErr.message } : { form: apiErr.message })
-      invalidate(STATUS)
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  const select = (id: string, label: string, value: string, options: { id: string; name: string }[], key: keyof typeof choice) => (
-    <Field label={label} htmlFor={id}>
-      <select id={id} className="input" value={value} onChange={(e) => setChoice((c) => ({ ...c, [key]: e.target.value }))}>
-        {options.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
-      </select>
-    </Field>
-  )
-
+function EbayBook({ item }: { item: EbayUsedBooksResult['items'][number] }) {
+  const shipping = !item.shipping_known ? 'Shipping shown on eBay' : item.shipping_cost ? `+ ${money(item.shipping_cost, item.currency)} shipping` : 'Free shipping'
+  const place = [item.location, item.country].filter(Boolean).join(', ')
   return (
-    <Modal open wide onClose={onClose} title={`List “${listing.title}” on eBay`}
-      footer={<><button className="btn-ghost" onClick={onClose} type="button">Cancel</button><button className="btn-primary" form="ebay-publish" disabled={busy || setup.loading || !data?.ready && !selected.location}>{busy ? 'Working…' : existing?.status === 'published' ? 'Update on eBay' : 'Publish to eBay'}</button></>}>
-      {setup.loading ? <ListSkeleton rows={3} /> : setup.error ? <ErrorState error={setup.error} onRetry={setup.reload} /> : data && (
-        <form id="ebay-publish" onSubmit={publish} className="space-y-4" noValidate>
-          <TestModeNotice show={status.test_environment} />
-          {data.message && <Notice tone="warn" title="Finish setting up on eBay">{data.message} <a href={data.help_url} target="_blank" rel="noopener noreferrer" className="link inline-flex items-center gap-1">Open eBay policies<ExternalLink className="h-3 w-3" aria-hidden /></a> <button type="button" className="link" onClick={setup.reload}>Check again</button></Notice>}
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label={`Price on eBay (${status.currency})`} htmlFor="eb-price" error={errors.price} hint={sameCurrency ? undefined : `Your BookWorm price is ${money(listing.price_amount, listing.currency)}. Set the amount to charge in ${status.currency}.`}>
-              <input id="eb-price" className="input" inputMode="decimal" value={price} onChange={(e) => setPrice(e.target.value)} />
-            </Field>
-            <Field label="Language of the book" htmlFor="eb-lang">
-              <select id="eb-lang" className="input" value={language} onChange={(e) => setLanguage(e.target.value)}>
-                {['English', 'Hindi', 'Bengali', 'Tamil', 'Spanish', 'French', 'German'].map((l) => <option key={l}>{l}</option>)}
-              </select>
-            </Field>
-            {data.fulfillment_policies.length > 0 && select('eb-ship', 'Shipping policy', selected.fulfillment, data.fulfillment_policies, 'fulfillment')}
-            {data.payment_policies.length > 0 && select('eb-pay', 'Payment policy', selected.payment, data.payment_policies, 'payment')}
-            {data.return_policies.length > 0 && select('eb-ret', 'Return policy', selected.ret, data.return_policies, 'ret')}
-            {data.locations.length > 0 && select('eb-loc', 'Ships from', selected.location, data.locations.map((l) => ({ id: l.key, name: l.name })), 'location')}
-          </div>
-          {errors.policies && <p className="text-sm text-rust" role="alert">{errors.policies}</p>}
-          {data.locations.length === 0 && (
-            <fieldset className="rounded-xl border border-line p-3">
-              <legend className="px-1 text-sm font-semibold">Where does this book ship from?</legend>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <input aria-label="City" className="input" placeholder="City" value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} />
-                <input aria-label="State or province" className="input" placeholder="State / province" value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value })} />
-                <input aria-label="Postal code" className="input" placeholder="Postal code" value={address.postal_code} onChange={(e) => setAddress({ ...address, postal_code: e.target.value })} />
-                <input aria-label="Country code" className="input" placeholder="Country code, e.g. IN" maxLength={2} value={address.country} onChange={(e) => setAddress({ ...address, country: e.target.value.toUpperCase() })} />
-              </div>
-              {errors.address && <p className="mt-2 text-sm text-rust" role="alert">{errors.address}</p>}
-              <button type="button" className="btn-outline btn-sm mt-3" onClick={addLocation} disabled={busy}>Save location</button>
-            </fieldset>
-          )}
-          <FieldErrorList fields={Object.fromEntries(Object.entries(errors).filter(([k]) => ['form', 'location', 'photos', 'condition', 'description'].includes(k)))} />
-          <p className="text-xs text-muted">The listing goes on your own eBay account under your policies, and eBay’s fees and rules apply. If you mark it sold or hide it here, it ends on eBay too.</p>
-        </form>
-      )}
-    </Modal>
+    <li className="card flex gap-3 p-3">
+      <div className="h-24 w-16 shrink-0 overflow-hidden rounded bg-parchment">{item.image_url && <img src={item.image_url} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />}</div>
+      <div className="min-w-0 flex-1">
+        <a href={item.url} target="_blank" rel="noopener noreferrer nofollow" className="user-text line-clamp-2 font-medium hover:text-forest">{item.title}</a>
+        <div className="mt-1"><Badge>{item.condition === 'unknown' ? 'Used' : CONDITION_LABELS[item.condition] ?? 'Used'}</Badge></div>
+        <p className="mt-1 font-semibold">{money(item.price, item.currency)}</p>
+        <p className="text-xs text-muted">{shipping}{place ? ` · ${place}` : ''}</p>
+      </div>
+    </li>
   )
 }
 
-export function EbaySellerPanel({ listings }: { listings: Listing[] }) {
+/** Second-hand books for sale on eBay. Read-only: nothing is ever sent to eBay from here. */
+export function EbayUsedBooks({ listings }: { listings: Listing[] }) {
+  const { user } = useAuth()
   const toast = useToast()
   const confirm = useConfirm()
-  const { user } = useAuth()
   const status = useEbayStatus()
-  const [publishing, setPublishing] = useState<Listing | null>(null)
+  const titles = [...new Set(listings.filter((l) => l.status === 'active').map((l) => l.title))].slice(0, SUGGESTED_TITLES)
+  const [term, setTerm] = useState('')
+  const [chosen, setChosen] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const [ending, setEnding] = useState<number | null>(null)
+  const query = chosen ?? titles[0] ?? ''
+  const books = useGet<EbayUsedBooksResult>(USED_BOOKS, query ? { q: query } : undefined, { userId: user?.id, ttl: TTL.long, keepPrevious: true })
 
-  if (status.loading) return <ListSkeleton rows={3} />
-  if (status.error) return <ErrorState error={status.error} onRetry={status.reload} />
-  const s = status.data
-  if (!s) return null
-  const byListing = new Map(s.publications.map((p) => [p.listing_id, p]))
-  const active = listings.filter((l) => l.status === 'active' || byListing.has(l.id))
-
-  async function connect() {
-    setBusy(true)
-    try {
-      window.location.assign((await api.get<{ url: string }>('/api/ebay/connect')).url)
-    } catch (e) {
-      toast.error((e as Error).message)
-      setBusy(false)
-    }
+  function search(e: FormEvent) {
+    e.preventDefault()
+    setChosen(term.trim() || null)
   }
 
   async function disconnect() {
-    if (!await confirm({ title: 'Disconnect your eBay account?', message: 'BookWorm will forget its access to your eBay account. You can reconnect at any time.', confirmLabel: 'Disconnect', danger: true })) return
+    if (!await confirm({ title: 'Disconnect your eBay account?', message: 'BookWorm will forget its access to your eBay account.', confirmLabel: 'Disconnect', danger: true })) return
     setBusy(true)
     try {
       await api.del('/api/ebay/account')
@@ -252,72 +141,39 @@ export function EbaySellerPanel({ listings }: { listings: Listing[] }) {
     }
   }
 
-  async function end(l: Listing) {
-    if (!await confirm({ title: 'End this eBay listing?', message: `“${l.title}” will stop being for sale on eBay. It stays listed on BookWorm.`, confirmLabel: 'End listing', danger: true })) return
-    setEnding(l.id)
-    try {
-      const pub = await api.post<EbayPublication>(`/api/ebay/listings/${l.id}/end`)
-      setQueryData<EbayStatus>(queryKey(STATUS, undefined, user?.id), (cur) => cur ? { ...cur, publications: cur.publications.map((p) => (p.listing_id === pub.listing_id ? pub : p)) } : cur as unknown as EbayStatus)
-      toast.info('eBay listing ended.')
-    } catch (e) {
-      toast.error((e as Error).message)
-    } finally {
-      setEnding(null)
-    }
-  }
-
-  if (!s.seller_tools) {
-    return (
-      <div className="space-y-4">
-        <TestModeNotice show={s.test_environment} />
-        <EmptyState icon={<Store className="h-6 w-6" />} title="Check eBay prices while you list">
-          Use “Check eBay prices” on the listing form to compare what this book is going for before you set your price.
-        </EmptyState>
-      </div>
-    )
-  }
-
   return (
-    <div className="space-y-6">
-      <TestModeNotice show={s.test_environment} />
-      <section className="card flex flex-wrap items-center justify-between gap-4 p-5">
-        <div className="min-w-0">
-          <h2 className="flex items-center gap-2 text-lg font-semibold"><Store className="h-5 w-5 text-gold-dark" aria-hidden />Your eBay account</h2>
-          <p className="mt-1 text-sm text-muted">{s.connected ? 'Connected. You can publish your listings to eBay from here.' : 'Connect your own eBay account to publish your listings there as well.'}</p>
+    <div className="space-y-5">
+      <div>
+        <h2 className="flex items-center gap-2 text-lg font-semibold"><Store className="h-5 w-5 text-gold-dark" aria-hidden />Second-hand books on eBay</h2>
+        <p className="mt-1 text-sm text-muted">Live listings from eBay sellers. Prices are their asking prices, and buying happens on eBay.</p>
+      </div>
+      <TestModeNotice show={!!books.data?.test_environment} />
+      <form onSubmit={search} className="flex gap-2" role="search">
+        <label htmlFor="ebay-search" className="sr-only">Search second-hand books on eBay</label>
+        <input id="ebay-search" className="input" maxLength={200} value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Title, author or ISBN" />
+        <button className="btn-primary"><Search className="h-4 w-4" aria-hidden />Search</button>
+      </form>
+      {titles.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-muted">Your listings:</span>
+          {titles.map((t) => <button key={t} type="button" aria-pressed={query === t} className={`chip max-w-xs truncate hover:border-ink-soft ${query === t ? 'border-ink-soft' : ''}`} onClick={() => { setTerm(''); setChosen(t) }}>{t}</button>)}
         </div>
-        {s.connected
-          ? <button className="btn-outline" onClick={disconnect} disabled={busy}><Unplug className="h-4 w-4" aria-hidden />Disconnect</button>
-          : <button className="btn-forest" onClick={connect} disabled={busy}><Link2 className="h-4 w-4" aria-hidden />{busy ? 'Opening eBay…' : 'Connect eBay'}</button>}
-      </section>
-      {s.connected && (
-        active.length === 0 ? <EmptyState title="No listings to publish">Create a listing first, then publish it to eBay from here.</EmptyState> : (
-          <ul className="divide-y divide-line rounded-xl border border-line bg-paper">
-            {active.map((l) => {
-              const pub = byListing.get(l.id)
-              const live = pub?.status === 'published'
-              return (
-                <li key={l.id} className="flex flex-wrap items-center gap-3 p-4">
-                  <div className="min-w-0 flex-1">
-                    <p className="user-text font-semibold">{l.title}</p>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
-                      {live ? <Badge tone="forest">Live on eBay</Badge> : pub?.status === 'ended' ? <Badge tone="neutral">Ended on eBay</Badge> : <Badge tone="neutral">Not on eBay</Badge>}
-                      {live && pub?.price_amount != null && <span>{money(pub.price_amount, pub.currency)}</span>}
-                      {l.status !== 'active' && <span>This listing is {l.status} on BookWorm.</span>}
-                    </div>
-                    {pub?.last_error && <p className="mt-1 text-xs text-rust">eBay said: {pub.last_error}</p>}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {live && pub?.url && <a className="btn-ghost btn-sm" href={pub.url} target="_blank" rel="noopener noreferrer">View <ExternalLink className="h-3 w-3" aria-hidden /></a>}
-                    {l.status === 'active' && <button className="btn-outline btn-sm" onClick={() => setPublishing(l)}>{live ? <><RefreshCw className="h-3.5 w-3.5" aria-hidden />Update</> : 'Publish'}</button>}
-                    {live && <button className="btn-ghost btn-sm" onClick={() => end(l)} disabled={ending === l.id}>{ending === l.id ? <Spinner label="Ending" /> : 'End'}</button>}
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        )
       )}
-      {publishing && <PublishDialog listing={publishing} existing={byListing.get(publishing.id)} status={s} onClose={() => setPublishing(null)} />}
+      {books.loading ? <ListSkeleton rows={4} />
+        : books.error ? <ErrorState error={books.error} onRetry={books.reload} />
+          : !books.data?.items.length ? <EmptyState title="No second-hand copies found">Try a different title or author.</EmptyState>
+            : (
+              <div className={`transition-opacity ${books.refreshing ? 'opacity-60' : ''}`}>
+                <p className="mb-3 text-sm text-muted">{query ? `Results for “${query}”` : 'Second-hand books for sale now'}</p>
+                <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{books.data.items.map((item) => <EbayBook key={item.url} item={item} />)}</ul>
+              </div>
+            )}
+      {status.data?.connected && (
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+          <p className="text-sm text-muted">Your eBay account is still connected, but BookWorm doesn’t need it to show these books.</p>
+          <button className="btn-outline btn-sm" onClick={disconnect} disabled={busy}><Unplug className="h-4 w-4" aria-hidden />Disconnect</button>
+        </div>
+      )}
     </div>
   )
 }

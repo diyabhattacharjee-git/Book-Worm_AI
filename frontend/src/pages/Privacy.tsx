@@ -29,7 +29,7 @@ export default function Privacy() {
             'Reading activity: your shelves, ratings, reviews, reading plans, goals, to-do items, preferences, searches, and the books you view, save or dismiss.',
             'Marketplace activity: the listings and photos you post, and messages between buyers and sellers. Location data embedded in photos is removed when they are uploaded.',
             'Assistant conversations: what you ask the reading assistant. These are saved to your account only when you are logged in.',
-            'eBay connection, if you choose to connect: an encrypted authorisation token and a record of the listings you publish. We never see your eBay password.',
+            'eBay connection, if you connected an account earlier: an encrypted authorisation token until you disconnect. We never see your eBay password.',
           ]} />
         </Section>
 
@@ -37,7 +37,7 @@ export default function Privacy() {
           <Bullets items={[
             'To run your account and send one-time sign-in and verification codes by email.',
             'To personalise recommendations from your ratings, shelf, saves, dismissals and recent searches. We do not infer sensitive personal attributes from what you read.',
-            'To show your listings to buyers, deliver messages, and publish to eBay when you ask us to.',
+            'To show your listings to buyers and deliver messages.',
             'To keep the service safe, including handling reports and moderating content.',
           ]} />
           <p>We do not sell your personal data, show advertising, or use analytics or advertising trackers.</p>
@@ -53,7 +53,7 @@ export default function Privacy() {
             'Cloudinary may store uploaded photos; otherwise they are kept in our database.',
             'Groq processes your assistant messages and recent conversation to write replies.',
             'Google Books and Open Library receive book search terms, without your account details.',
-            'eBay receives book searches for price comparisons and, only if you connect your account and publish, the details and photos of that listing.',
+            'eBay receives book searches so we can show second-hand copies and prices. We do not publish anything to eBay.',
             'Our email provider delivers one-time codes. Google handles sign-in if you choose it.',
           ]} />
         </Section>
@@ -74,7 +74,7 @@ export default function Privacy() {
             'Sign out of every device.',
             'Delete your account, which permanently removes your listings and photos, reviews, shelves, plans, conversations and messages. Reports you filed are kept without your name.',
           ]} />
-          <p>You can disconnect eBay at any time from the eBay tab in your seller dashboard.</p>
+          <p>If you connected an eBay account, you can disconnect it from the eBay books tab in your seller dashboard.</p>
         </Section>
 
         <Section title="Changes to this policy">

@@ -193,3 +193,16 @@ def test_external_search_reports_a_provider_outage_without_failing(client, monke
     FakeApi(monkeypatch, lambda r, n: httpx.Response(500))
     body = client.get("/api/books/external-search", params={"q": "something rare"}).json()
     assert body["results"] == [] and "Open Library" in body["errors"][0]
+
+
+def test_dashboard_gets_only_second_hand_ebay_books(user_client, client, monkeypatch, ebay_on):
+    def item(i, condition):
+        return {"itemId": str(i), "title": f"Book {i}", "itemWebUrl": f"https://www.ebay.com/itm/{i}", "price": {"value": "9.00", "currency": "USD"}, "conditionId": condition}
+
+    api = FakeEbay(monkeypatch, body={"itemSummaries": [item(1, "5000"), item(2, "1000")]})
+    assert client.get("/api/ebay/used-books", params={"q": "Dune"}).status_code == 401
+    c, _ = user_client
+    body = c.get("/api/ebay/used-books", params={"q": "Dune"}).json()
+    assert [i["title"] for i in body["items"]] == ["Book 1"], "a new copy is never shown"
+    assert "conditions:{USED}" in api.calls[0]["filter"] and api.calls[0]["q"] == "Dune"
+    assert c.get("/api/ebay/used-books").json()["items"], "a seller with no search still sees books"

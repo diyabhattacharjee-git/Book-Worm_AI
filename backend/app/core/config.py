@@ -103,6 +103,8 @@ class Settings(BaseSettings):
     # developer portal (User Tokens > Get a Token from eBay via Your Application); its "auth accepted URL"
     # must be <PUBLIC_BASE_URL>/api/ebay/callback.
     ebay_runame: str = ""
+    # Publishing to eBay is off: BookWorm only reads second-hand listings from eBay.
+    ebay_publishing_enabled: bool = False
     # Public https address of this site, needed so eBay can fetch listing photos. Empty = same origin only.
     public_base_url: str = ""
     # Marketplace Account Deletion notifications (required by eBay for production keys).
@@ -210,7 +212,7 @@ class Settings(BaseSettings):
 
     @property
     def ebay_seller_configured(self) -> bool:
-        return self.ebay_configured and bool(self.ebay_runame)
+        return self.ebay_publishing_enabled and self.ebay_configured and bool(self.ebay_runame)
 
     @property
     def ebay_deletion_configured(self) -> bool:
